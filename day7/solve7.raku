@@ -51,17 +51,18 @@ my $rules = BagRules.parse($text, actions=>BagRules-Actions).made;
 
 my %can-be-in;
 my %contains;
-sub build-tree($outer, $inner, $multiplier=1) {
+sub summarize-tree($outer, $inner, $multiplier=1) {
   for $inner -> $bag-count {
     my ($color, $count) = $bag-count«color count»;
-    %contains{$outer} += $multiplier*$bag-count«count»;
+    %contains{$outer} += $multiplier * $count;
     %can-be-in{$color} ||= [].SetHash;
     %can-be-in{$color}{$outer} = True;
-    build-tree($outer, $rules{$color}, $count*$multiplier);
+    summarize-tree($outer, $rules{$color}, $count*$multiplier);
   }
 }
 for $rules.kv -> $out, $in {
-  build-tree($out, $in);
+  summarize-tree($out, $in);
 }
 
-say "Shiny gold bags can be in {+%can-be-in{'shiny gold'}} different colors and must contain {%contains{'shiny gold'}} other bags."
+print "Shiny gold bags can be in {+%can-be-in{'shiny gold'}} different colors";
+say " and must contain {%contains{'shiny gold'}} other bags.";
