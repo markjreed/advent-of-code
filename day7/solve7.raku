@@ -34,8 +34,8 @@ class BagRules-Actions {
     }
 
     method bag-count($/) {
-        #make { count => $<count>.Int, color => $<colored-bag>.made };
-        make $<colored-bag>.made;
+        make { count => $<count>.Int, color => $<colored-bag>.made };
+        #make $<colored-bag>.made;
     }
 
     method no-other-bags($/) {
@@ -50,15 +50,18 @@ my $text = $input-file.IO.slurp;
 my $rules = BagRules.parse($text, actions=>BagRules-Actions).made;
 
 my %can-be-in;
-sub build-tree($outer, $inner) {
-  for $inner -> $color {
+my %contains;
+sub build-tree($outer, $inner, $multiplier=1) {
+  for $inner -> $bag-count {
+    my ($color, $count) = $bag-count«color count»;
+    %contains{$outer} += $multiplier*$bag-count«count»;
     %can-be-in{$color} ||= [].SetHash;
     %can-be-in{$color}{$outer} = True;
-    build-tree($outer, $rules{$color});
+    build-tree($outer, $rules{$color}, $count*$multiplier);
   }
 }
 for $rules.kv -> $out, $in {
   build-tree($out, $in);
 }
 
-say "Shiny gold bags can be in {+%can-be-in{'shiny gold'}} different colors."
+say "Shiny gold bags can be in {+%can-be-in{'shiny gold'}} different colors and must contain {%contains{'shiny gold'}} other bags."
