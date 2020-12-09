@@ -36,7 +36,7 @@ role Halted {
 sub run(@program) {
   my ($acc, $pc, @seen) = 0, 0, [];
   while ($pc < @program && !@seen[$pc]) {
-    @seen[$pc] = 1;
+    @seen[$pc] = True;
     my ($op, $arg) = @program[$pc];
     say "PC: $pc, INS: $op $arg" if $debug;
     given $op {
