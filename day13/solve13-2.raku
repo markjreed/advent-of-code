@@ -3,7 +3,7 @@ unit sub MAIN($input-file);
 
 my (Any, $buses) = $input-file.IO.lines;
 
-# convert to hash radix => modulus for CRT
+# convert to hash of radix => modulus for CRT
 my %mods{Int} =
   $buses.split(',').pairs.grep( *.value ne 'x' ).map: { .value.Int => .value.Int - .key.Int  };
 
