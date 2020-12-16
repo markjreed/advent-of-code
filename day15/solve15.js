@@ -2,10 +2,21 @@ const cla = require('command-line-args')
 
 function main(numbers, position, verbose) {
   let starting_list = numbers.split(',').map( n => Number(n) );
-  let turn = starting_list.length-1;
-  let last = starting_list[turn]
-  let spoken = starting_list.splice(0,starting_list.length-1).reduce((dict, n, i) => { return { ...dict, [n]: i} }, {});
+  let last = starting_list.pop();
+
+  if (verbose) {
+    for (let i=0; i<starting_list.length; ++i) {
+      console.log(`Turn ${i+1}: ${starting_list[i]}`);
+    }
+  }
+
+  let spoken = starting_list.reduce((dict, n, i) => { return { ...dict, [n]: i} }, {});
+  let turn = starting_list.length;
+
   while (turn < position -1) {
+    if (verbose) {
+      console.log(`Turn ${turn+1}: ${last}`);
+    }
     let say = 0;
     if (last in spoken) {
       say = turn - spoken[last]
