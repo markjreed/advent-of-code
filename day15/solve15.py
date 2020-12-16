@@ -2,21 +2,29 @@
 import argh
 
 def main(numbers, position=2020, verbose=False):
-  starting_list = [int(n) for n in numbers.split(",")]
-  spoken = {n: i for i,n in enumerate(starting_list[:-1])}
-  last = starting_list[-1]
-  turn = len(starting_list)-1;
+  starting_list = [int(n) for n in numbers.split(',')]
+  last = starting_list.pop()
+
+  if verbose:
+    for i,n in enumerate(starting_list):
+      print(f'Turn {i+1}: {n}')
+
+  turn = len(starting_list);
+  spoken = {n: i for i,n in enumerate(starting_list)}
+
   while turn < position -1:
+    if verbose:
+      print(f'Turn {turn+1}: {last}')
+
+    say = 0
     if last in spoken:
       say = turn - spoken[last]
-    else:
-      say = 0
     spoken[last] = turn
     last = say
     turn = turn + 1
 
   if verbose:
-    print(f"Turn {turn+1}: ",end='')
+    print(f'Turn {turn+1}: ',end='')
   print(last);
 
 if __name__ == '__main__':
