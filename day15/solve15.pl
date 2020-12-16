@@ -27,9 +27,7 @@ my $turn = @indices;
 my %spoken = map { $starting_list[$_] => $_ } @indices;
 
 while ($turn < $position - 1) {
-  if ($verbose) {
-    say "Turn ${\($turn+1)}: $last";
-  }
+  say "Turn ${\($turn+1)}: $last" if $verbose;
   my $say = 0;
   $say = $turn - $spoken{$last} if defined $spoken{$last};
   $spoken{$last} = $turn;
