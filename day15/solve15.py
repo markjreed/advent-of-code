@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argh
-import sys
 
 def main(numbers, position=2020, verbose=False):
   starting_list = [int(n) for n in numbers.split(",")]
