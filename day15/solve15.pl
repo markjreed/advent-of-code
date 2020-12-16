@@ -30,9 +30,8 @@ while ($turn < $position - 1) {
   say "Turn ${\($turn+1)}: $last" if $verbose;
   my $say = 0;
   $say = $turn - $spoken{$last} if defined $spoken{$last};
-  $spoken{$last} = $turn;
+  $spoken{$last} = $turn++;
   $last = $say;
-  $turn++;
 }
 
 print "Turn ${\($turn+1)}: " if $verbose;
