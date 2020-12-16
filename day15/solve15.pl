@@ -20,7 +20,7 @@ my $last = pop @starting_list;
 my @indices = 0..$#starting_list;
 
 if ($verbose) {
-   print "Turn ${\($_+1)}: $starting_list[$_]\n" for @indices;
+   say "Turn ${\($_+1)}: $starting_list[$_]" for @indices;
 }
 
 my $turn = @indices;
