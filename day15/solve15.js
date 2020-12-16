@@ -1,6 +1,6 @@
 const cla = require('command-line-args')
 
-function main(numbers, position, verbose) {
+function main(numbers, last_turn, verbose) {
   let starting_list = numbers.split(',').map( n => Number(n) );
   let last = starting_list.pop();
 
@@ -13,7 +13,7 @@ function main(numbers, position, verbose) {
   let spoken = starting_list.reduce((dict, n, i) => { return { ...dict, [n]: i} }, {});
   let turn = starting_list.length;
 
-  while (turn < position -1) {
+  while (turn < last_turn -1) {
     if (verbose) {
       console.log(`Turn ${turn+1}: ${last}`);
     }
@@ -32,9 +32,9 @@ function main(numbers, position, verbose) {
 
 const options = cla( [
   { name: 'verbose', alias: 'v', type: Boolean, defaultValue: false },
-  { name: 'position', alias: 'p', type: Number, defaultValue: 2020 },
+  { name: 'turn', alias: 't', type: Number, defaultValue: 2020 },
   { name: 'numbers', type: String, defaultOption: true }
 ]);
 
-main(options.numbers, options.position, options.verbose)
+main(options.numbers, options.turn, options.verbose)
 

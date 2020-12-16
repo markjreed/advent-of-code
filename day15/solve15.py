@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import argh
 
-def main(numbers, position=2020, verbose=False):
+def main(numbers, last_turn=2020, verbose=False):
   starting_list = [int(n) for n in numbers.split(',')]
   last = starting_list.pop()
 
@@ -12,7 +12,7 @@ def main(numbers, position=2020, verbose=False):
   turn = len(starting_list);
   spoken = {n: i for i,n in enumerate(starting_list)}
 
-  while turn < position -1:
+  while turn < last_turn -1:
     if verbose:
       print(f'Turn {turn+1}: {last}')
 

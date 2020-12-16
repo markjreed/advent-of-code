@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-def main(numbers, position=2020, verbose=False)
+def main(numbers, last_turn=2020, verbose=False)
   starting_list = numbers.split(',').map(&:to_i)
   last = starting_list.pop
 
@@ -31,14 +31,14 @@ def main(numbers, position=2020, verbose=False)
 end
 
 if __FILE__ == $0
-  position=2020
+  last_turn=2020
   verbose=false
   while ARGV[0] =~ /^-/ do
     opt = ARGV.shift
     if opt =~ /^-v/ then verbose = 1
-    elsif opt =~ /^-p(\d+)/ then position=$1.to_i
-    elsif opt =~ /^-p$/ then position = ARGV.shift.to_i
-    else raise "Usage: #{$0} [-p position] [-v] start-list\n"
+    elsif opt =~ /^-t(\d+)/ then last_turn=$1.to_i
+    elsif opt =~ /^-t$/ then last_turn = ARGV.shift.to_i
+    else raise "Usage: #{$0} [-t last_turn] [-v] start-list\n"
     end
   end
   numbers = ARGV.shift
