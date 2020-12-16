@@ -15,14 +15,14 @@ turn <- length(starting_list) + 1
 spoken <- new.env(hash=TRUE, parent=emptyenv())
 for (i in seq_along(starting_list)) {
   if (opt$options$verbose) {
-    cat(c("Turn ", i, ": ", starting_list[[i]], "\n"))
+    cat(c("Turn ", i, ": ", starting_list[[i]], "\n"), sep="")
   }
   spoken[[starting_list[[i]]]] <- i
 }
 
 while (turn < opt$options$turn) {
   if (opt$options$verbose) {
-    cat(c("Turn ", turn, ": ", last, "\n"))
+    cat(c("Turn ", turn, ": ", last, "\n"), sep="")
   }
   say <- 0
   key <- toString(last)
@@ -35,6 +35,6 @@ while (turn < opt$options$turn) {
 }
 
 if (opt$options$verbose) {
-  cat(c("Turn ", turn, ": "))
+  cat(c("Turn ", turn, ": "), sep="")
 }
 cat(c(last, "\n"))
