@@ -2,15 +2,15 @@
 use v5.18;
 
 my $verbose;
-my $position = 2020;
+my $last_turn = 2020;
 
 while ($ARGV[0] =~ /^-/) {
   for (shift @ARGV) {
     if (/^-v/)         { $verbose = 1; }
-    elsif (/^-p(\d+)/) { $position = $1; }
-    elsif (/^-p$/)     { $position = shift @ARGV; }
+    elsif (/^-t(\d+)/) { $last_turn = $1; }
+    elsif (/^-t$/)     { $last_turn = shift @ARGV; }
     else {
-      die "Usage: $0 [-p position] [-v] start-list\n";
+      die "Usage: $0 [-t last-turn] [-v] start-list\n";
     }
   }
 }
@@ -26,7 +26,7 @@ if ($verbose) {
 my $turn = @indices;
 my %spoken = map { $starting_list[$_] => $_ } @indices;
 
-while ($turn < $position - 1) {
+while ($turn < $last_turn - 1) {
   say "Turn ${\($turn+1)}: $last" if $verbose;
   my $say = 0;
   $say = $turn - $spoken{$last} if defined $spoken{$last};
