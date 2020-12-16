@@ -14,12 +14,12 @@ while ($ARGV[0] =~ /^-/) {
 }
 
 my @starting_list = split ',', $ARGV[0];
-my %spoken = map { $starting_list[$_] => $_ } 0..($#starting_list-1);
+my %spoken = map { $starting_list[$_] => $_ } 0..$#starting_list-1;
 my $last = $starting_list[-1];
 my $turn = @starting_list-1;
 while ($turn < $position - 1) {
   my $say = 0;
-  $say = $turn - $spoken{$last} if defined($spoken{$last});
+  $say = $turn - $spoken{$last} if defined $spoken{$last};
   $spoken{$last} = $turn;
   $last = $say;
   $turn++;
