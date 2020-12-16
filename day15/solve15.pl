@@ -6,18 +6,30 @@ my $position = 2020;
 
 while ($ARGV[0] =~ /^-/) {
   for (shift @ARGV) {
-    if (/^-v/)  { $verbose = 1; }
-    elsif (/^-p(\d+)/) { $position=$1; }
-    elsif (/^-p$/) { $position = shift @ARGV; }
-    else { die "Usage: $0 [-p position] [-v] start-list\n"; }
+    if (/^-v/)         { $verbose = 1; }
+    elsif (/^-p(\d+)/) { $position = $1; }
+    elsif (/^-p$/)     { $position = shift @ARGV; }
+    else {
+      die "Usage: $0 [-p position] [-v] start-list\n";
+    }
   }
 }
 
 my @starting_list = split ',', $ARGV[0];
-my %spoken = map { $starting_list[$_] => $_ } 0..$#starting_list-1;
-my $last = $starting_list[-1];
-my $turn = @starting_list-1;
+my $last = pop @starting_list;
+my @indices = 0..$#starting_list;
+
+if ($verbose) {
+   print "Turn ${\($_+1)}: $starting_list[$_]\n" for @indices;
+}
+
+my $turn = @indices;
+my %spoken = map { $starting_list[$_] => $_ } @indices;
+
 while ($turn < $position - 1) {
+  if ($verbose) {
+    say "Turn ${\($turn+1)}: $last";
+  }
   my $say = 0;
   $say = $turn - $spoken{$last} if defined $spoken{$last};
   $spoken{$last} = $turn;
@@ -25,5 +37,5 @@ while ($turn < $position - 1) {
   $turn++;
 }
 
-print f"Turn ${\($turn+1)}: " if $verbose;
+print "Turn ${\($turn+1)}: " if $verbose;
 say $last;
