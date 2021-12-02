@@ -10,4 +10,4 @@ augment class Seq {
   }
 };
 my @data = $*ARGFILES.lines;
-say @data.Seq.window(3).map({ [+]($_) }).window(2).map({ [<]($_) }).sum;
+say @data.Seq.window(3).map(*.sum).window(2).map({ [<]($_) }).sum;
