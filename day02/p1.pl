@@ -7,4 +7,3 @@ while (<>) {
   elsif (/up (\d+)/) { $depth-=$1 }
 }
 say $pos * $depth;
-
