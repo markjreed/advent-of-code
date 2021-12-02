@@ -4,10 +4,13 @@
 Loop  Line = INPUT               :F(Done)
       Line  'forward' REM . Dist :F(Down)
       Pos = Pos + Dist           :(Loop)
+
 Down  Line  'down' REM . Dist    :F(Up)
       Depth = Depth + Dist       :(Loop)
+
 Up    Line 'up' REM . Dist       :F(Loop)
       Depth = Depth - Dist       :(Loop)
+
 Done  OUTPUT = Pos * Depth
 END
 

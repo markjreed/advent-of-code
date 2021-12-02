@@ -6,10 +6,13 @@ Loop  Line = INPUT                 :F(Done)
       Line  'forward' REM . Dist   :F(Down)
       Pos = Pos + Dist 
       Depth = Depth + (Aim * Dist) :(Loop)
+
 Down  Line  'down' REM . Dist      :F(Up)
       Aim = Aim + Dist             :(Loop)
+
 Up    Line 'up' REM . Dist         :F(Loop)
       Aim = Aim - Dist             :(Loop)
+
 Done  OUTPUT = Pos * Depth
 END
 
