@@ -1,0 +1,15 @@
+      Aim = 0
+      Pos = 0
+      Depth = 0
+
+LOOP  Line = INPUT :F(DONE)
+      Line  'forward' REM . Dist :F(DOWN)
+      Pos = Pos + Dist 
+      Depth = Depth + (Aim * Dist) :(LOOP)
+DOWN  Line  'down' REM . Dist :F(UP)
+      Aim = Aim + Dist :(LOOP)
+UP    Line 'up' REM . Dist :F(LOOP)
+      Aim = Aim - Dist :(LOOP)
+DONE  OUTPUT = Pos * Depth
+END
+
