@@ -1,6 +1,6 @@
 # Run BASIC in VICE via `make PROG=filename`
-data.cbm: data.txt
-	tr $'\n' $'\r' <$< >$@
+data.cbm: ../data.txt
+	tr $$'\n' $$'\r' <$< >$@
 
 run: data.cbm $(PROG)
 ifdef PROG
