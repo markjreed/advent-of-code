@@ -2,7 +2,7 @@
 my ($calls, @boards) = $*ARGFILES.slurp.split("\n\n");
 my ($first, $last, %winners);
 for $calls.split(',') -> $ball {
-  @boards .= map: { .subst(/«$ball»/, '*') };
+  @boards .= map: { .subst(/« $ball »/, '*') };
   for @boards.kv -> $i, $board {
     next if %winners{$i};
     if $board ~~ /[[^ || \n] \h* ['*' \h+]**4 '*'] ||
