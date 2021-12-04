@@ -5,7 +5,7 @@ for $calls.split(',') -> $ball {
   @boards .= map: { .subst(/«$ball»/, '*') };
   for @boards.kv -> $i, $board {
     next if %winners{$i};
-    if $board ~~ /[[^ || \n] ' '* ['*' ' '+]**4 '*'] ||
+    if $board ~~ /[[^ || \n] \h* ['*' \h+]**4 '*'] ||
                   [[ '*' [\s+ \S+]**4 \s+ ]**4 '*']/ {
         $last = $ball * [+]($board ~~ m:g/ \d+ /);
         $first //= $last;
