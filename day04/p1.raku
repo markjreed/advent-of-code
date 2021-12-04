@@ -3,7 +3,7 @@ my ($calls, @boards) = $*ARGFILES.slurp.split("\n\n");
 
 for $calls.split(',') -> $ball {
   my $score;
-  @boards .= map: { .subst( /«$ball»/, '*', :g) };
+  @boards .= map: { .subst(/«$ball»/, '*') };
   for @boards.kv -> $i, $board {
     if $board ~~ /(^ || \n) ' '* ('*' ' '+)**4 '*' / or
        $board ~~ / ( '*' (\s+ \S+)**4 \s+ )**4 '*' / {
