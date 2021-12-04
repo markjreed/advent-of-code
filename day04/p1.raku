@@ -5,8 +5,8 @@ for $calls.split(',') -> $ball {
   my $score;
   @boards .= map: { .subst( /«$ball»/, '*', :g) };
   for @boards.kv -> $i, $board {
-    if $board ~~ /(^ || \n) <[\x20]>* (\* <[\x20]>+)**4 \* / or
-       $board ~~ / ( \* (\s+ \S+)**4 \s+ )**4 \* / {
+    if $board ~~ /(^ || \n) ' '* ('*' ' '+)**4 '*' / or
+       $board ~~ / ( '*' (\s+ \S+)**4 \s+ )**4 '*' / {
         $score = $ball * [+]($board ~~ m:g/ \d+ /);
         say "Board #$i wins on call of $ball with score $score.";
         last;
