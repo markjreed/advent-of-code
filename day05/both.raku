@@ -45,7 +45,6 @@ for @lines -> $line {
     }
     for $x1 .. $x2 -> $x {
       my $y = $y1 + ($x - $x1)/($x2 - $x1) * ($y2 - $y1);
-      die "($x1,$x2)->($y1,$y2): y=$y" if $y < 0;
       @grid[$y][$x]++;
     }
   }
