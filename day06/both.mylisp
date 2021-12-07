@@ -1,13 +1,21 @@
-;; utility functions missing from mylisp
-(define (inc n . opt) (let ((a (if (null? opt) 1 (car opt)))) (+ n a)))
+; load data (pasted from browser)
+(set! data "3,1,4,2,1,1,1,1,1,1,1,4,1,4,1,2,1,1,2,1,3,4,5,1,1,4,1,3,3,1,1,1,1,3,3,1,3,3,1,5,5,1,1,3,1,1,2,1,1,1,3,1,4,3,2,1,4,3,3,1,1,1,1,5,1,4,1,1,1,4,1,4,4,1,5,1,1,4,5,1,1,2,1,1,1,4,1,2,1,1,1,1,1,1,5,1,3,1,1,4,4,1,1,5,1,2,1,1,1,1,5,1,3,1,1,1,2,2,1,4,1,3,1,4,1,2,1,1,1,1,1,3,2,5,4,4,1,3,2,1,4,1,3,1,1,1,2,1,1,5,1,2,1,1,1,2,1,4,3,1,1,1,4,1,1,1,1,1,2,2,1,1,5,1,1,3,1,2,5,5,1,4,1,1,1,1,1,2,1,1,1,1,4,5,1,1,1,1,1,1,1,1,1,3,4,4,1,1,4,1,3,4,1,5,4,2,5,1,2,1,1,1,1,1,1,4,3,2,1,1,3,2,5,2,5,5,1,3,1,2,1,1,1,1,1,1,1,1,1,3,1,1,1,3,1,4,1,4,2,1,3,4,1,1,1,2,3,1,1,1,4,1,2,5,1,2,1,5,1,1,2,1,2,1,1,1,1,4,3,4,1,5,5,4,1,1,5,2,1,3")
 
-(define (dec n . opt) (let ((a (if (null? opt) 1 (car opt)))) (- n a)))
+;--- FUNCTONS ---
+; define some shortcuts
+(define (inc n) (+ n 1))
 
+(define (dec n (- n 1))
+
+; and lispy functions not included in MyLisp:
+
+; count items matching a predicate
 (define (count pred lst . opt)
-  (let ((so-far (if (null? opt) 0 (car opt))))
-    (if (null? lst) so-far
+  (let ((tally (if (null? opt) 0 (car opt))))
+    (if (null? lst) tally
         (count (cdr lst) (inc tally)))))
 
+; generate a range of numbers
 (define (iota n . opt)
   (let ((start 0) (step 1) (lst '()))
     (when (not (null? opt))
@@ -20,27 +28,29 @@
          (let ((next (+ start (* (- n 1) step))))
             (iota (- n 1) start step (cons next lst))))))
 
-(define (subseq lst start . opt)
-  (let ((end (if (null? opt) (inc (length lst)) (car opt))))
-    (mapcar (lambda (n) (nth n lst)) (iota (- end start) start))))
-
-; load data
-(set! fish (mapcar string->number (string->list "3,1,4,2,1,1,1,1,1,1,1,4,1,4,1,2,1,1,2,1,3,4,5,1,1,4,1,3,3,1,1,1,1,3,3,1,3,3,1,5,5,1,1,3,1,1,2,1,1,1,3,1,4,3,2,1,4,3,3,1,1,1,1,5,1,4,1,1,1,4,1,4,4,1,5,1,1,4,5,1,1,2,1,1,1,4,1,2,1,1,1,1,1,1,5,1,3,1,1,4,4,1,1,5,1,2,1,1,1,1,5,1,3,1,1,1,2,2,1,4,1,3,1,4,1,2,1,1,1,1,1,3,2,5,4,4,1,3,2,1,4,1,3,1,1,1,2,1,1,5,1,2,1,1,1,2,1,4,3,1,1,1,4,1,1,1,1,1,2,2,1,1,5,1,1,3,1,2,5,5,1,4,1,1,1,1,1,2,1,1,1,1,4,5,1,1,1,1,1,1,1,1,1,3,4,4,1,1,4,1,3,4,1,5,4,2,5,1,2,1,1,1,1,1,1,4,3,2,1,1,3,2,5,2,5,5,1,3,1,2,1,1,1,1,1,1,1,1,1,3,1,1,1,3,1,4,1,4,2,1,3,4,1,1,1,2,3,1,1,1,4,1,2,5,1,2,1,5,1,1,2,1,2,1,1,1,1,4,3,4,1,5,5,4,1,1,5,2,1,3" ",")))
-
-; convert to manageable format
-(set! counts (mapcar (lambda (i) (count (lambda (n) (= n i)) fish)) (iota 9)))
-
-; compute next day from prior day's summary
-(define (step-day counts)
-  (let ((zeroes (car counts)))
-    (append (subseq counts 1 7)
-            (list (+ zeroes (nth 7 counts)) (nth 8 counts) zeroes))))
-
 ; iterate a function N times
 (define (iterate n fn initial)
   (if (zero? n) initial
       (iterate (dec n) fn (fn initial))))
 
-; get the puzzle answers
+; extract a sublist
+(define (subseq lst start . opt)
+  (let ((end (if (null? opt) (inc (length lst)) (car opt))))
+    (mapcar (lambda (n) (nth n lst)) (iota (- end start) start))))
+
+;-- MAIN BODY OF SOLUTION --
+; parse our data into a list of fish
+(set! fish (mapcar string->number (string->list data ",")))
+
+; then convert to a list of counts of each possible timer value (0..8)
+(set! counts (mapcar (lambda (i) (count (lambda (n) (= n i)) fish)) (iota 9)))
+
+; define a function to compute the next day's summary from the prior day's
+(define (step-day counts)
+  (let ((zeroes (car counts)))
+    (append (subseq counts 1 7)
+            (list (+ zeroes (nth 7 counts)) (nth 8 counts) zeroes))))
+
+; and finally get the puzzle answers
 (apply + (iterate 80 step-day counts))
 (apply + (iterate 256 step-day counts))
