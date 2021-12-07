@@ -35,14 +35,14 @@
 
 ; extract a sublist
 (define (subseq lst start . opt)
-  (let ((end (if (null? opt) (inc (length lst)) (car opt))))
+  (let ((end (if (null? opt) (length lst) (car opt))))
     (mapcar (lambda (n) (nth n lst)) (iota (- end start) start))))
 
 ;-- MAIN BODY OF SOLUTION --
 ; parse our data into a list of fish
 (set! fish (mapcar string->number (string->list data ",")))
 
-; then convert to a list of counts of each possible timer value (0..8)
+; then convert to a list of counts of fish each possible timer value (0..8)
 (set! counts (mapcar (lambda (i) (count (lambda (n) (= n i)) fish)) (iota 9)))
 
 ; define a function to compute the next day's summary from the prior day's
