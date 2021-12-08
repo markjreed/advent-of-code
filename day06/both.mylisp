@@ -9,13 +9,15 @@
 
 ; and lispy functions not included in MyLisp:
 
+(define (zero? n) (= n 0))
+
 ; count items matching a predicate
 (define (count pred lst . opt)
   (let ((tally (if (null? opt) 0 (car opt))))
     (if (null? lst) tally
         (count (cdr lst) (inc tally)))))
 
-; generate a range of numbers
+; generate a range of numbers (SRFI-1 syntax)
 (define (iota n . opt)
   (let ((start 0) (step 1) (lst '()))
     (when (not (null? opt))
