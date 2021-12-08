@@ -36,11 +36,11 @@ for @data ->  ($digits, $display) {
   my $bd = %digits<4>.comb.grep({ $_ !⊂ $cf }).Set;
 
   # find c (=> f) from the six
-  %digits<6> = $digits.grep(*.chars == 6).grep({ my $diff = (['a'..'g'] (-) .comb); $diff ⊂ $cf && ( (%cipher«c»,) = $diff.keys) })[0];
+  %digits<6> = $digits.grep(*.chars == 6).grep({ my $diff = (['a'..'g'] (-) .comb); $diff ⊂ $cf && ( %cipher«c» = $diff.keys[0]) })[0];
   %cipher«f» = ($cf (-) %cipher«c»).keys[0];
 
   # and d (=> b) from the zero
-  %digits<0> = $digits.grep(*.chars == 6).grep({ my $diff = (['a'..'g'] (-) .comb); $diff ⊂ $bd && ( (%cipher«d»,) = $diff.keys) })[0];
+  %digits<0> = $digits.grep(*.chars == 6).grep({ my $diff = (['a'..'g'] (-) .comb); $diff ⊂ $bd && ( %cipher«d» = $diff.keys[0]) })[0];
   %cipher«b» = ($bd (-) %cipher«d»).keys[0];
 
   # finally, find the three and use it to decode the remaining two segments
