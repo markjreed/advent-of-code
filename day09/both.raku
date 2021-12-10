@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
 my @heightmap = lines».comb».Int;
 
-# return the coordinates (i,j) plus all of its orthogonal neighbors
+# return the coordinates (i,j) plus all orthogonal neighbors
 sub n5coords($matrix, $i, $j) {
   gather {
     for (-1,0,1).&{$_ X $_}.grep({ ![&&] $_ }) -> ($di,$dj) {
