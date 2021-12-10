@@ -19,7 +19,8 @@ for lines() -> $line {
     }
   }
   if (@stack) {
-    @line_scores.push: @stack.reverse.join.trans(%completion_scores).parse-base(5);
+    @line_scores.push:
+      @stack.reverse.join.trans(%completion_scores).parse-base(5);
   }
 }
 say "Syntax checker score: $syntax_score";
