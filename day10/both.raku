@@ -5,7 +5,7 @@ my %completion_scores = '(' => '1', '[' => '2', '{' => '3', '<' => '4';
 
 my ($syntax_score, @line_scores);
 Line:
-for lines().kv -> $i,$line {
+for lines() -> $line {
   my @stack;
   for $line.comb -> $ch {
     if $ch ~~ /'['|'('|'{'|'<'/ {
