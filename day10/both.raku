@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
 my %pairs = '(' => ')', '[' => ']', '{' => '}', '<' => '>';
 my %syntax_scores = ')' => 3, ']' => 57, '}' => 1197, '>' => 25137;
-my %completion_scores = ')' => 1, ']' => 2, '}' => 3, '>' => 4;
+my %completion_scores = '(' => '1', '[' => '2', '{' => '3', '<' => '4';
 
 my ($syntax_score, @line_scores);
 Line:
@@ -19,11 +19,7 @@ for lines().kv -> $i,$line {
     }
   }
   if (@stack) {
-    my $line_score = 0;
-    while (@stack) {
-      my $char = %pairs{@stack.pop};
-      $line_score = $line_score*5+%completion_scores{$char};
-    }
+    my $line_score = @stack.reverse.join.trans(%completion_scores).parse-base(5);
     @line_scores.push: $line_score;
   }
 }
