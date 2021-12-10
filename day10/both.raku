@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
 my %pairs = '(' => ')', '[' => ']', '{' => '}', '<' => '>';
 my %syntax-scores = ')' => 3, ']' => 57, '}' => 1197, '>' => 25137;
-my %completion = '(' => '1', '[' => '2', '{' => '3', '<' => '4';
+my %completion = «( [ \{ <».pairs.map({ .value => ~(.key+1) });
 
 my ($syntax-score, @line-scores);
 Line:
