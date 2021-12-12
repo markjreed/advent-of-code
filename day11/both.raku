@@ -18,7 +18,7 @@ while $new_flashes < $size {
       }
     }
   }
-  while +$flashers > $was {
+  while $flashers > $was {
     $was = +$flashers;
     for $flashers.keys.List».&{.re,.im} -> ($i,$j) {
       next if @grid[$i][$j] == 0; # already flashed
