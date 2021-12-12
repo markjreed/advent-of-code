@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 my %caves;
-for lines.map(*.split('-')) -> ($l,$r) {
+for lines.map(*.split: '-') -> ($l,$r) {
   (%caves{$l} //= ().SetHash).set($r);
   (%caves{$r} //= ().SetHash).set($l);
 }
@@ -19,5 +19,5 @@ sub count-paths($next, $seen is copy=().SetHash, :$revisit-ok is copy=False,) {
                for %caves{$next}.keys);
 }
 
-say count-paths('start');
-say count-paths('start', :revisit-ok);
+say count-paths 'start';
+say count-paths 'start', :revisit-ok;
