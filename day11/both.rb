@@ -29,14 +29,10 @@ while new_flashes < size
       new_flashes += 1
       (-1..1).each do |di|
         ni = i + di
-        if ni < 0 || ni >= grid.length then
-          next
-        end
+        next if ni < 0 || ni >= grid.length
         (-1..1).each do |dj|
           nj = j + dj
-          if nj < 0 || nj >= grid.length then
-            next
-          end
+          next if nj < 0 || nj >= grid.length
           if grid[ni][nj] > 0 then
             grid[ni][nj] += 1
             if grid[ni][nj] > 9 then
