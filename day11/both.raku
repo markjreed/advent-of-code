@@ -5,8 +5,7 @@ my $size = [+] @grid;
 
 my $new_flashes = 0;
 my $total_flashes = 0;
-my $n = 0;
-while $new_flashes < $size {
+loop (my $n=0; $new_flashes < $size; $n++) {
   $new_flashes = 0;
   my $flashers = ().SetHash;
   my $was = +$flashers;
@@ -41,7 +40,6 @@ while $new_flashes < $size {
     }
   }
   $total_flashes += $new_flashes if $n < 100;
-  $n++;
 }
 
 say "Flashes after 100 steps: $total_flashes";
