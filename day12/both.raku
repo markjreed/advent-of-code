@@ -5,7 +5,7 @@ for lines.map(*.split('-')) -> ($l,$r) {
   (%caves{$r} //= ().SetHash).set($l);
 }
 
-sub count-paths($next, $revisit-ok is copy=False, $seen is copy=().SetHash) {
+sub count-paths($next, $seen is copy=().SetHash, :$revisit-ok is copy=False,) {
    return 1 if $next eq 'end';
    my $is-small = ?($next ~~ /^<[a..z]>+$/);
    if $is-small && $seen{$next}  {
@@ -15,8 +15,9 @@ sub count-paths($next, $revisit-ok is copy=False, $seen is copy=().SetHash) {
      $revisit-ok=False;
    }
    $seen ∪= ($is-small ?? $next !! ());
-   return [+] (count-paths($_, $revisit-ok, $seen) for %caves{$next}.keys);
+   return [+] (count-paths($_, $seen, :revisit-ok($revisit-ok)) 
+               for %caves{$next}.keys);
 }
 
-say count-paths( 'start' );
-say count-paths( 'start', True );
+say count-paths('start');
+say count-paths('start', :revisit-ok);
