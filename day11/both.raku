@@ -2,7 +2,6 @@
 my @grid = lines.map: { [ .comb».Int ] };
 
 my $size = [+] @grid;
-say "size=$size";
 
 my $new_flashes = 0;
 my $total_flashes = 0;
