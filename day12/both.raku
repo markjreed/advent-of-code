@@ -1,25 +1,24 @@
 #!/usr/bin/env raku
+my @paths = lines.map: { [=>] .split('-') };
 my %caves;
-for lines.map(*.split: '-') -> ($l,$r) {
-  (%caves{$l} //= ().SetHash).set: $r;
-  (%caves{$r} //= ().SetHash).set: $l;
+for @paths -> $path {
+  my ($from, $to) = $path.&{.key, .value};
+  (%caves{$from} //= ().SetHash).set: $to;
+  (%caves{$to} //= ().SetHash).set: $from;
 }
 
-sub count-paths($next, $seen is copy=().SetHash, :$revisit-ok is copy=False) {
-   return 1 if $next eq 'end';
-
-   my $is-small = ?($next ~~ /^<[a..z]>+$/);
-   if $is-small && $seen{$next} {
-     if !$revisit-ok || $next eq 'start' {
-       return 0;
-     }
-     $revisit-ok=False;
-   }
-
-   $seen ∪= $next if $is-small;
-   return [+] (count-paths($_, $seen, :revisit-ok($revisit-ok))
-               for %caves{$next}.keys);
+sub count-paths($cave, $revisit-ok is copy=False, $small-visited = ().SetHash) {
+  return 1 if $cave eq 'end';
+  if $small-visited{$cave} {
+    if $revisit-ok && $cave ne 'start' {
+      $revisit-ok = False;
+    } else {
+      return 0;
+    }
+  }
+  my $new-visited = $small-visited.clone;
+  $new-visited.set($cave) if $cave ~~ /^<[a..z]>+$/;
+  return [+] (count-paths($_, $revisit-ok, $new-visited) for %caves{$cave}.keys);
 }
-
-say count-paths 'start';
-say count-paths 'start', :revisit-ok;
+say count-paths('start');
+say count-paths('start', True);
