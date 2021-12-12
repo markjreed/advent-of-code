@@ -14,7 +14,7 @@ sub count-paths($next, $seen is copy=().SetHash, :$revisit-ok is copy=False,) {
      }
      $revisit-ok=False;
    }
-   $seen ∪= ($is-small ?? $next !! ());
+   $seen ∪= $is-small ?? $next !! ();
    return [+] (count-paths($_, $seen, :revisit-ok($revisit-ok)) 
                for %caves{$next}.keys);
 }
