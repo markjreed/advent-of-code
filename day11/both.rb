@@ -4,8 +4,6 @@ grid = ARGF.map { |l|
   l.chomp.split('').map(&:to_i)
 }
 
-#puts "Before any steps:"
-#puts grid.map{ |r| r.join '' }.join("\n")
 flashes = 0
 100.times do |n|
   flashers = Set.new
@@ -45,8 +43,6 @@ flashes = 0
       end
     end
   end
-  #puts "After step #{n+1}, there have been #{flashes} flashes. Grid:"
-  #puts grid.map{ |r| r.join '' }.join("\n")
 end
 
 puts flashes
