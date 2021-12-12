@@ -3,10 +3,14 @@ require 'set'
 grid = ARGF.map { |l|
   l.chomp.split('').map(&:to_i)
 }
+size = grid.map(&:length).sum
 
-flashes = 0
-100.times do |n|
+new_flashes = 0
+total_flashes = 0
+n = 0
+while new_flashes < size
   flashers = Set.new
+  new_flashes = 0
   was = flashers.length
   grid.length.times do |i|
     grid[i].length.times do |j|
@@ -22,7 +26,7 @@ flashes = 0
     flashers.to_a.each do |i,j|
       next if grid[i][j] == 0
       grid[i][j] = 0
-      flashes += 1
+      new_flashes += 1
       (-1..1).each do |di|
         ni = i + di
         if ni < 0 || ni >= grid.length then
@@ -43,6 +47,10 @@ flashes = 0
       end
     end
   end
+  total_flashes += new_flashes if n < 100 
+
+  n += 1
 end
 
-puts flashes
+puts "Flashes after 100 steps: #{total_flashes}"
+puts "First step where all flash: #{n}"
