@@ -1,25 +1,24 @@
 #!/usr/bin/env raku
-my ($points,$folds) = slurp.split("\n\n", :skip-empty)».split("\n", :skip-empty);
+my ($points,$folds) =
+  slurp.split("\n\n", :skip-empty)».split("\n", :skip-empty);
 
-my $dots = $points.map( { [ .split(',')».Int.&{ $_[0] + i*$_[1] } ] } ).SetHash;
+my $dots = $points.map(
+  { [ .split(',')».Int.&{ $_[0] + i*$_[1] } ] }
+).SetHash;
+
 my $first = True;
 for @$folds {
   my ($dir,$axis) := m/(<[xy]>)'='(\d+)/;
+  my ($m, $i) = do given $dir {
+    when 'x' { { .re },  1; }
+    when 'y' { { .im },  i; }
+  };
+
   my @points = $dots.keys;
-  for @points -> $pt  {
-    my $new;
-    given $dir {
-       when 'x' {
-         $new = 2*$axis - $pt.re + i*$pt.im if $pt.re > $axis;
-       }
-       when 'y' {
-         $new = $pt.re + i*(2*$axis - $pt.im) if $pt.im > $axis;
-       };
-    }
-    if ($new.defined) {
-      $dots.unset($pt);
-      $dots.set($new);
-    }
+  for @points.grep: { .$m > $axis } -> $pt {
+    my $new = $pt + 2*$i*($axis - $pt.$m);
+    $dots.unset($pt);
+    $dots.set($new);
   }
   if $first {
     say +$dots;
