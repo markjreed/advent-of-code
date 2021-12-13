@@ -6,15 +6,15 @@ my $dots = ($coords.map: { Complex.new(|.split(',')».Int) }).SetHash;
 
 my $first = True;
 for @$folds {
-  my ($dir,$axis) := m/(<[xy]>)'='(\d+)/;
-  my ($part, $vector) = do given $dir {
+  my ($dir, $axis) := m/(<[xy]>)'='(\d+)/;
+  my ($part, $vec) = do given $dir {
     when 'x' { { .re },  1; }
     when 'y' { { .im },  i; }
   };
 
   my @dots = $dots.keys;
   for @dots.grep: { .$part > $axis } -> $point {
-    my $new = $point + 2*$vector*($axis - $point.$part);
+    my $new = $point + 2*$vec*($axis - $point.$part);
     $dots.unset($point);
     $dots.set($new);
   }
