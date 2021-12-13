@@ -1,8 +1,8 @@
 #!/usr/bin/env raku
-my ($points,$folds) =
+my ($coords, $folds) =
   slurp.split("\n\n", :skip-empty)».split("\n", :skip-empty);
 
-my $dots = ($points.map: { Complex.new(|.split(',')».Int) }).SetHash;
+my $dots = ($coords.map: { Complex.new(|.split(',')».Int) }).SetHash;
 
 my $first = True;
 for @$folds {
@@ -12,10 +12,10 @@ for @$folds {
     when 'y' { { .im },  i; }
   };
 
-  my @points = $dots.keys;
-  for @points.grep: { .$m > $axis } -> $pt {
-    my $new = $pt + 2*$i*($axis - $pt.$m);
-    $dots.unset($pt);
+  my @dots = $dots.keys;
+  for @dots.grep: { .$m > $axis } -> $point {
+    my $new = $point + 2*$i*($axis - $point.$m);
+    $dots.unset($point);
     $dots.set($new);
   }
   if $first {
