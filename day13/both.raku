@@ -2,9 +2,7 @@
 my ($points,$folds) =
   slurp.split("\n\n", :skip-empty)».split("\n", :skip-empty);
 
-my $dots = $points.map(
-  { [ .split(',')».Int.&{ $_[0] + i*$_[1] } ] }
-).SetHash;
+my $dots = ($points.map: { Complex.new(|.split(',')».Int) }).SetHash;
 
 my $first = True;
 for @$folds {
