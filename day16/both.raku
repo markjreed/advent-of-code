@@ -73,13 +73,13 @@ sub evaluate(@expr) {
     return @expr[0];
   }
   given @expr[0] {
-    when '+' {  [+] @expr.splice(1).map: { evaluate $_ } }
-    when '*' {  [*] @expr.splice(1).map: { evaluate $_ } }
-    when '<' {  +([<] @expr.splice(1).map: { evaluate $_ }) }
-    when '>' {  +([>] @expr.splice(1).map: { evaluate $_ }) }
-    when '=' { +([==] @expr.splice(1).map: { evaluate $_ }) }
-    when 'min' {  @expr.splice(1).map( { evaluate $_ } ).min }
-    when 'max' {  @expr.splice(1).map( { evaluate $_ } ).max }
+    when '+'   {   [+]  @expr.splice(1).map: { evaluate $_ }  }
+    when '*'   {   [*]  @expr.splice(1).map: { evaluate $_ }  }
+    when '<'   { +([<]  @expr.splice(1).map: { evaluate $_ }) }
+    when '>'   { +([>]  @expr.splice(1).map: { evaluate $_ }) }
+    when '='   { +([==] @expr.splice(1).map: { evaluate $_ }) }
+    when 'min' {   min  @expr.splice(1).map: { evaluate $_ }  }
+    when 'max' {   max  @expr.splice(1).map: { evaluate $_ }  }
   }
 }
 
