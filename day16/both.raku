@@ -86,4 +86,3 @@ sub evaluate(@expr) {
 my $tree = parse-packet(@bits);
 say "version sum=$versum";
 say evaluate($tree);
-
