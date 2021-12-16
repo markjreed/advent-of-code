@@ -6,7 +6,7 @@ my @bits = $hex.parse-base(16).base(2).comb;
 
 my $versum = 0;
 
-sub parse-packet(@bits, $level=0) {
+sub parse-packet(@bits) {
   my $count = +@bits;
   return Nil unless +@bits > 6;
   my $version = @bits.splice(0,3).join.parse-base(2) // return Nil;
