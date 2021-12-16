@@ -1,6 +1,7 @@
 #!/usr/bin/env raku
 my $hex = slurp.chomp;
 my @bits = $hex.parse-base(16).base(2).comb;
+# leading 0's matter!
 @bits.unshift(0) while @bits < $hex.chars * 4;
 
 my $versum = 0;
