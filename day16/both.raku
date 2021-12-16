@@ -1,5 +1,7 @@
 #!/usr/bin/env raku
-my $hex = slurp.chomp;
+unit sub MAIN($filename, Bool :v($verbose) = False);
+
+my $hex = $filename.IO.slurp.chomp;
 my @bits = $hex.parse-base(16).base(2).comb;
 # leading 0's matter!
 @bits.unshift(0) while @bits < $hex.chars * 4;
@@ -84,5 +86,12 @@ sub evaluate(@expr) {
 }
 
 my $tree = parse-packet(@bits);
-say "version sum=$versum";
+print "Version sum = " if $verbose;
+say $versum;
+if $verbose {
+  say "Expression:";
+  say $tree.raku.trans(«\$ , \"» »=>» '')
+                .subst(/'[' ( \d+ ) ']'/, { $0 }, :g);
+}
+print "Value = " if $verbose;
 say evaluate($tree);
