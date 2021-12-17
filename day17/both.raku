@@ -9,13 +9,14 @@ die "Unable to parse input" unless $y1;
 ($x0, $x1) = $x1, $x0 if $x1 < $x0;
 ($y0, $y1) = $y1, $y0 if $y1 < $y0;
 
-# smallest velocity that can possibly get us to the target
+# smallest horizontal velocity that can possibly get us to the target
+# (Largest is x1, which gets us there in one step.)
 my $min-vx = floor((sqrt(8*$x0+1)-1)/2);
 
-# max velocity that won't overshoot
+# largest vertical velocity that won't overshoot
 my $max-vy = -1-$y0;
 
-# max height we can reach while still hitting the target
+# maximum height we can reach (while still hitting the target)
 my $max-height = -Inf;
 
 my @solutions = gather for ($min-vx .. $x1) X ($y0 .. $max-vy) -> ($vx,$vy) {
