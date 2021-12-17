@@ -22,6 +22,8 @@ my $max-height = -Inf;
 
 my @solutions = gather for ($min-vx .. $x1) X ($y0 .. $max-vy) -> ($vx,$vy) {
   my ($dx,$dy,$x,$y) = $vx,$vy,0,0,0;
+
+  # max height reached on this trial - only remembered if the trial succeeds
   my $max-trial = -Inf;
   while $y >= $y0 {
     $x += $dx;
