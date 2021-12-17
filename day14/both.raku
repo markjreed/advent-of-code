@@ -3,13 +3,12 @@ my ($template, @rules) = slurp.split("\n", :skip-empty);
 
 # keep a count of both the individual elements and the pairs
 my %state;
-%state«elements» = {};
 for $template.comb -> $el {
-  %state«elements»{$el}++;
+  %state<elements>{$el}++;
 }
 
 for $template.comb.rotor(2=>-1)».join -> $pair {
-  %state«pairs»{$pair}++;
+  %state<pairs>{$pair}++;
 }
 
 # rules replace one pair with two different pairs and increment one element
@@ -24,9 +23,9 @@ sub step(%state) {
   my %new = %state».clone;
   for %rules.kv -> $from, ($el, *@to) {
     next unless my $count = %state«pairs»{$from};
-    %new«elements»{$el} += $count;
-    %new«pairs»{$from} -= $count;
-    %new«pairs»{$_} += $count for @to;
+    %new<elements>{$el} += $count;
+    %new<pairs>{$from} -= $count;
+    %new<pairs>{$_} += $count for @to;
   }
   return %new;
 }
@@ -34,7 +33,7 @@ sub step(%state) {
 # return the puzzle answer: difference between the occurrences of the most and
 # least frequent elements
 sub count(%state) {
-   [-] %state«elements».values.List.&{ .max, .min };
+   [-] %state<elements>.values.List.&{ .max, .min };
 }
 
 # Iterate the requested number of steps
