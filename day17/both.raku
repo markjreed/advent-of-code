@@ -15,7 +15,7 @@ my $min-vx = floor((sqrt(8*$x0+1)-1)/2);
 # max velocity that won't overshoot
 my $max-vy = -1-$y0;
 
-# max height we can reach
+# max height we can reach while still hitting the target
 my $max-height = -Inf;
 
 my @solutions = gather for ($min-vx .. $x1) X ($y0 .. $max-vy) -> ($vx,$vy) {
