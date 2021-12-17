@@ -13,9 +13,9 @@ die "Unable to parse input" unless $y1;
 # (largest is x1, which gets us there in one step)
 my $min-vx = floor((sqrt(8*$x0+1)-1)/2);
 
-# largest vertical velocity that won't overshoot
+# largest vertical velocity that can possibly get us there
 # (smallest is y0)
-my $max-vy = -1-$y0;
+my $max-vy = -1 - $y0;
 
 # maximum height we can reach (while still hitting the target)
 my $max-height = -Inf;
