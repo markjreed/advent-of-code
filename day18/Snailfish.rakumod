@@ -30,7 +30,7 @@ sub copy($n) is export {
 }
 
 
-sub explode-helper($n is rw, $level, $prev is rw, $next is rw, $pair is rw) is export {
+sub explode-helper($n is rw, $level, $prev is rw, $next is rw, $pair is rw) {
   if $n ~~ Numeric {
     if !$next {
       if $pair {
@@ -42,19 +42,27 @@ sub explode-helper($n is rw, $level, $prev is rw, $next is rw, $pair is rw) is e
     return $n;
   }
   if $level == 4 && !$pair {
-    if !$pair {
-      $pair = \($n);
-      return $n;
-    }
+    $pair = \($n);
+    return $n;
   }
-  return [explode-helper($n[0],$level+1,$prev,$next,$pair),
-          explode-helper($n[1],$level+1,$prev,$next,$pair)];
+  my $left = explode-helper($n[0],$level+1,$prev,$next,$pair);
+  my $right = explode-helper($n[1],$level+1,$prev,$next,$pair);
+  return [$left, $right];
 }
 
 sub split($n) is export {
-  given $n {
-    when Numeric { $n < 10 ?? $n !! [ floor($n/2), ceiling($n/2) ] }
-    default { [ split($n[0]), split($n[1]) ] }
+  my $done = False;
+  split-helper($n, $done);
+}
+
+sub split-helper($n, $done is rw) {
+  if $n ~~ Numeric && $n >= 10 && !$done {
+    $done = True;
+    return [ floor($n/2), ceiling($n/2) ];
+  } elsif $n ~~ Numeric || $done {
+    return $n;
+  } else  {
+    return [split-helper($n[0],$done), split-helper($n[1],$done)];
   }
 }
 
@@ -86,12 +94,19 @@ sub reduce($n is copy) is export {
       last if $n eqv $exploded;
       $n = $exploded;
     }
-    loop {
-      my $split = split $n;
-      last if $n eqv $split;
-      $n = $split;
-    }
+    my $split = split $n;
+    $n = $split;
   } while $n !eqv $was;
   return $n;
 }
 
+sub tree($n,$prefix='') is export {
+    if $n ~~ Numeric {
+      return "$prefix$n\n";
+    } else {
+      return tree($n[0],"$prefix/") ~ tree($n[1],"$prefix\\");
+    }
+}
+      
+
+   
