@@ -2,11 +2,17 @@
 use Snailfish;
 
 my $sum;
-for lines.map({ parse $_ }) -> $num {
+my @numbers = lines.map({ parse $_ });
+
+# Part 1:
+for @numbers -> $num {
   if !$sum.defined {
     $sum = $num;
   } else {
     $sum = add($sum, $num);
   }
 }
-say $sum;
+say magnitude $sum;
+
+# Part 2:
+say @numbers.combinations(2).map({.permutations.map({ magnitude(add(|$_)) }).max}).max;
