@@ -11,7 +11,7 @@ die "Unable to parse input" unless $y1;
 
 # smallest horizontal velocity that can possibly get us to the target
 # (largest is x1, which gets us there in one step)
-my $min-vx = floor((sqrt(8*$x0+1)-1)/2);
+my $min-vx = ceiling((sqrt(8*$x0+1)-1)/2);
 
 # largest vertical velocity that can possibly get us there
 # (smallest is y0)
