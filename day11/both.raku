@@ -32,6 +32,7 @@ loop (my $n=0; $new_flashes < $size; $n++) {
           if @grid[$ni][$nj] > 0 {
             @grid[$ni][$nj]++;
             if @grid[$ni][$nj] > 9 {
+              say "setting: $ni,$nj";
               $flashers.set: $ni +i*$nj;
             }
           }
