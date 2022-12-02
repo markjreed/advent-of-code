@@ -1,0 +1,50 @@
+Rock/Paper/Scissors (Roshambo) matchups, numerified
+
+"Rock, Paper, Scissors" is in losing order; that is, Rock loses to Paper loses
+to Scissors (loses to Rock). If we assign the shapes in that order to three
+consecutive integers and enumerate the possibilities, it's easy to see that the
+desired score is just 3 times the value (Human - Elf + 1) mod 3:
+
+Elf       Human     Winner  (Human - Elf + 1) % 3
+Rock      Rock      Tie     1
+Rock      Paper     Human   2
+Rock      Scissors  Elf     0
+
+Paper     Rock      Elf     0
+Paper     Paper     Tie     1
+Paper     Scissors  Human   2
+
+Scissors  Rock      Human   2
+Scissors  Paper     Elf     0
+Scissors  Scissors  Tie     1
+
+For the final score we also want to add 1 when the human player played rock, 2
+for paper, and 3 for scissors. So if we use 1 to 3 as our integer values for
+the shapes, then the score for a given matchup in part 1 is this:
+
+		Part1: E=Elf play (A=1,B=2,C=3), H=Human play (X=1,Y=2,Z=3): 
+		       Score = H + (H - E + 1) % 3 × 3
+
+In part two the human code is not a shape but a goal: the desired match result.
+We need to use the Elf's play and the goal to derive the human's play.
+If we enumerate the possibilities again, we can see that the desired shape
+is the one whose value is (Elf + Goal) mod 3 + 1:
+
+Elf          Goal      Play         (Elf + Goal) % 3 + 1
+Rock(1)      Lose(1)   Scissors(3)  3
+Rock(1)      Tie(2)    Rock(1)      1
+Rock(1)      Win(3)    Paper(2)     2
+
+Paper(2)     Lose(1)   Rock(1)      1
+Paper(2)     Tie(2)    Paper(2)     2
+Paper(2)     Win(3)    Scissors(3)  3
+
+Scissors(3)  Lose(1)   Paper(2)     2
+Scissors(3)  Tie(2)    Scissors(3)  3
+Scissors(3)  Win(3)    Rock(1)      1
+
+The match result is given to us directly with 0 for X, 3 for Y, and 6 for Z. 
+So if we keep the assignment of numeric values the same for consistency:
+
+		Part2: E=Elf play (A=1,B=2,C=3), H=Human goal (X=1,Y=2,Z=3): 
+		       Score = 3 × (H - 1) + (E + H) % 3 + 1
