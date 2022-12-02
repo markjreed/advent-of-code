@@ -12,11 +12,11 @@ my @keys = «A B C» X~ «X Y Z»;
 # play to get the final score.
 my %part1 = @keys Z=> (3 «*« ((-1 «*« (1..3 X- 1..3) »+» 1) »%» 3) Z+ |(1..3) xx 3);
 
-say "Part 1:{[+] $@rounds».&{%part1{$_}}}";
+say "Part 1:{[+] @rounds».&{%part1{$_}}}";
 
 # Matchup scores for part 2:
 # In this case the human part is the match result, so just mutiply by 3 to get that score.
 # Then derive the play, which is (elf + human) % 3 + 1
 my %part2 = @keys Z=> (|(3 «*«^3) xx 3  Z+  (1..3 X+ 1..3)  »%» 3 »+» 1);
 
-say "Part 2:{[+] $@rounds».&{%part2{$_}}}";
+say "Part 2:{[+] @rounds».&{%part2{$_}}}";
