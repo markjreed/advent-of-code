@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 # read the data; transforms it into strings of the form 'AY', 'BX', etc.
-my @rounds = $*ARGFILES.lines».&{ .words.join: ''};
+my @rounds = $*ARGFILES.lines».&{ .words.join };
 
 # Generate the list of potential matchups 'AX', 'AY'...'CY', 'CZ'
 my @keys = «A B C» X~ «X Y Z»;
