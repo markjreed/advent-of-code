@@ -16,7 +16,7 @@ say "Part 1:{[+] $@rounds».&{%part1{$_}}}";
 
 # Matchup scores for part 2:
 # In this case the human part is the match result; mutiply by 3 to get that score, then
-# derive the play, which is (elf + human + 2)%3+1 = 1 for rock, 2 for paper, 3 for scissors
-my %part2 = @keys Z=> (|(3 «*«^3) xx 3  Z+  ((0..2 X+ 0..2) »+» 2) »%» 3 »+» 1);
+# derive the play, which is (elf + human)%3+1 = play (1=rock, 2=paper, 3=scissors)
+my %part2 = @keys Z=> (|(3 «*«^3) xx 3  Z+  (1..3 X+ 1..3)  »%» 3 »+» 1);
 
 say "Part 2:{[+] $@rounds».&{%part2{$_}}}";
