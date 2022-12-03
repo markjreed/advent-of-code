@@ -2,7 +2,7 @@
 ;; Solve Advent of Code 2022 Day 3. https://adventofcode.com/2022/day/3
 ;;----------------------------------------------------------------------
 
-; %import byteset ; these are inline below so this file is self-contained
+; %import byteset ; inlined below so this file is self-contained
 %import diskio
 %import floats
 %import string
@@ -124,23 +124,29 @@ byteset {
 }
 
 lines {
-; abstraction around diskio.f_readline; returns pointer to line read
-; or nil on EOF/error.
-    const uword nil = $0000
-    ubyte[256] buffer
-    bool eof = false
+; abstraction around diskio.f_readline; returns pointer to line read,
+; nil on EOF
+  const uword nil = $0000
+  ubyte[256] buffer
+  bool eof = false
+  ubyte status
 
-    sub readline() -> uword {
-      if eof {
-        eof = false
-        return nil
-      }
-      diskio.f_readline(&buffer)
-      if c64.READST() & 64 {
-         eof = true
-      }
-      return &buffer
+  sub readline() -> uword {
+    if eof {
+      eof = false
+      return nil
     }
+    diskio.f_readline(&buffer)
+    status = c64.READST() 
+    if status & 64 {
+       eof = true
+    } else if status {
+      ; something else went wrong; caller
+      ; wll have to call READST to find out what
+      return nil
+    }
+    return &buffer;
+  }
 }
 
 ;; main entrypoint: solve AoC 2022 day 3
