@@ -9,6 +9,8 @@ augment class Str {
   }
 }
 
-say "Part 1: {[+] @lines».&{ |[∩](.&{.comb.batch(.chars div 2)».SetHash}).keys }».priority}";
+print "Part 1: "; say
+  [+] @lines».&{|[∩](.&{.comb.batch(.chars div 2)».SetHash}).keys}».priority;
 
-say "Part 2: {[+] @lines».&{.comb.SetHash}.batch(3).map({ |[(&)]($_).keys })».priority}";
+print "Part 2: "; say
+  [+] @lines».&{.comb.SetHash}.batch(3).map({ |[∩]($_).keys})».priority;
