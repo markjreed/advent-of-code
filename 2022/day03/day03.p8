@@ -127,7 +127,7 @@ main {
   uword result
   uword[3] sets
 
-  ; scoring rule: a-z are 1-26, A-Z are 27-52.
+  ; scoring rule: a-z are 1-26, A-Z are 27-52 - in ASCII, not PETSCII.
   sub get_priority(ubyte item) -> ubyte {
     ubyte priority = item & $1f
     if item < 96
