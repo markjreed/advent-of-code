@@ -5,7 +5,7 @@ my @lines = $*ARGFILES.lines;
 augment class Str {
   method priority { 
     my $o = self.ord;
-    $o % 32 + ($o < 97 ?? 26 !! 0);
+    $o +& 0x1f + ($o < 97 ?? 26 !! 0);
   }
 }
 
