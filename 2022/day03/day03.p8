@@ -96,6 +96,7 @@ byteset {
     }
   }
 }
+
 main {
   const ubyte disk_drive = 8
   uword left
@@ -103,6 +104,7 @@ main {
   uword result
   uword[3] sets
 
+  ; scoring rule: a-z are 1-26, A-Z are 27-52.
   sub get_priority(ubyte item) -> ubyte {
     ubyte priority = item & $1f
     if item < 96
@@ -110,6 +112,7 @@ main {
     return priority
   }
 
+  ; Part 1: find intersection of left and right halves of line
   sub intersect2(str line) -> ubyte {
     ubyte i
     ubyte half = string.length(line) / 2
@@ -131,6 +134,7 @@ main {
     return retval
   }
 
+  ; For part 2, convert a line into a set of its characters
   sub line2set(str line, uword set) {
     ubyte i
     bool first = true
@@ -140,6 +144,8 @@ main {
     }
   }
 
+  ; Part 2: find intersection of group of three lines 
+  ; (which have already been converted to sets)
   sub intersect3(uword set1, uword set2, uword set3) -> ubyte {
     ubyte i
     byteset.intersect(set1, set2, result)
@@ -151,6 +157,7 @@ main {
     }
   }
 
+  ; main
   sub start() {
     bool ok
     bool done
@@ -164,15 +171,18 @@ main {
     uword priority
     float fpriority
 
+    ; allocate our sets
     left = byteset.new()
     right = byteset.new()
     result = byteset.new()
-
     for i in 0 to 2 {
       sets[i] = byteset.new()
     }
 
+    ; loop forever so we can process multiple files
     repeat {
+
+      ; get filename and open
       ok = false
       while not ok {
         txt.nl()
@@ -191,22 +201,28 @@ main {
         }
       }
 
+      ; initialize our counters
       part1_total = 0
       part2_total = 0
-      done = false
       line_count = 0
 
+      done = false
       while not done {
         line = unixfile.read_line()
         if line == unixfile.nil {
           done = true
-        } else if string.length(line)>0 {
+        } else if string.length(line) > 0 {
           pos = (line_count % 3) as ubyte
           line_count += 1
+
+          ; calculate and add score for part 1
           priority = get_priority(intersect2(line)) as uword
           fpriority = priority as float
           part1_total += fpriority
+
+          ; add this to the current group of lines
           line2set(line, sets[pos])
+          ; and if it's the third one, calculate and add score for part 2
           if pos == 2 {
             priority=get_priority(intersect3(sets[0],sets[1],sets[2])) as uword
             fpriority = priority as float
@@ -215,6 +231,8 @@ main {
         }
       }
       diskio.f_close()
+
+      ; report results
       txt.print("read ")
       txt.print_uw(line_count)
       txt.print(" lines")
