@@ -1,10 +1,34 @@
 %import diskio
-%import floats
 %import string
 %import syslib
 %import textio
-%import unixfile
 %zeropage basicsafe
+
+lines {
+; abstraction around diskio.f_readline; returns pointer to line read,
+; nil on EOF
+  const uword nil = $0000
+  ubyte[256] buffer
+  bool eof = false
+  ubyte status
+
+  sub readline() -> uword {
+    if eof {
+      eof = false
+      return nil
+    }
+    diskio.f_readline(&buffer)
+    status = c64.READST() 
+    if status & 64 {
+       eof = true
+    } else if status {
+      ; something else went wrong; caller
+      ; wll have to call READST to find out what
+      return nil
+    }
+    return &buffer;
+  }
+}
 
 main {
 
@@ -24,10 +48,8 @@ main {
     ubyte[80] filename
     uword line
     uword line_count = 0
-    ubyte bscore
-    float fscore
-    float part1_total
-    float part2_total
+    uword part1_total
+    uword part2_total
     ubyte human
     ubyte elf
 
@@ -56,19 +78,16 @@ main {
       line_count = 0
 
       while not done {
-        line = unixfile.read_line()
-        if line == unixfile.nil {
+        line = lines.readline()
+        if line == lines.nil {
           done = true
         } else {
           line_count += 1
           if line[0] >= 'a' and line[0] <= 'c' {
             elf = line[0] - 'a'
             human = line[2] - 'x'
-            bscore = part1(elf, human)
-            fscore = bscore as uword as float
-            part1_total += fscore
-            fscore = part2(elf, human) as uword as float
-            part2_total += fscore
+            part1_total += part1(elf, human)
+            part2_total += part2(elf, human)
           }
         }
       }
@@ -78,10 +97,10 @@ main {
       txt.print(" lines")
       txt.nl()
       txt.print("part1 total:")
-      floats.print_f(part1_total)
+      txt.print_uw(part1_total)
       txt.nl()
       txt.print("part2 total:")
-      floats.print_f(part2_total)
+      txt.print_uw(part2_total)
       txt.nl()
       txt.nl()
     }
