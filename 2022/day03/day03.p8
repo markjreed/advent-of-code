@@ -1,4 +1,8 @@
-; %import byteset ; included inline below so this file is self-contained
+;;======================================================================
+;; Solve Advent of Code 2022 Day 3. https://adventofcode.com/2022/day/3
+;;----------------------------------------------------------------------
+
+; %import byteset ; these are inline below so this file is self-contained
 ; %import unixfile
 %import diskio
 %import floats
@@ -121,10 +125,10 @@ byteset {
 }
 
 unixfile {
-  ; simple linewise interface to a file with UNIX line endings
+  ; simple linewise interface to a file with UNIX line endings.
   ; uses diskio.f_read, so just open the file with diskio.f_open 
   ; and then call unixfile.read_line() to get the next line.
-  ; returns a pointer to the nul-terminated line with no linefeed,
+  ; returns a pointer to the NUL-terminated line with no linefeed,
   ; nil on EOF.
 
   const uword nil = $0000
@@ -176,6 +180,9 @@ unixfile {
     return &buffer + lines[cur_line-1]
   }
 }
+
+;; main entrypoint: solve AoC 2022 day 3
+
 main {
   const ubyte disk_drive = 8
   uword left
