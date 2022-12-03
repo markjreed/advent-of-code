@@ -7,6 +7,21 @@
 %import unixfile
 %zeropage basicsafe
 
+; implements a set containing one-byte values.
+; interface:
+;    myset = byteset.new()        ; create a new, empty set
+;    byteset.free(myset)          ; free a set so memory can be reused
+;    byteset.empty(myset)         ; empty an existing set
+;    byteset.set(myset, value)    ; add an item
+;    byteset.unset(myset, value)  ; remove an item
+;    byteset.is_set(myset, value) ; check presence of an item
+; 
+;    For binary operations, have to create the result set ahead of time:
+;
+;    byteset.intersection(set1, set2, result)
+;    byteset.union(set1, set2, result)
+;    byteset.difference(set1, set2, result)
+;
 byteset {
   const uword nil = $0000
   const uword set_size = 32
@@ -93,6 +108,14 @@ byteset {
     ubyte i
     for i in 0 to set_size-1 {
       @(result + i) = @(left + i) | @(right + i)
+    }
+  }
+
+  ; return the difference of two sets in the provided result set
+  sub difference(uword left, uword right, uword result) {
+    ubyte i
+    for i in 0 to set_size-1 {
+      @(result + i) = @(left + i) & ~@(right + i)
     }
   }
 }
