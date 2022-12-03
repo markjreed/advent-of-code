@@ -4,7 +4,6 @@
 
 ; %import byteset ; inlined below so this file is self-contained
 %import diskio
-%import floats
 %import string
 %import syslib
 %import textio
@@ -218,12 +217,10 @@ main {
     ubyte[80] filename
     uword line
     uword line_count = 0
-    float part1_total
-    float part2_total
+    uword part1_total
+    uword part2_total
     ubyte pos
     ubyte i
-    uword priority
-    float fpriority
 
     ; allocate our sets
     left = byteset.new()
@@ -270,17 +267,13 @@ main {
           line_count += 1
 
           ; calculate and add score for part 1
-          priority = get_priority(intersect2(line)) as uword
-          fpriority = priority as float
-          part1_total += fpriority
+          part1_total += get_priority(intersect2(line))
 
           ; add this to the current group of lines
           line2set(line, sets[pos])
           ; and if it's the third one, calculate and add score for part 2
           if pos == 2 {
-            priority=get_priority(intersect3(sets[0],sets[1],sets[2])) as uword
-            fpriority = priority as float
-            part2_total += fpriority
+            part2_total += get_priority(intersect3(sets[0],sets[1],sets[2]))
           }
         }
       }
@@ -292,10 +285,10 @@ main {
       txt.print(" lines")
       txt.nl()
       txt.print("part1 total:")
-      floats.print_f(part1_total)
+      txt.print_uw(part1_total)
       txt.nl()
       txt.print("part2 total:")
-      floats.print_f(part2_total)
+      txt.print_uw(part2_total)
       txt.nl()
       txt.nl()
     }
