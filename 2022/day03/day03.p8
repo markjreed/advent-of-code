@@ -1,10 +1,10 @@
 ; %import byteset ; included inline below so this file is self-contained
+; %import unixfile
 %import diskio
 %import floats
 %import string
 %import syslib
 %import textio
-%import unixfile
 %zeropage basicsafe
 
 byteset {
@@ -120,6 +120,62 @@ byteset {
   }
 }
 
+unixfile {
+  ; simple linewise interface to a file with UNIX line endings
+  ; uses diskio.f_read, so just open the file with diskio.f_open 
+  ; and then call unixfile.read_line() to get the next line.
+  ; returns a pointer to the nul-terminated line with no linefeed,
+  ; nil on EOF.
+
+  const uword nil = $0000
+  ubyte[256] buffer
+  bool eof = false
+  ubyte buf_size = 0
+  ubyte num_lines = 0
+  ubyte cur_line = 0
+  ubyte last_line = 0
+  ubyte[256] lines
+  ubyte last_line_len
+
+  sub read_line() -> uword {
+    ubyte i
+
+    if eof  {
+      eof = false
+      buf_size = 0
+      num_lines = 0
+      cur_line = 0
+      last_line = 0
+      return nil
+    }
+
+    if lines[cur_line] == last_line {
+      last_line_len = buf_size - last_line
+      for i in 0 to last_line_len-1 {
+        buffer[i] = buffer[i+last_line]
+      }
+      buf_size = diskio.f_read(&buffer+last_line_len, 255-last_line_len) as ubyte
+      if buf_size == 0 {
+        eof = true
+      }
+      buf_size += last_line_len
+      lines[0] = 0
+      num_lines = 1
+      for i in 0 to buf_size {
+        if buffer[i] == 10 {
+          buffer[i] = 0
+          last_line = i+1
+          lines[num_lines] = i+1
+          num_lines = num_lines + 1
+        }
+      }
+      buffer[buf_size]=0
+      cur_line = 0
+    }
+    cur_line = cur_line + 1
+    return &buffer + lines[cur_line-1]
+  }
+}
 main {
   const ubyte disk_drive = 8
   uword left
