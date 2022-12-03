@@ -6,6 +6,9 @@
 %zeropage basicsafe
 
 main {
+
+  ; Custom plumbing for linewise read on input files with ; UNIX line endings
+  ; (LF instead of CR).  Probably worth putting into its own module.
   const uword nil = $0000
   ubyte[256] buffer
   bool eof = false
