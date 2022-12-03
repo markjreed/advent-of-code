@@ -7,6 +7,7 @@
 %import unixfile
 %zeropage basicsafe
 
+byteset {
 ; implements a set containing one-byte values.
 ; interface:
 ;    myset = byteset.new()        ; create a new, empty set
@@ -22,7 +23,6 @@
 ;    byteset.union(set1, set2, result)
 ;    byteset.difference(set1, set2, result)
 ;
-byteset {
   const uword nil = $0000
   const uword set_size = 32
   const uword node_size = set_size + 2
