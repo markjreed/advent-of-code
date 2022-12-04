@@ -6,8 +6,9 @@ sub priority($s) {
   $s.ord +& 0x1f + 26 * ($s lt 'a');
 }
 
-print "Part 1: "; say
-  [+] @lines».&{|[∩](.&{.comb.batch(.chars div 2)».SetHash}).keys}».&{priority $_}
+my @part1 = @lines».&{|[∩](.&{.comb.batch(.chars div 2)».SetHash}).keys};
+my @part2 = @lines».&{.comb.SetHash}.batch(3).map({ |[∩]($_).keys});
 
-print "Part 2: "; say
-  [+] @lines».&{.comb.SetHash}.batch(3).map({ |[∩]($_).keys})».&{priority $_};
+say "Part 1: { [+] @part1».&{priority $_} }";
+say "Part 2: { [+] @part2».&{priority $_} }";
+
