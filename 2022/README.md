@@ -9,4 +9,4 @@ X-16](https://commanderx16.com), along with another language for that platform,
 I usually toss in a [Python](https://python.org) solution, too, for comparison
 with the many other folks solving in that language.
 
-Days: [1](day01) [2](day02) [3](day03) [4](day04]
+Days: [1](day01) [2](day02) [3](day03) [4](day04)
