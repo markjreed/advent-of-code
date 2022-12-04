@@ -20,7 +20,7 @@ with (open(sys.argv[1]) if len(sys.argv) > 1 else sys.stdin) as source:
         # part 2
         group.append(set(line[:-1]))
         if len(group) == 3:
-            common = list(reduce(lambda s1,s2: s1.intersection(s2), group))[0]
+            common = list(reduce(lambda s1, s2: s1.intersection(s2), group))[0]
             part2 += priority(common)
             group = []
 
