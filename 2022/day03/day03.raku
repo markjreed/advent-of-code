@@ -1,16 +1,13 @@
 #!/usr/bin/env raku
-use MONKEY-TYPING;
 my @lines = $*ARGFILES.lines;
 
-augment class Str {
-  method priority { 
-    my $o = self.ord;
-    $o +& 0x1f + ($o < 97 ?? 26 !! 0);
-  }
+# get the "priority" of an item: a-z are 1-26, A-Z 27-52
+sub priority($s) {
+  $s.ord +& 0x1f + 26 * ($s lt 'a');
 }
 
 print "Part 1: "; say
-  [+] @lines».&{|[∩](.&{.comb.batch(.chars div 2)».SetHash}).keys}».priority;
+  [+] @lines».&{|[∩](.&{.comb.batch(.chars div 2)».SetHash}).keys}».&{priority $_}
 
 print "Part 2: "; say
-  [+] @lines».&{.comb.SetHash}.batch(3).map({ |[∩]($_).keys})».priority;
+  [+] @lines».&{.comb.SetHash}.batch(3).map({ |[∩]($_).keys})».&{priority $_};
