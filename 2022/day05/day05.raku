@@ -1,28 +1,38 @@
 #!/usr/bin/env raku
-my @data = $*ARGFILES.lines;
+
+# Read the input
+my @lines = $*ARGFILES.lines;
 
 # Find the line containing the stack numbers
-my $labels = @data.first({/\d/},:k);
+my ($label-pos, @labels) = @lines.first({/\d/},:kv)».&{|.words};
 
-# Everything above that is a picture of the starting config
-my @pic = @data.head($labels);
+# Everything above that is a picture of the starting config;
+# parse out just the crate identifier letters
+my @picture = @lines.head($label-pos)».&{.comb[1,5...*]};
 
-# Parse the picture into a usable form
-my @start = [Z](@pic».&{.comb[1,5...*]})».grep(* ne ' ')».Array;
+# And everything below that (after a blank line) is move instructions;
+# parse into a list of parameters for each move (count, source, and destination)
+my @moves = @lines.tail(*-$label-pos-2)».&{.words[1,3...*]}
 
-for 1..2 -> $part {
-  # begin sim with copy of starting configuration
-  my %stacks = @data[$labels].words Z=> @start».clone;
+# Transpose the picture into an array of stacks
+my @start = [Z](@picture)».grep(* ne ' ')».Array;
+
+# Run the simulation twice, once for each part of the puzzle
+for ^2 -> $part {
+  # begin with a copy of the starting configuration
+  my %stacks = @labels Z=> @start».clone;
 
   # perform the moves
-  for @data.tail(*-($labels+2)) {
-    die "Illegal move '$_'" 
-      unless /move \s+ (\d+) \s+ from \s+ (\d+) \s+ to \s+ (\d+)/;
-    if $part == 1 {
-      %stacks{$2}.unshift: %stacks{$1}.shift for ^$0;
+  for @moves -> ($count, $from, $to) {
+    if !$part {
+      # part 1: shift one crate at a time
+      %stacks{$to}.unshift: %stacks{$from}.shift for ^$count;
     } else {
-      %stacks{$2}.unshift: |%stacks{$1}.splice(0, +$0);
+      # part 2: shift N crates at a time
+      %stacks{$to}.unshift: |%stacks{$from}.splice(0, +$count);
     }
   }
-  say "Part $part:{%stacks.sort».value»[0].join}";
+
+  # Print the result
+  say "Part {$part+1}:{%stacks.sort».value»[0].join}";
 }
