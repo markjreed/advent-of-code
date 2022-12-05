@@ -24,5 +24,5 @@ for 1..2 -> $part {
       %stacks{$2}.unshift: |%stacks{$1}.splice(0, +$0);
     }
   }
-  say "Part $part:{%stacks.sort».value»[0]».trans(«[ ]» X=> '').join}";
+  say "Part $part:{%stacks.sort».value»[0].join}";
 }
