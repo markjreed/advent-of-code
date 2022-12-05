@@ -34,5 +34,5 @@ for ^2 -> $part {
   }
 
   # Print the result
-  say "Part {$part+1}:{%stacks.sort».value»[0].join}";
+  say "Part {$part+1}: {%stacks.sort».value»[0].join}";
 }
