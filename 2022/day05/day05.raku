@@ -11,7 +11,7 @@ my ($label-pos, @labels) = @lines.first({/\d/},:kv)».&{|.words};
 my @picture = @lines.head($label-pos)».&{.comb[1,5...*]};
 
 # And everything below that (after a blank line) is move instructions;
-# parse into a list of parameters for each move (count, source, and destination)
+# parse each into a list of parameters (count, source, and destination)
 my @moves = @lines.tail(*-$label-pos-2)».&{.words[1,3...*]}
 
 # Transpose the picture into an array of stacks
