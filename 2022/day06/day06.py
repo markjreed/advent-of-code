@@ -10,5 +10,8 @@ with (open(sys.argv[1]) if len(sys.argv) > 1 else sys.stdin) as source:
             size = 4 + part * 10
             for i in range(size,len(data)):
                 if len(set(data[i-size:i])) == size:
-                    print(f'Part {part+1}: {i}')
+                    if part:
+                        print('\t',end='')
+                    print(f'Part {part+1}: {i}',end='')
                     break
+        print()
