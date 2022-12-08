@@ -1,5 +1,4 @@
 #!/usr/bin/env raku
-use JSON::Fast;
 my @map = $*ARGFILES.lines».&{.comb.Array};
 
 my $height = +@map;
