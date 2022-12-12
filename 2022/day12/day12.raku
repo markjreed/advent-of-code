@@ -1,5 +1,4 @@
 #!/usr/bin/env raku
-use JSON::Fast;
 my @map = $*ARGFILES.lines».&{.comb.Array};
 
 sub elevation($letter) {
@@ -9,7 +8,7 @@ sub elevation($letter) {
 my ($start, @alternates, $end, %edges, @vertices);
 for @map.kv -> $i, @row {
   for @row.kv -> $j, $letter {
-    my $coords = $i + i*$j;
+    my $coords = ~($i + i*$j);
     if $letter eq 'S' {
       $start = ~$coords;
     } elsif $letter eq 'E' {
@@ -34,34 +33,21 @@ for @map.kv -> $i, @row {
   }
 }
 
-sub dijkstra($start, $end) {
-  my $unvisited = SetHash.new(@vertices);
-  my %distance = @vertices »=>» ∞;
-  %distance{$start} = 0;
-  my $curr = $start;
-  while $end ∊ $unvisited {
-    my $distance = %distance{$curr};
-    for @(%edges{$curr}) -> $neighbor {
-      next unless $neighbor;
-      my $old = %distance{$neighbor};
-      my $new = min($old, $distance + 1);
-      %distance{$neighbor} = $new;
+for ^2 -> $part {
+  my @start = $part ?? [$start,|@alternates] !! [$start];
+  my $heads = SetHash.new(@start);
+  my $distance = 0;
+  while $end ∉ $heads {
+    $distance++;
+    my $new = $heads.clone;
+    for $heads.keys -> $node {
+      next unless $node ~~ Str;
+      for @(%edges{$node}) -> $neighbor {
+        next unless $neighbor ~~ Str;
+        $new.set($neighbor);
+      }
     }
-    $unvisited.unset($curr);
-    if $unvisited {
-      $curr = $unvisited.keys.min: { %distance{$_} };
-    }
+    $heads = $new;
   }
-  return %distance{$end};
+  say "Part {$part+1}: $distance";
 }
-my $min = dijkstra($start, $end);
-say "Part 1: $min";
-my $count = +@alternates;
-say "There are {$count+1} possible starting locations for part 2.";
-for @alternates.kv -> $i, $alt {
-  printf "\%0{$count.chars}d/%d\r", $i+2, $count+1;
-  my $dist = dijkstra($alt, $end);
-  $min = min($min, $dist);
-}
-print "\n";
-say "Part 2: $min";
