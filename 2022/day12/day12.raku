@@ -16,14 +16,14 @@ for @map.kv -> $i, @row {
     } elsif $letter eq 'a' {
       @alternates.push: $coords
     }
-    my $elevation = elevation($letter);
+    my $level = elevation($letter);
     for (-1,0),(0,1),(1,0),(0,-1) -> ($di, $dj) {
       my $ni = $i + $di;
       if 0 <= $ni < @map {
         my $nj = $j+$dj;
         if 0 <= $nj < @map[$ni] {
-          my $nelevation = elevation(@map[$ni][$nj]);
-          if $nelevation <= $elevation + 1 {
+          my $nlevel = elevation(@map[$ni][$nj]);
+          if $nlevel <= $level + 1 {
              %edges{$coords}.push: ~($ni + i*$nj);
           }
         }
@@ -38,15 +38,11 @@ for ^2 -> $part {
   my $distance = 0;
   while $end ∉ $heads {
     $distance++;
-    my $new = $heads.clone;
-    for $heads.keys -> $node {
-      next unless $node ~~ Str;
-      for @(%edges{$node}) -> $neighbor {
-        next unless $neighbor ~~ Str;
-        $new.set($neighbor);
+    for [$heads.keys] -> $node {
+      for @(%edges{$node}//[]) -> $neighbor {
+        $heads.set($neighbor);
       }
     }
-    $heads = $new;
   }
   say "Part {$part+1}: $distance";
 }
