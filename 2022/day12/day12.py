@@ -43,10 +43,8 @@ for part in range(2):
     distance = 0;
     while not end in heads:
         distance += 1
-        new_heads = heads.copy()
-        for node in heads:
+        for node in list(heads):
             for neighbor in edges[node]:
-                new_heads.add(neighbor)
-        heads = new_heads
+                heads.add(neighbor)
 
     print(f'Part {part+1}: {distance}')
