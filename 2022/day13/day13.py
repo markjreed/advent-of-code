@@ -15,7 +15,7 @@ def compare(left, right):
             return 1
         else:
             return -1
-    
+
     if isinstance(left, list) and isinstance(right, list):
         if len(left) == 0 and len(right) > 0:
             return -1
@@ -23,14 +23,14 @@ def compare(left, right):
             return 1
         elif len(left) == 0:
             return 0
-    
+
         if result := compare(left[0], right[0]):
             return result
         return compare(left[1:], right[1:])
-    
+
     if isinstance(left, int) and isinstance(right, list):
         return compare([left], right)
-    
+
     if isinstance(left, list) and isinstance(right, int):
         return compare(left, [right])
 
@@ -44,8 +44,8 @@ for index, (left, right) in enumerate(pairs):
 
 print(f'Part 1: {total}')
 dividers = [ [[2]], [[6]] ]
-packets = sorted([p for pair in pairs for p in pair] + dividers, 
+packets = sorted([p for pair in pairs for p in pair] + dividers,
                  key=cmp_to_key(compare))
-part2 = reduce(lambda a,b: a*b, 
+part2 = reduce(lambda a,b: a*b,
                map(lambda p: packets.index(p)+1, dividers))
 print(f'Part 2: {part2}')
