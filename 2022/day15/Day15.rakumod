@@ -15,18 +15,6 @@ sub manhattan($x1,$y1,$x2,$y2) is export {
   return abs($x2-$x1)+abs($y2-$y1);
 }
 
-# return a set of all points a given Manhattan distance from a center
-sub fence($x0,$y0,$dist) is export {
-  my $set = SetHash.new;
-  for -$dist .. +$dist -> $dy {
-    my $y = $y0 + $dy;
-    my $left = $dist - abs($dy);
-    $set.set($x0-$left+i*$y);
-    $set.set($x0+$left+i*$y);
-  }
-  return $set;
-}
-
 # calculate the min and max x coordinates that, at a given y coordinate,
 # are within a given Manhattan distance away from a central point
 sub x-range($x,$y,$dist,$y-query) is export {
