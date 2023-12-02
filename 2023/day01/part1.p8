@@ -19,6 +19,19 @@ main {
     byte first
     byte last
 
+    sub ti() -> float {
+        ubyte a
+        ubyte x
+        ubyte y
+        %asm{{
+            jsr cbm.RDTIM
+            sta p8_a
+            stx p8_x
+            sty p8_y
+        }}
+        return (a as float) + 256 * (x as float + 256 * (y as float))
+    }
+
     sub read_line() -> uword {
         uword lineptr
 
@@ -86,6 +99,8 @@ main {
            line = read_line()
         }
         txt.print_uw(total)
+        txt.nl()
+        floats.print_f(ti())
         txt.nl()
     }
 }

@@ -1,0 +1,5 @@
+*.prg
+*.asm
+*.vice-mon-list
+*.out
+*.seq
