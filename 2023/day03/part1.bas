@@ -1,0 +1,112 @@
+GETFILE:
+  PRINT "CHOOSE INPUT FILE ([1]=SAMPLE.SEQ [2]=INPUT.SEQ):";
+GETKEY:
+  GET KEY$: IF KEY$="" THEN GETKEY
+  IF KEY$<>"1" AND KEY$<>"2" AND KEY$<>"S" AND KEY$<>"I" AND KEY$<>"Q" THEN GETKEY
+  IF KEY$="Q" THEN PRINT "QUIT": END
+  IF KEY$="1" OR KEY$="S" THEN FILE$="SAMPLE.SEQ":GOTO GOTFILE
+  FILE$="INPUT.SEQ"
+GOTFILE:
+  PRINT FILE$
+  OPEN 1,8,2,FILE$
+  OPEN 15,8,15:INPUT#15,DS,DS$,T,S:CLOSE 15
+  IF DS THEN CLOSE 1:PRINT DS$:GOTO GETFILE
+
+START:
+  DIM LINE$(1),COUNTED$(1):CUR=0
+  TOTAL = 0
+  FOR EOF=0 TO 1 STEP 0
+     LINPUT#1, LINE$(CUR)
+     PREV = 1 - CUR
+     REM HAVEN'T COUNTED ANY OF THIS YET
+     COUNTED$(CUR) = RPT$(0, LEN(LINE$(CUR))
+     FOR I=1 TO LEN(LINE$(CUR))
+         CHAR$=MID$(LINE$(CUR),I,1)
+         IF CHAR$="." OR (CHAR$ >= "0" AND CHAR$ <= "9") THEN CONTINUE
+         REM FOUND A PART
+         DO_VERTICAL = LEN(LINE$(PREV)) > 0
+         FOR DX = -1 TO 1
+            NI = I + DX
+            IF NI < 1 OR NI > LEN(LINE$(CUR)) THEN NEXT.NEIGHBOR
+            FOR DY=DO_VERTICAL TO 0
+                IF NOT (DX OR DY) THEN NEXT.NEIGHBOR
+                LINE = CUR + DY
+                IF MID$(COUNTED$(LINE), NI, 1) THEN NEXT.NEIGHBOR
+                DIGIT$ = MID$(LINE$(LINE), NI, 1)
+                IF DIGIT$ < "0" OR DIGIT$ > "9" THEN NEXT.NEIGHBOR
+                REM FOUND A DIGIT
+                LEFT = NI
+                RIGHT = NI
+                FIRST = 0
+                LAST = 0
+                FOR DONE = 0 TO 1 STEP 0
+-----
+                    IF LEFT < 1 THEN FIRST = NI
+                  
+                    IF MID$(LINE$(LINE), AT
+
+                
+
+                   D$=MID$(L$(L+DY),NI,1)
+
+
+
+         IF LEN(L$(1-L)) 
+         IF C$<"0" AND C$<="9"
+  DIM G(139,139)
+  RED = 12 : GREEN = 13 : BLUE = 14
+  TOTAL = 0
+  FOR EOF=0 TO 1 STEP 0
+    LINPUT#1, LI$
+    EOF = (ST AND 64) / 64
+    GAME = GAME + 1
+    OK = 1
+    GOSUB INITLINE
+GETPLAY:
+    GOSUB READPLAY
+    REM PRINT "GAME"GAME":R="R",G="G",B="B
+    IF R < 0 THEN DONE
+    IF R > RED OR G > GREEN OR B > BLUE THEN OK=0: GOTO NEXTLINE
+    GOTO GETPLAY
+DONE:
+    IF OK THEN TOTAL = TOTAL + GAME
+NEXTLINE:
+  NEXT EOF
+
+  PRINT TOTAL
+  PRINT TI
+  END
+
+INITLINE:
+  LI$ = LI$ + ";"
+  INDEX = 1
+SKIP:
+  CH$ = MID$(LI$,INDEX,1)
+  INDEX = INDEX + 1
+  IF CH$<>":" THEN SKIP
+  RETURN
+
+READPLAY:
+  R = -1
+  G = 0 : B = 0
+  TALLY = 0
+
+PARSE:
+  IF INDEX > LEN(LI$) THEN RETURN
+  CH$ = MID$(LI$, INDEX, 1)
+  INDEX = INDEX + 1
+  IF CH$ = ";" THEN RETURN
+  IF R=-1 THEN R=0
+  IF CH$ = " " THEN PARSE
+  IF CH$ >= "0" AND CH$ <= "9" THEN TALLY = TALLY * 10 + VAL(CH$):GOTO PARSE
+  IF CH$ = "B" THEN B=TALLY:TALLY=0: GOTO WORD
+  IF CH$ = "G" THEN G=TALLY:TALLY=0: GOTO WORD
+  IF CH$ = "R" THEN R=TALLY:TALLY=0: GOTO WORD
+  PRINT "ERROR PARSING GAME"GAME
+  END
+WORD:
+  CH$ = MID$(LI$, INDEX, 1)
+  INDEX = INDEX + 1
+  IF CH$<>"," AND CH$<>";" THEN WORD
+  IF CH$=";" THEN RETURN
+  GOTO PARSE
