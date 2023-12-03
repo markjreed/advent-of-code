@@ -13,100 +13,58 @@ GOTFILE:
   IF DS THEN CLOSE 1:PRINT DS$:GOTO GETFILE
 
 START:
-  DIM LINE$(1),COUNTED$(1):CUR=0
+  DIM ROW$(1),COUNTED$(1):CUR=0
   TOTAL = 0
   FOR EOF=0 TO 1 STEP 0
-     LINPUT#1, LINE$(CUR)
-     PREV = 1 - CUR
-     REM HAVEN'T COUNTED ANY OF THIS YET
-     COUNTED$(CUR) = RPT$(0, LEN(LINE$(CUR))
-     FOR I=1 TO LEN(LINE$(CUR))
-         CHAR$=MID$(LINE$(CUR),I,1)
-         IF CHAR$="." OR (CHAR$ >= "0" AND CHAR$ <= "9") THEN CONTINUE
-         REM FOUND A PART
-         DO_VERTICAL = LEN(LINE$(PREV)) > 0
-         FOR DX = -1 TO 1
-            NI = I + DX
-            IF NI < 1 OR NI > LEN(LINE$(CUR)) THEN NEXT.NEIGHBOR
-            FOR DY=DO_VERTICAL TO 0
-                IF NOT (DX OR DY) THEN NEXT.NEIGHBOR
-                LINE = CUR + DY
-                IF MID$(COUNTED$(LINE), NI, 1) THEN NEXT.NEIGHBOR
-                DIGIT$ = MID$(LINE$(LINE), NI, 1)
-                IF DIGIT$ < "0" OR DIGIT$ > "9" THEN NEXT.NEIGHBOR
-                REM FOUND A DIGIT
-                LEFT = NI
-                RIGHT = NI
-                FIRST = 0
-                LAST = 0
-                FOR DONE = 0 TO 1 STEP 0
------
-                    IF LEFT < 1 THEN FIRST = NI
-                  
-                    IF MID$(LINE$(LINE), AT
-
-                
-
-                   D$=MID$(L$(L+DY),NI,1)
-
-
-
-         IF LEN(L$(1-L)) 
-         IF C$<"0" AND C$<="9"
-  DIM G(139,139)
-  RED = 12 : GREEN = 13 : BLUE = 14
-  TOTAL = 0
-  FOR EOF=0 TO 1 STEP 0
-    LINPUT#1, LI$
+    LINPUT#1, ROW$(CUR)
     EOF = (ST AND 64) / 64
-    GAME = GAME + 1
-    OK = 1
-    GOSUB INITLINE
-GETPLAY:
-    GOSUB READPLAY
-    REM PRINT "GAME"GAME":R="R",G="G",B="B
-    IF R < 0 THEN DONE
-    IF R > RED OR G > GREEN OR B > BLUE THEN OK=0: GOTO NEXTLINE
-    GOTO GETPLAY
-DONE:
-    IF OK THEN TOTAL = TOTAL + GAME
-NEXTLINE:
+    PREV = 1 - CUR
+    REM HAVEN'T COUNTED ANY OF THIS YET
+    COUNTED$(CUR) = RPT$(0, LEN(ROW$(CUR)))
+    FOR I=1 TO LEN(ROW$(CUR))
+      CH$=MID$(ROW$(CUR),I,1)
+      IF CH$="." OR (CH$ >= "0" AND CH$ <= "9") THEN NEXT.CHAR
+      REM FOUND A PART
+      DO.VERTICAL = LEN(ROW$(PREV)) > 0
+      FOR DX = -1 TO 1
+        NI = I + DX
+        IF NI < 1 OR NI > LEN(ROW$(CUR)) THEN NEXT.NEIGHBOR
+        FOR DY=DO.VERTICAL TO 0
+          IF NOT (DX OR DY) THEN NEXT.NEIGHBOR
+          ROW = CUR + DY
+          IF MID$(COUNTED$(ROW), NI, 1) THEN NEXT.NEIGHBOR
+          DIGIT$ = MID$(ROW$(ROW), NI, 1)
+          IF DIGIT$ < "0" OR DIGIT$ > "9" THEN NEXT.NEIGHBOR
+          REM FOUND A DIGIT
+          LEFT = NI
+          RIGHT = NI
+          FIRST = 0
+          LAST = 0
+          FOR DONE = 0 TO 1 STEP 0
+            IF FIRST THEN DO.RIGHT
+            IF LEFT=1 THEN FIRST=LEFT: GOTO DO.RIGHT
+            DIGIT$ = MID$(ROW$(ROW), LEFT-1, 1)
+            IF DIGIT$ < "0" OR DIGIT$ > "9" THEN FIRST=LEFT:GOTO DO.RIGHT
+            LEFT = LEFT - 1
+DO.RIGHT:
+            IF LAST THEN NEXT.SCAN
+            IF RIGHT=LEN(ROW$(ROW)) THEN LAST=RIGHT: GOTO NEXT.SCAN
+            DIGIT$ = MID$(ROW$(ROW), RIGHT+1, 1)
+            IF DIGIT$ < "0" OR DIGIT$ > "9" THEN LAST=RIGHT:GOTO NEXT.SCAN
+            RIGHT = RIGHT + 1
+NEXT.SCAN:
+            DONE = FIRST AND LAST
+          NEXT DONE
+          SIZE = LAST - FIRST + 1
+          VALUE = VAL(MID$(ROW$(ROW),FIRST,SIZE)
+          PRINT "ADDING"VALUE
+          TOTAL = TOTAL + VALUE
+          COUNTED$(ROW) = LEFT$(COUNTED$(ROW), FIRST - 1) + RPT$(1, SIZE) + MID$(COUNTED$(ROW), LAST + 1)
+NEXT.NEIGHBOR:
+        NEXT DY
+      NEXT DX
+NEXT.CHAR:
+    NEXT I
+    CUR = 1 - CUR
   NEXT EOF
-
-  PRINT TOTAL
-  PRINT TI
-  END
-
-INITLINE:
-  LI$ = LI$ + ";"
-  INDEX = 1
-SKIP:
-  CH$ = MID$(LI$,INDEX,1)
-  INDEX = INDEX + 1
-  IF CH$<>":" THEN SKIP
-  RETURN
-
-READPLAY:
-  R = -1
-  G = 0 : B = 0
-  TALLY = 0
-
-PARSE:
-  IF INDEX > LEN(LI$) THEN RETURN
-  CH$ = MID$(LI$, INDEX, 1)
-  INDEX = INDEX + 1
-  IF CH$ = ";" THEN RETURN
-  IF R=-1 THEN R=0
-  IF CH$ = " " THEN PARSE
-  IF CH$ >= "0" AND CH$ <= "9" THEN TALLY = TALLY * 10 + VAL(CH$):GOTO PARSE
-  IF CH$ = "B" THEN B=TALLY:TALLY=0: GOTO WORD
-  IF CH$ = "G" THEN G=TALLY:TALLY=0: GOTO WORD
-  IF CH$ = "R" THEN R=TALLY:TALLY=0: GOTO WORD
-  PRINT "ERROR PARSING GAME"GAME
-  END
-WORD:
-  CH$ = MID$(LI$, INDEX, 1)
-  INDEX = INDEX + 1
-  IF CH$<>"," AND CH$<>";" THEN WORD
-  IF CH$=";" THEN RETURN
-  GOTO PARSE
+  PRINT "TOTAL:"TOTAL
