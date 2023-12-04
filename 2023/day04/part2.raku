@@ -7,14 +7,13 @@ my @cards = $filename.IO.lines.map: -> $line {
       @($line ~~ /^'Card'\s+\d+':'( .* )'|'(.*)/)».Str».words».Set;
     +($left ∩ $right);
 };
-my @queue = @cards.pairs.clone;
+my $total = @cards;
+my @queue = ^$total;
 while (@queue) {
-    my ($number, $card) = @queue.shift.kv;
-    if ($card) {
-      for $number+1 .. $number + $card -> $won {
-          @cards.push(@cards[$won]);
-          @queue.push($won => @cards[$won])
-      }
-   }
+    my $number = @queue.shift;
+    if (my $card = @cards[$number]) {
+        @queue.push( |[($number+1) .. ($number + $card)] );
+        $total += $card
+    }
 }
-say +@cards;
+say $total;
