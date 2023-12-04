@@ -3,23 +3,24 @@ import argh
 
 def main(filename):
     total = 0
-    cards = []
+    counts = []
     with open(filename) as file:
-        for card in file:
+        for index, card in enumerate(file):
+            if index >= len(counts):
+                counts.append(1)
             label, numbers = card.split(':')
             left, right = numbers.split('|')
             winning = set([int(num) for num in left.split()])
             numbers = set([int(num) for num in right.split()])
-            cards.append(len(numbers.intersection(winning)))
-    total = len(cards)
-    queue = list(range(total))
-    while len(queue):
-        number = queue.pop(0)
-        total += cards[number]
-        for i in range(cards[number]):
-            queue.append(number + 1 + i)
+            winners = len(numbers.intersection(winning))
+            for prize in range(winners):
+                copy = index + 1 + prize
+                if copy >= len(counts):
+                    counts.append(1)
+                counts[copy] += counts[index]
 
-    print(total)
+
+    print(sum(counts))
 
 if __name__ == '__main__':
     argh.dispatch_command(main)
