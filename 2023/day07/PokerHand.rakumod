@@ -70,9 +70,11 @@ sub hand-type($hand) is export {
            && $wild ∊ $hand.comb
            && $hand.comb.unique == 4
            && %histo.keys.combinations(2).grep: -> ($a, $b) {
+               $a ne $wild && $b ne $wild && (
                    (%histo{$a} == 2 && %histo{$b} + %histo{$wild} == 2)
                  ||
                    (%histo{$b} == 2 && %histo{$a} + %histo{$wild} == 2)
+               )
            };
 
   return 2 if $hand.comb.unique == 4;     # pair
