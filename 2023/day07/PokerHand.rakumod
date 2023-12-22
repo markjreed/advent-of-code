@@ -2,8 +2,10 @@
 unit module PokerHand;
 
 our @ranks = |(2..9), |(«T J Q K A»);
-our %values = @ranks.pairs.invert »+» 1;
+our %values;
 our $wild;
+
+unset-wild();
 
 sub set-wild($rank) is export {
   $wild = $rank;
