@@ -36,7 +36,7 @@ sub hand-type($hand) is export {
 
   return 6 if $wild
            && $wild ∊ $hand.comb
-           && $hand.comb.unique == 3 
+           && $hand.comb.unique == 3
            && %histo.keys.grep: -> $k {
              $k ne $wild  && %histo{$k} + %histo{$wild} == 4
            };
@@ -46,7 +46,7 @@ sub hand-type($hand) is export {
            && %histo.values.min == 2; # full house
 
   return 5 if $wild
-           && $wild ∊ $hand.comb 
+           && $wild ∊ $hand.comb
            && $hand.comb.unique == 3
            && %histo.keys.combinations(2).grep: -> ($a, $b) {
                $a ne $wild && $b ne $wild && (
@@ -89,7 +89,7 @@ sub compare-hands($hand1, $hand2) is export {
     my $diff;
     return $diff if $diff =  hand-type($hand1) - hand-type($hand2);
     for ^5 -> $i {
-      return $diff if $diff = 
+      return $diff if $diff =
         [-](($hand1,$hand2).map: { %values{.comb[$i]} } )
     }
     return 0;
