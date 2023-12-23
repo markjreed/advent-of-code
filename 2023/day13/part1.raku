@@ -3,22 +3,20 @@ unit sub MAIN($input);
 
 my $total = 0;
 for $input.IO.slurp.split("\n\n")».chomp».split("\n") -> @rows {
-  if my @mirrors = find-mirrors(@rows) {
-    for @mirrors -> $row {
-       $total += 100 * $row;
-     }
+  my $mirror = find-mirror(@rows);
+  if $mirror {
+     $total += 100 * $mirror;
+     next;
   }
   my @columns = [Z](@rows».comb)».join;
-  if @mirrors = find-mirrors(@columns) {
-    for @mirrors -> $col {
-       $total += $col;
-     }
+  if ($mirror = find-mirror(@columns)) {
+    $total += $mirror;
   }
 }
 say $total;
 
-sub find-mirrors(@strings) {
-  gather for ^@strings.end -> $i {
+sub find-mirror(@strings) {
+  for ^@strings.end -> $i {
     my $mirror = True;
     for ^@strings -> $di {
       my ($a, $b) = $i - $di, $i + 1 + $di;
@@ -29,6 +27,6 @@ sub find-mirrors(@strings) {
           last;
        }
      }
-     take $i+1 if $mirror;
+     return $i+1 if $mirror;
   }
 }
