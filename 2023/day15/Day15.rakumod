@@ -1,4 +1,4 @@
-unit module ByteHash;
+unit module Day15;
 
 sub compute-hash($str) is export {
     my $cv = 0;
