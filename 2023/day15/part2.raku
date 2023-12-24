@@ -1,5 +1,6 @@
 #!/usr/bin/env raku
 unit sub MAIN($input);
+use Day15;
 
 my @instructions = $input.IO.lines[0].split(',');
 
@@ -11,13 +12,13 @@ for @instructions -> $instruction {
     my $box = compute-hash($label);
     given $op {
         when '-' {
-            @boxes[$box] = @boxes[$box].grep({ $_[0] ne $label }).Array;
+            @boxes[$box] .= &{ .grep({ .key ne $label }).Array };
         }
         when '=' {
-             if my $lens = @boxes[$box].grep({ $_[0] eq $label })[0] {
-                 $lens[1] = $length;
+             if my @lenses = @boxes[$box].grep({ .key eq $label }) {
+                 @lenses[0].value = $length;
              } else {
-                 push @boxes[$box], [$label, $length];
+                 push @boxes[$box], $label => $length;
              }
          }
          default {
@@ -25,25 +26,4 @@ for @instructions -> $instruction {
          }
     }
 }
-say focusing-power;
-
-sub compute-hash($str) {
-    my $cv = 0;
-    for $str.comb».ord -> $asc {
-        $cv = (17 * ($cv + $asc)) +& 0xff;
-    }
-    return $cv;
-}
-
-sub focusing-power() {
-    my $power = 0;
-    for @boxes.kv -> $i, $box {
-        my $number = $i + 1;
-        for @$box.kv -> $j, $lens {
-            my $slot = $j + 1;
-            $power += $number * $slot * $lens[1];
-        }
-    }
-    return $power;
-}
-
+say focusing-power(@boxes);
