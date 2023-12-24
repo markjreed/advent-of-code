@@ -1,9 +1,9 @@
 #!/usr/bin/env raku
 unit sub MAIN($input);
 
-my $line = $input.IO.lines[0];
+my @instructions = $input.IO.lines[0].split(',');
 
-say [+]($line.split(',').map: { compute-hash($_) });
+say [+](@instructions.map: { compute-hash($_) });
 
 sub compute-hash($str) {
     my $cv = 0;
