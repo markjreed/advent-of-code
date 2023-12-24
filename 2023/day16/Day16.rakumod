@@ -12,7 +12,6 @@ sub simulate-beam(@map, $i, $j, $di, $dj) is export {
     while @beams {
         for @beams.cache.kv -> $b, $beam {
             my ($i, $j, $di, $dj) = @$beam;
-            my $key = $beam.join(',');
             if %seen{$beam} {
                 @beams.splice($b, 1);
                 next;
