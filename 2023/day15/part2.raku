@@ -4,7 +4,7 @@ use Day15;
 
 my @instructions = $input.IO.lines[0].split(',');
 
-my @boxes = gather take [] for ^256;
+my Array() @boxes = gather take [] for ^256;
 
 for @instructions -> $instruction {
     next unless $instruction ~~ /^(<[a..z]>+)(<[-=]>)(\d*)/;
@@ -12,7 +12,7 @@ for @instructions -> $instruction {
     my $box = compute-hash($label);
     given $op {
         when '-' {
-            @boxes[$box] .= &{ .grep({ .key ne $label }).Array };
+            @boxes[$box] .= grep({ .key ne $label });
         }
         when '=' {
              if my @lenses = @boxes[$box].grep({ .key eq $label }) {
