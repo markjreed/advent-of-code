@@ -1,8 +1,14 @@
+TARGET = c64
+
 %: %.prg
+ifeq ($(TARGET),cx16)
 	x16emu -prg "$<" -fsroot .. -startin .. -run
+else ifeq ($(TARGET),c64)
+	x64sc -virtualdev8 -iecdevice8 -device8 1 -fs8 .. -keybuf $$'load"prog8/$<",8\nrun\n'
+endif
 
 %.prg: %.p8
-	prog8c -target cx16 "$<"
+	prog8c -target $(TARGET) "$<"
 
 part1.prg: part1.p8 DataLoader.p8 ReportList.p8 ReportList_def.p8 
 
