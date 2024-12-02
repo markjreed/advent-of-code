@@ -4,7 +4,7 @@
 ReportList {
     %option merge
 
-    sub is_safe(uword reportList) -> bool {
+    sub is_safe(uword reportList, bool debug) -> bool {
         ubyte i
         ubyte count = get_count(reportList)
         if count == 0 return false
@@ -12,17 +12,36 @@ ReportList {
         bool decreasing = get_reports_item(reportList, 1) < get_reports_item(reportList, 0)
         for i in 1 to count - 1 {
             if decreasing != (get_reports_item(reportList, i) < get_reports_item(reportList, i - 1)) {
+                if debug  {
+                    txt.print(": UNSAFE - not sorted")
+                    txt.nl()
+                }
                 return false
             }
-            byte delta = abs(get_reports_item(reportList, i) as byte - get_reports_item(reportList, i - 1) as byte)
+            ubyte prev = get_reports_item(reportList, i - 1)
+            ubyte curr = get_reports_item(reportList, i)
+            byte delta = abs( curr as byte - prev as byte )
             if delta < 1 or delta > 3 {
+                if debug {
+                    txt.print(": UNSAFE - ")
+                    txt.print_ub(prev)
+                    txt.print(" to ")
+                    txt.print_ub(curr)
+                    txt.print(" is a delta of ")
+                    txt.print_b(delta)
+                    txt.nl()
+                }
                 return false
             }
+        }
+        if debug {
+            txt.print(": SAFE")
+            txt.nl()
         }
         return true
     }
 
-    sub is_safe_without(uword reportList, ubyte index) -> bool {
+    sub is_safe_without(uword reportList, ubyte index, bool debug) -> bool {
         ubyte i, j
         ubyte count = get_count(reportList)
         uword sublist = memory("sublist", SIZE, 1)
@@ -35,6 +54,6 @@ ReportList {
                 j += 1
             }
         }
-        return is_safe(sublist)
+        return is_safe(sublist, debug)
     }
 }
