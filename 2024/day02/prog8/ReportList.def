@@ -1,0 +1,4 @@
+class ReportList {
+    ubyte[8] reports
+    ubyte count
+}
