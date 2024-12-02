@@ -7,18 +7,20 @@
 
 main {
     sub start() {
+        uword line
+        float num, similarity_score
+
         uword list1 = memory("list1", KiloFloat.SIZE, 1)
         uword list2 = memory("list2", KiloFloat.SIZE, 1)
-        uword lines = DataLoader.load("data.txt", list1, list2)
-        float f, sum
-        uword line
 
-        sum = 0
+        uword lines = DataLoader.load("data.txt", list1, list2)
+
+        similarity_score = 0
         for line in 0 to lines - 1 {
-            f = KiloFloat.get_data_item(list1, line)
-            sum = sum + f * (KiloFloat.count(list2, f) as float)
+            num = KiloFloat.get_data_item(list1, line)
+            similarity_score = similarity_score + num * (KiloFloat.count(list2, num) as float)
         }
-        txt.print_f(sum)
+        txt.print_f(similarity_score)
         txt.nl()
     }
 }
