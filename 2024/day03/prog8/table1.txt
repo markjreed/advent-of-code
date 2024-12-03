@@ -1,0 +1,26 @@
+0 = start
+1 = seen 'm'
+2 = seen 'u'
+3 = seen 'l'
+4 = seen '('
+5 = seen 1 digit of first number
+6 = seen 2 digits
+7 = seen 3 digits
+8 -> seen ','
+9 = seen 1 digit of second number
+10 = seen 2 digits of second number
+11 = seen 3 digits of second number
+12 = match
+
+0 -> 'm' -> 1
+1 -> 'u' -> 2
+2 -> 'l' -> 3
+3 -> '(' -> 4
+4 -> [0-9] -> 5
+5 -> [0-9] -> 6; 5 -> ',' -> 8
+6 -> [0-9] -> 7; 6 -> ',' -> 8
+7 -> ',' -> 8
+8 -> [0-9] -> 9
+9 -> [0-9] -> 10;  9 -> ')' -> 12
+10 -> [0-9] -> 11;10 -> ')' -> 12
+11 -> ')' -> 12
