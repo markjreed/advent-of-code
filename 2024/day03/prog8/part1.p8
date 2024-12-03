@@ -6,17 +6,12 @@
 
 main {
     sub start() {
+
         if not diskio.f_open("data.txt") {
            txt.print("no data file")
            txt.nl()
            sys.exit(1)
         }
-
-        ubyte ch
-        uword count
-        uword num1, num2
-        ubyte state = 0
-        float total = 0.0
 
         const ubyte START    =  0
         const ubyte M_       =  1
@@ -31,6 +26,14 @@ main {
         const ubyte MUL_C2_  = 10
         const ubyte MUL_C3_  = 11
         const ubyte MUL_DONE = 12
+
+        ubyte state = START
+
+        ubyte ch
+        uword count
+        uword num1, num2
+
+        float total = 0.0
 
         repeat {
 
