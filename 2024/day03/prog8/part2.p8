@@ -12,13 +12,6 @@ main {
            sys.exit(1)
         }
 
-        ubyte ch
-        uword count
-        uword num1, num2
-
-        float total = 0.0
-        bool doing = true
-
         const ubyte START     =  0
         const ubyte M_        =  1
         const ubyte D_        =  2
@@ -41,6 +34,13 @@ main {
         const ubyte MUL_C3_   = 19
 
         ubyte state = START
+
+        ubyte ch
+        uword count
+        uword num1, num2
+
+        float total = 0.0
+        bool doing = true
 
         repeat {
             count = diskio.f_read(&ch, 1)
