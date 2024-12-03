@@ -18,10 +18,9 @@ main {
         uword num1, num2
 
         sub START() -> uword {
-            if ch == iso:'m' {
-                return &M_
-            } else {
-                return &START
+            when ch {
+                iso:'m' -> return &M_
+                else    -> return &START
             }
         }
 
@@ -53,10 +52,10 @@ main {
             if ch >= '0' and ch <= '9' {
                 num1 = ch - '0'
                 return &MUL_O1_
-            } else if ch == iso:'m' {
-                return &M_
-            } else {
-                return &START
+            } 
+            when ch { 
+                iso:'m' -> return &M_
+                else    -> return &START
             }
         }
 
@@ -64,12 +63,11 @@ main {
             if ch >= '0' and ch <= '9' {
                 num1 = num1 * 10 + ch - '0'
                 return &MUL_O2_
-            } else if ch == ',' {
-                return &MUL_C_
-            } else if ch == iso:'m' {
-                return &M_
-            } else {
-                return &START
+            }
+            when ch {
+                ','     -> return &MUL_C_
+                iso:'m' -> return &M_
+                else    -> return &START
             }
         }
 
@@ -77,12 +75,11 @@ main {
             if ch >= '0' and ch <= '9' {
                 num1 = num1 * 10 + ch - '0'
                 return &MUL_O3_
-            } else if ch == ',' {
-                return &MUL_C_
-            } else if ch == iso:'m' {
-                return &M_
-            } else {
-                return &START
+            } 
+            when ch {
+                ','     -> return &MUL_C_
+                iso:'m' -> return &M_
+                else    -> return &START
             }
         }
 
@@ -98,10 +95,10 @@ main {
             if ch >= '0' and ch <= '9' {
                 num2 = ch - '0'
                 return &MUL_C1_
-            } else if ch == iso:'m' {
-                return &M_
-            } else {
-                return &START
+            }
+            when ch {
+                iso:'m' -> return &M_
+                else    -> return &START
             }
         }
 
@@ -109,12 +106,11 @@ main {
             if ch >= '0' and ch <= '9' {
                 num2 = num2 * 10 + ch - '0'
                 return &MUL_C2_
-            } else if ch == ')' {
-                return MUL_DONE()
-            } else if ch == iso:'m' {
-                return &M_
-            } else {
-                return &START
+            }
+            when ch {
+                ')'     -> return MUL_DONE()
+                iso:'m' -> return &M_
+                else    -> return &START
             }
         }
 
@@ -122,20 +118,19 @@ main {
             if ch >= '0' and ch <= '9' {
                 num2 = num2 * 10 + ch - '0'
                 return &MUL_C3_
-            } else if ch == ')' {
-                return MUL_DONE()
-            } else if ch == iso:'m' {
-                return &M_
-            } else {
-                return &START
+            }
+            when ch {
+                ')'     -> return MUL_DONE()
+                iso:'m' -> return &M_
+                else    -> return &START
             }
         }
 
         sub MUL_C3_() -> uword {
             when ch {
-                ')'  -> return MUL_DONE()
+                ')'      -> return MUL_DONE()
                 iso:'m'  -> return &M_
-                else -> return &START
+                else     -> return &START
             }
         }
 
