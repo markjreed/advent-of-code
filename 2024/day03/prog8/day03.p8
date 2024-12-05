@@ -6,11 +6,20 @@
 
 main {
     sub start() {
-        if not diskio.f_open("data.txt") {
-           txt.print("no data file")
-           txt.nl()
-           sys.exit(1)
-        }
+        uword[81] filename
+        bool ok
+
+        do {
+            txt.print("enter filename: data.txt")
+            repeat 8 { txt.chrout(157) }
+            void txt.input_chars(filename)
+            txt.nl()
+            ok = diskio.f_open(filename)
+            if not ok {
+                txt.print("file not found.")
+                txt.nl()
+            }
+        } until ok
 
         ubyte ch
         uword count
