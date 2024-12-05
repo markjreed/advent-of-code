@@ -53,14 +53,33 @@ main {
         }
         height = bytes / (width + 1)  as ubyte
 
+        uword xmas = 0
         uword x_mas = 0
         uword i, j
-        for i in 1 to height - 2 {
-            word wi = i as word
-            for j in 1 to width - 2 {
-                word wj = j as word
+        word wi, wj, di, dj
+        for i in 0 to height - 1 {
+            wi = i as word
+            for j in 0 to width - 1 {
+                wj = j as word
                 ubyte letter = get(wi, wj)
-                if letter == iso:'A' {
+                if letter == iso:'X' {
+                    for di in deltas {
+                        if (0 <= i + 3 * di) and (i + 3 * di < height) {
+                            for dj in deltas {
+                                if (0 <= j + 3 * dj) and (j + 3 * dj < width) {
+                                    if di != 0 or dj != 0 {
+                                        if get(i +     di, j +     dj) == iso:'M' and
+                                           get(i + 2 * di, j + 2 * dj) == iso:'A' and
+                                           get(i + 3 * di, j + 3 * dj) == iso:'S' {
+                                            xmas += 1
+                                        } 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if i > 0 and i < height - 1 and j > 0 and j < width - 1 and letter == iso:'A' {
                     if ((get(wi+1,wj-1) == iso:'M' and get(wi-1,wj+1) == iso:'S') or
                         (get(wi+1,wj-1) == iso:'S' and get(wi-1,wj+1) == iso:'M')) 
                     and
@@ -71,6 +90,8 @@ main {
                 }
             }
         }
+        txt.print_uw(xmas)
+        txt.nl()
         txt.print_uw(x_mas)
         txt.nl()
     }
