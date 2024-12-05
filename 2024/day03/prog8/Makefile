@@ -6,7 +6,7 @@ endif
 ifeq ($(TARGET),cx16)
 	x16emu -prg "$<" -fsroot .. -startin .. -run
 else ifeq ($(TARGET),c64)
-	x64sc -virtualdev8 -iecdevice8 -device8 1 -fs8 .. -keybuf $$'load"prog8/$<",8\nrun\n'
+	x64sc -virtualdev8 -iecdevice8 -device8 1 -fs8 .. +drive8truedrive -keybuf $$'load"prog8/$<",8\nrun\n'
 endif
 
 %.prg: %.p8
