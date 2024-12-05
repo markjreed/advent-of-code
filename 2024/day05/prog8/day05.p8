@@ -5,6 +5,7 @@
 %import Rules
 
 main {
+    const ubyte MAX_PAGES = 32
     uword rules = memory("rules", Rules.SIZE, 1)
 
     ; compare two pages according to the ordering rules
@@ -21,6 +22,8 @@ main {
     }
 
     ; sort a list of pages according to the ordering rules
+    ; the longest page list is less than 32 entries, so we just do a simple
+    ; bubble sort 
     sub sort(uword pageList, ubyte pageCount) {
         ubyte pass, i, temp
         for pass in 1 to pageCount - 1 {
@@ -75,7 +78,7 @@ main {
 
         uword seen = memory("seen", PageSet.SIZE, 1)
         uword pages = memory("pages", PageSet.SIZE, 1)
-        ubyte[32] pageList
+        ubyte[MAX_PAGES] pageList
         uword part1 = 0
         uword part2 = 0
 
