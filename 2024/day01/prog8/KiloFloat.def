@@ -1,3 +1,4 @@
 class KiloFloat {
+     uword length
      float[1000] data
 }
