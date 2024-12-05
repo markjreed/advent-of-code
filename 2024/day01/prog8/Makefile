@@ -1,4 +1,6 @@
-TARGET = c64
+ifeq ($(TARGET),)
+    TARGET = cx16
+endif
 
 %: %.prg
 ifeq ($(TARGET),cx16)
