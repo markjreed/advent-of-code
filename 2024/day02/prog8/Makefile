@@ -12,9 +12,7 @@ endif
 %.prg: %.p8
 	prog8c -target $(TARGET) "$<"
 
-part1.prg: part1.p8 DataLoader.p8 ReportList.p8 ReportList_def.p8 
-
-part2.prg: part2.p8 DataLoader.p8 ReportList.p8 ReportList_def.p8 
+day02.prg: day02.p8 DataLoader.p8 ReportList.p8 ReportList_def.p8 
 
 %_def.p8: %.def ~/bin/mkp8class
 	mkp8class $* $<

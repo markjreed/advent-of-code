@@ -6,6 +6,7 @@ ReportList {
 
     sub is_safe(uword reportList, bool debug) -> bool {
         ubyte i
+        if debug print(reportList)
         ubyte count = get_count(reportList)
         if count == 0 return false
 
@@ -55,5 +56,14 @@ ReportList {
             }
         }
         return is_safe(sublist, debug)
+    }
+
+    sub print(uword reportList) {
+        ubyte i
+        for i in 0 to get_count(reportList) - 1 {
+            txt.chrout(if i==0 '[' else ',')
+            txt.print_ub(get_reports_item(reportList, i))
+        }
+        txt.chrout(']')
     }
 }
