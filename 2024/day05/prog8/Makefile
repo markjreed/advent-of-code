@@ -9,7 +9,7 @@ else ifeq ($(TARGET),c64)
 	x64sc -virtualdev8 -iecdevice8 -device8 1 -fs8 .. -keybuf $$'load"prog8/$<",8\nrun\n'
 endif
 
-part1.prg: part1.p8 PageSet.p8 PageSet_def.p8 Rules.p8 Rules_def.p8
+part1-2.prg: part1.p8 PageSet.p8 PageSet_def.p8 Rules.p8 Rules_def.p8
 
 %.prg: %.p8
 	prog8c -target $(TARGET) "$<"
