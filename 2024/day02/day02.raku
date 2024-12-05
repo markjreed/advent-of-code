@@ -28,8 +28,15 @@ sub is-safe-enough(@reports) {
     return False;
 }
 
-my $total = [+](gather for lines() -> $line {
+my ($part1, $part2) »=» 0;
+for lines() -> $line {
     my @reports = $line.words.map(+*);
-    take +is-safe-enough(@reports);
-});
-say $total;
+    if is-safe(@reports) {
+        $part1++;
+        $part2++;
+    } elsif is-safe-enough(@reports) {
+        $part2++;
+    }
+}
+say $part1;
+say $part2;
