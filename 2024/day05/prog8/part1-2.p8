@@ -5,6 +5,35 @@
 %import Rules
 
 main {
+    uword rules = memory("rules", Rules.SIZE, 1)
+
+    ; compare two pages according to the ordering rules
+    sub compare(ubyte page1, ubyte page2) -> byte {
+        uword prec1 = Rules.get_precedents_item(rules, page1)
+        uword prec2 = Rules.get_precedents_item(rules, page2)
+        if PageSet.contains(prec1, page2) {
+            return 1
+        } else if PageSet.contains(prec2, page1) {
+            return -1
+        } else {
+            return 0
+        }
+    }
+
+    ; sort a list of pages according to the ordering rules
+    sub sort(uword pageList, ubyte pageCount) {
+        ubyte pass, i, temp
+        for pass in 1 to pageCount - 1 {
+            for i in 0 to pageCount - pass {
+                if compare(pageList[i], pageList[i+1]) > 0 {
+                    temp = pageList[i]
+                    pageList[i] = pageList[i+1]
+                    pageList[i+1] = temp
+                }
+            }
+        }
+    }
+
     sub start() {
         ubyte[81] line
         bool ok
@@ -24,7 +53,6 @@ main {
             }
         } until ok
 
-        uword rules = memory("rules", Rules.SIZE, 1)
         sys.memset(rules, Rules.SIZE, 0)
         do {
             bytes, status = diskio.f_readline(line) 
@@ -48,7 +76,8 @@ main {
         uword seen = memory("seen", PageSet.SIZE, 1)
         uword pages = memory("pages", PageSet.SIZE, 1)
         ubyte[32] pageList
-        uword total = 0
+        uword part1 = 0
+        uword part2 = 0
 
         do {
             bytes, status = diskio.f_readline(line) 
@@ -70,38 +99,28 @@ main {
                      pageNum += 1
                  }
                  ok = true
-                 ; txt.print("checking")
-                 ; for i in 0 to pageNum - 1 {
-                     ; txt.chrout(if i==0 ':' else ',')
-                     ; txt.chrout(' ')
-                     ; txt.print_ub(pageList[i])
-                 ; }
-                 ; txt.nl()
                  PageSet.clear(seen)
                  for i in 0 to pageNum - 1 {
                      PageSet.add(seen, pageList[i])
                      uword precedents = Rules.get_precedents_item(rules, pageList[i])
                      for j in 0 to MAX_PAGE {
                          if PageSet.contains(precedents, j) and PageSet.contains(pages, j) and not PageSet.contains(seen, j) {
-                             ; txt.print("    not ok because page ")
-                             ; txt.print_ub(j) 
-                             ; txt.print(" must come before page ")
-                             ; txt.print_ub(pageList[i]) 
-                             ; txt.nl()
                              ok = false
                              break
                          }
                      }
                  }
                  if ok {
-                     ; txt.print("ok")
-                     ; txt.nl()
-                     total += pageList[pageNum / 2]
+                     part1 += pageList[pageNum / 2]
+                 } else {
+                     sort(pageList, pageNum)
+                     part2 += pageList[pageNum / 2]
                  }
              }
         } until status & 64 != 0
-        txt.print_uw(total)
+        txt.print_uw(part1)
         txt.nl()
-
+        txt.print_uw(part2)
+        txt.nl()
     }
 }
