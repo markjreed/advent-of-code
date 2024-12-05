@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 my %prereqs;
-my $total = 0;
+my ($part1, $part2) »=» 0;
 
 my @lines = lines; 
 while @lines {
@@ -40,10 +40,12 @@ for @lines {
         }
         %seen{$page} = True;
    }
-   if !$ok {
+   if $ok {
+       $part1 += @pages[@pages div 2];
+   } else {
        my @sorted = sort(&comparePages, @pages);
-       $total += @sorted[@sorted div 2];
+       $part2 += @sorted[@sorted div 2];
    }
 }
 
-say $total;
+.say for $part1, $part2;
