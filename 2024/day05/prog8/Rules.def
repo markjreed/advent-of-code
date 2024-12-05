@@ -1,0 +1,4 @@
+%import PageSet
+class Rules {
+    PageSet[100] precedents
+}

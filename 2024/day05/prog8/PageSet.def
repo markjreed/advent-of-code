@@ -1,0 +1,3 @@
+class PageSet {
+    ubyte[13] members
+}
