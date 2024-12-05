@@ -16,7 +16,8 @@ main {
         uword count
         uword num1, num2
 
-        float total = 0.0
+        float part1 = 0.0
+        float part2 = 0.0
         bool doing = true
 
 
@@ -220,9 +221,9 @@ main {
         }
 
         sub MUL_DONE() -> uword {
-            if doing {
-                total += (num1 as float) * (num2 as float)
-            }
+            float product = (num1 as float) * (num2 as float)
+            part1 += product
+            if doing part2 += product
             return &START
         }
             
@@ -240,6 +241,9 @@ main {
         }
 
         diskio.f_close()
-        txt.print_f(total)
+        txt.print_f(part1)
+        txt.nl()
+        txt.print_f(part2)
+        txt.nl()
    }
 }
