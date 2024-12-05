@@ -10,7 +10,7 @@ else ifeq ($(TARGET),c64)
 endif
 
 %.prg: %.p8
-	prog8c -target cx16 "$<"
+	prog8c -target $(TARGET) "$<"
 
 day01.prg: day01.p8 DataLoader.p8 KiloFloat.p8 KiloFloat_def.p8 
 
