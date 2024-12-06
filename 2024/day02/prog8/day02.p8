@@ -40,7 +40,7 @@ main {
                     part2 += 1
                 } else {
                     for i in 0 to count - 1 {
-                        if ReportList.is_safe_without(reportList, i, debug) {
+                        if ReportList.is_safe(ReportList.remove(reportList, i), debug) {
                             part2 += 1
                             break
                         }

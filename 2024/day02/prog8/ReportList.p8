@@ -4,6 +4,23 @@
 ReportList {
     %option merge
 
+    ; return a new list with the given element removed
+    sub remove(uword reportList, ubyte index) -> uword {
+        ubyte i, j
+        ubyte count = get_count(reportList)
+        uword subList = memory("subList", SIZE, 1)
+
+        set_count(subList, count - 1)
+        j = 0
+        for i in 0 to count - 1 {
+            if i != index {
+                set_reports_item(subList, j, get_reports_item(reportList, i))
+                j += 1
+            }
+        }
+        return subList
+    }
+
     sub is_safe(uword reportList, bool debug) -> bool {
         ubyte i
         if debug print(reportList)
@@ -40,22 +57,6 @@ ReportList {
             txt.nl()
         }
         return true
-    }
-
-    sub is_safe_without(uword reportList, ubyte index, bool debug) -> bool {
-        ubyte i, j
-        ubyte count = get_count(reportList)
-        uword sublist = memory("sublist", SIZE, 1)
-
-        set_count(sublist, count - 1)
-        j = 0
-        for i in 0 to count - 1 {
-            if i != index {
-                set_reports_item(sublist, j, get_reports_item(reportList, i))
-                j += 1
-            }
-        }
-        return is_safe(sublist, debug)
     }
 
     sub print(uword reportList) {
