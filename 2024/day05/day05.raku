@@ -27,25 +27,12 @@ sub comparePages($page1, $page2) {
 for @lines {
     my %seen;
     my @pages = .split(',');
-    my $ok;
-    $ok = True;
-    UPDATE: for @pages -> $page {
-        if my $p = %prereqs{$page} {
-            for $p.keys -> $prereq {
-                if $prereq (elem) @pages && !%seen{$prereq}  {
-                    $ok = False;
-                    last UPDATE;
-                }
-            }
-        }
-        %seen{$page} = True;
-   }
-   if $ok {
-       $part1 += @pages[@pages div 2];
-   } else {
-       my @sorted = sort(&comparePages, @pages);
-       $part2 += @sorted[@sorted div 2];
-   }
+    my @sorted = sort(&comparePages, @pages);
+    if @pages eqv @sorted {
+        $part1 += @pages[@pages div 2];
+    } else {
+        $part2 += @sorted[@sorted div 2];
+    }
 }
 
 .say for $part1, $part2;
