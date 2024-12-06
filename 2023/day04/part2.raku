@@ -2,13 +2,13 @@
 unit sub MAIN($filename);
 
 my @counts = [ ];
-my @cards = $filename.IO.lines.kv.map: -> $index, $line {
+my @cards = $filename.IO.lines.kv.map: -> $index, $card {
     @counts.push(1) if $index >= @counts;
     my ($left, $right) =
-      @($line ~~ /^'Card'\s+\d+':'( .* )'|'(.*)/)».Str».words».Set;
+      @($card ~~ /^'Card'\s+\d+':'( .* )'|'(.*)/)».Str».words».Set;
     my $winners = +($left ∩ $right);
-    for (^$winners) -> $next {
-       my $won = $index + 1 + $next;
+    for (^$winners) -> $prize {
+       my $won = $index + 1 + $prize;
        if $won >= @counts {
          @counts.push(1);
        }
