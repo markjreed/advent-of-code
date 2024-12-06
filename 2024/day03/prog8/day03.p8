@@ -117,7 +117,7 @@ main {
         sub MUL_O_() -> uword {
             if ch >= '0' and ch <= '9' {
                 num1 = ch - '0'
-                return &MUL_O1
+                return &MUL_O1_
             } 
             when ch {
                 iso:'d' -> return &D_
@@ -135,7 +135,7 @@ main {
             }
         }
 
-        sub MUL_O1() -> uword {
+        sub MUL_O1_() -> uword {
             if ch >= '0' and ch <= '9' {
                 num1 = num1 * 10 + ch - '0'
                 return &MUL_O2_
