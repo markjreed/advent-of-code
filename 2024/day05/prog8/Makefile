@@ -16,3 +16,6 @@ day05.prg: day05.p8 PageSet.p8 PageSet_def.p8 Rules.p8 Rules_def.p8
 
 %_def.p8: %.def ~/bin/mkp8class
 	mkp8class $* $<
+
+%.p8: %.def ~/bin/mkp8class
+	mkp8class $* $<
