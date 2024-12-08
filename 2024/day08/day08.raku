@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-my @map = lines()».comb;
+my @map = lines()».comb».Array;
 my $height = +@map;
 my $width = +@map[0];
 my %antennae-locations;
@@ -11,20 +11,27 @@ for @map.kv -> $i, @row {
     }
 }
 
-my $antipodes = SetHash.new;
-for %antennae-locations.kv -> $freq, $loc {
-    my @loc = $loc.keys;
-    for @loc.kv -> $n, $ij {
-        my ($i0, $j0) = $ij.split(',');
-        for $n+1..^@loc -> $m {
-            my ($i1, $j1) = @loc[$m].split(',');
-            my ($di, $dj) = ($i1,$j1) Z- ($i0,$j0);
-            my $d = sqrt($di*$di + $dj*$dj);
-            my ($ia,$ja) = ($i0,$j0) Z- ($di,$dj);
-            $antipodes.set("$ia,$ja") if 0 <= $ia < $height && 0 <= $ja < $width;
-            ($ia,$ja) = ($i1,$j1) Z+ ($di,$dj);
-            $antipodes.set("$ia,$ja") if 0 <= $ia < $height && 0 <= $ja < $width;
+my $part1 = SetHash.new;
+my $part2 = SetHash.new;
+for ^$height -> $a {
+    for ^$width -> $b {
+        my $key = "$a,$b";
+        for %antennae-locations.kv -> $freq, $loc {
+            my @loc = $loc.keys;
+            for @loc.kv -> $i, $mn {
+                my ($m, $n) = $mn.split(',').map(+*);
+                for ($i + 1) ..^ @loc -> $j {
+                    my ($x, $y) = @loc[$j].split(',').map(+*);
+                    if ($n - $b) * ($x - $m) == ($y - $n) * ($m - $a) {
+                        $part2.set($key);
+                        my ($c, $o, $z) = [$a, $m, $x].sort;
+                        if $o - $c == $z - $o {
+                            $part1.set($key);
+                        } 
+                    }
+                }
+            }
         }
     }
 }
-say +$antipodes;
+.say for +$part1, +$part2;
