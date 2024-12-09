@@ -33,7 +33,7 @@ for $input-file.IO.lines -> $block {
             }
         }
     }
-    my $checksum = [+] $files.kv.map: -> $i, $file { $i * m-to-n($file[0], $file[0] + $file[1]) };
+    my $checksum = [+] $files.kv.map: -> $i, $file { $i * sum-n($file[1], :from($file[0])) };
     say $checksum;
 }
 
@@ -50,9 +50,9 @@ sub scan($block is copy) {
     return @files, @free-list;
 }
 
-# sum of the consecutive integers from m up to but not including n
-sub m-to-n($m, $n) {
-    return ($n * ($n - 1) - $m * ($m - 1)) div 2;
+# sum of n consecutive integers
+sub sum-n($n, :$from = 1) {
+   return $n * ($n + 1) div 2 + $n * ($from - 1);
 }
 
 sub picture($files, $free-list) {
