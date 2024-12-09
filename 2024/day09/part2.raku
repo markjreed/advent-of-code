@@ -10,15 +10,7 @@ for $input-file.IO.lines -> $block {
     for $files.reverse -> $file {
         my ($i, $block) = $free-list.first({ .[0] < $file[0] && .[1] >= $file[1] }, :kv);
         if $block {
-            my $found = False;
-            for $free-list.reverse -> $free {
-                last if $free[0] < $block[0] + $block[1];
-                if $block[0] + $block[1] == $file[0] {
-                    $free[1] += $file[1];
-                    $found = True;
-                    last;
-                }
-            }
+            my $free = $free-list.first({ .[0] + .[1] == $file[0] });
             my $old = [$file[0], $file[1]];
             $file[0] = $block[0];
             $block[0] += $file[1];
@@ -26,7 +18,11 @@ for $input-file.IO.lines -> $block {
             if $block[1] == 0 {
                 $free-list.splice($i, 1);
             }
-            $free-list.push($old) unless $found;
+            if $free {
+                $free[1] += $old[1];
+            } else {
+                $free-list.push($old);
+            }
             if $debug {
                 say "now files: {$files.raku}; free-list: {$free-list.raku}" if $debug > 1;
                 say picture($files, $free-list);
@@ -40,7 +36,7 @@ for $input-file.IO.lines -> $block {
 sub scan($block is copy) {
     $block ~= '0' unless $block.chars %% 2;
     my $pos = 0;
-    my (@files,@free-list);
+    my (@files, @free-list);
     for $block.comb -> $data, $free {
         @files.push([$pos, +$data]);
         $pos += $data;
