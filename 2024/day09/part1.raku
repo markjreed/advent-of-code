@@ -1,6 +1,7 @@
 #!/usr/bin/env raku
 for lines() -> $block {
     my @memory = expand-block($block);
+    say @memory.join;
     my $i = 0;
     my $j = +@memory - 1;
     my $checksum = 0;
