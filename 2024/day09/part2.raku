@@ -1,12 +1,15 @@
 #!/usr/bin/env raku
-for lines() -> $block {
+unit sub MAIN($input-file, :$debug = 0);
+
+for $input-file.IO.lines -> $block {
     my ($files, $free-list) = scan($block);
-    #say "files: {$files.raku}; free-list: {$free-list.raku}";
-    #say "initial block: {picture($files, $free-list)}";
+    if $debug {
+        say "files: {$files.raku}; free-list: {$free-list.raku}" if $debug > 1;
+        say picture($files, $free-list);
+    }
     for $files.reverse -> $file {
-        my ($i, $block) = $free-list.first( *[1] >= $file[1], :kv);
+        my ($i, $block) = $free-list.first({ .[0] < $file[0] && .[1] >= $file[1] }, :kv);
         if $block {
-            next if $block[0] > $file[0];
             my $found = False;
             for $free-list.reverse -> $free {
                 last if $free[0] < $block[0] + $block[1];
@@ -24,11 +27,13 @@ for lines() -> $block {
                 $free-list.splice($i, 1);
             }
             $free-list.push($old) unless $found;
-            #say "now files: {$files.raku}; free-list: {$free-list.raku}";
-            #say picture($files, $free-list);
+            if $debug {
+                say "now files: {$files.raku}; free-list: {$free-list.raku}" if $debug > 1;
+                say picture($files, $free-list);
+            }
         }
     }
-    my $checksum = [+] $files.kv.map: -> $i, $file { $i * m-to-n($file[0], $file[0] + $file[1] - 1) };
+    my $checksum = [+] $files.kv.map: -> $i, $file { $i * m-to-n($file[0], $file[0] + $file[1]) };
     say $checksum;
 }
 
@@ -45,9 +50,9 @@ sub scan($block is copy) {
     return @files, @free-list;
 }
 
-sub m-to-n($m is copy, $n is copy) {
-    ($m, $n) = $n, $m if $m > $n;
-    return ($n * ($n + 1) - $m * ($m - 1)) div 2;
+# sum of the consecutive integers from m up to but not including n
+sub m-to-n($m, $n) {
+    return ($n * ($n - 1) - $m * ($m - 1)) div 2;
 }
 
 sub picture($files, $free-list) {

@@ -1,7 +1,9 @@
 #!/usr/bin/env raku
-for lines() -> $block {
+unit sub MAIN($input-file, :$debug = 0);
+
+for $input-file.IO.lines() -> $block {
     my @memory = expand-block($block);
-    say @memory.join;
+    say @memory.join if $debug;
     my $i = 0;
     my $j = +@memory - 1;
     my $checksum = 0;
@@ -17,6 +19,7 @@ for lines() -> $block {
         }
         last if $i >= $j;
         @memory[$i] = @memory[$j];
+        say @memory.join if $debug;
         $checksum += $i * @memory[$i];
         @memory[$j] = '.';
         $i++;
