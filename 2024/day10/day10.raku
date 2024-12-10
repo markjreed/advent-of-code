@@ -3,7 +3,7 @@ use v6.e.PREVIEW; # needed for @matrix[||@indexes]
 
 unit sub MAIN($input);
 
-# first convert the map to a two-dimensional matrix of single-character strings
+# first convert the map to a two-dimensional matrix of numbers
 my @map = $input.IO.lines.map(*.comb».Int.Array);
 
 # and remember how big it is. (we assume it's rectangular.)
