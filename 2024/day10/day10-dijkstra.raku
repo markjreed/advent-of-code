@@ -50,6 +50,7 @@ for ^@coords -> $start {
          }
      }
 }
+say '';
 
 my $total-score;
 for @map.kv -> $i, @row {
