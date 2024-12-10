@@ -3,16 +3,26 @@ use v6.e.PREVIEW; # needed for @matrix[||@indexes]
 
 unit sub MAIN($input);
 
+# first convert the map to a two-dimensional matrix of single-character strings
 my @map = $input.IO.lines.map(*.comb».Int.Array);
-my $height = +@map;
-my $width = +@map[0];
 
-# convert to graph form
+# and remember how big it is. (we assume it's rectangular.)
+my $height = +@map;
+my $width  = +@map[0];
+
+# then build a graph from it. 
+#
+# There are width x height vertices, which we number in Engish reading order
+# and provide functions to go between coordinates and vertex id.
 my @vertices = ^($width * $height);
 sub vertex($i, $j) { $i * $width + $j }
 sub coords($vertex) { $vertex.polymod($width).reverse }
 
+# start with no eddges
 my %edges = @vertices.map: * => [ ]; 
+
+# Add an edge everywhere a hiker can take an orthogonal step that increases 
+# their elevation level by exactly 1.
 for @map.kv -> $i, @row {
     for @row.kv -> $j, $level {
         my $u = vertex($i, $j);
@@ -29,8 +39,8 @@ for @map.kv -> $i, @row {
     }
 }
 
-# create a list of virtual hikers for each trail head, initial just
-# one each at the head. as they move, we only remember where they started and
+# Now we create a list of virtual hikers for each trail head, initially just
+# one each at the head. As they move, we only remember where they started and
 # where they are; their presence in the list is enough to indicate that they
 # took a unique path, which we don't have to reconstruct.
 my %trail-heads = 
@@ -67,15 +77,14 @@ while !$done {
                 }
             }
         }
+
         # bookkeeping - we didn't modify the array while iterating over it,
         # so we apply the changes now. First: delete the hikers that hit
-        # dead ends.
-        
-        # removal is by index so we keep track of how many we've deleted and
-        # adjust later indexes accordingly
+        # dead ends.  removal is by index so we keep track of how many we've
+        # deleted to adjust later indexes downward.
         my $removed = 0;
 
-        # we also need to process the indexes in order for this approach to work
+        # that emeans we  also need to process the indexes in increasing order 
         for @done.sort -> $i {
             %trail-heads{$start}.splice($i - $removed, 1);
             $removed++;
