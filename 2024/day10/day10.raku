@@ -34,9 +34,11 @@ for @map.kv -> $i, @row {
 }
 
 my @dist = @coords.map: { (Inf xx @coords).Array };
+my @trail-heads = @coords.grep(-> ($i,$j) { @map[$i][$j] == 0 }, :k);
+say "found {+@trail-heads} trail heads";
 
-for ^@coords -> $start {
-    print "$start/{+@coords-1}\r";
+for @trail-heads.kv -> $h, $start {
+    print "$h/{+@trail-heads}\r";
     my $Q = SetHash.new(^@coords);
     @dist[$start][$start] = 0;
     while $Q {
