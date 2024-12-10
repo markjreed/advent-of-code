@@ -36,7 +36,6 @@ for @map.kv -> $i, @row {
 }
 
 my @trail-heads = @coords.grep(-> ($i,$j) { @map[$i][$j] == 0 }, :k);
-say "found {+@trail-heads} trail heads";
 
 my %paths = @trail-heads Z=> @trail-heads.map: { [$_,] };;
 
