@@ -18,53 +18,59 @@ my %edges;
 for @map.kv -> $i, @row {
     for @row.kv -> $j, $level {
         my $u = @vertices[$i][$j];
+        %edges{$u} //= [];
         for ($i+1,$j),($i,$j+1) -> ($ni, $nj) {
             if 0 <= $ni < $height && 0 <= $nj < $width && 
                 abs(@map[$i][$j] - @map[$ni][$nj]) == 1 {
                 my $v = @vertices[$ni][$nj];
+                %edges{$v} //= [];
                 if @map[$i][$j] < @map[$ni][$nj] {
                     #say "$i,$j {@map[$i][$j]} -> $ni,$nj {@map[$ni][$nj]}";
-                    (%edges{$u} //= []).push: $v;
+                    %edges{$u}.push: $v;
                 } else {
-                    (%edges{$v} //= []).push: $u;
+                    %edges{$v}.push: $u;
                 }
             }
         }
     }
 }
 
-my @dist = @coords.map: { (Inf xx @coords).Array };
 my @trail-heads = @coords.grep(-> ($i,$j) { @map[$i][$j] == 0 }, :k);
 say "found {+@trail-heads} trail heads";
 
-for @trail-heads.kv -> $h, $start {
-    print "$h/{+@trail-heads}\r";
-    my $Q = SetHash.new(^@coords);
-    @dist[$start][$start] = 0;
-    while $Q {
-         my $u = $Q.keys.min({ @dist[$start][$_]  });
-         $Q.unset($u);
-         for %edges{$u}.grep( { $Q{$_} } ) -> $v {
-             my $alt = @dist[$start][$u] + 1;
-             if $alt < @dist[$start][$v] {
-                 @dist[$start][$v] = $alt;
-             }
-         }
-     }
-}
-say '';
+my %paths = @trail-heads Z=> @trail-heads.map: { [$_,] };;
 
-my $total-score;
-for @map.kv -> $i, @row {
-    for @row.kv -> $j, $height {
-        if $height == 0 {
-            my $u = @vertices[$i][$j];
-            my $score += @dist[$u].kv.grep: -> $v, $d  { 
-                $d < Inf && @map[||@coords[$v]] == 9
-            };
-            $total-score += $score;
+my %scored;
+my ($part1, $part2) »=» 0;
+my $done = False;
+while !$done {
+    $done = True;
+    for %paths.kv -> $start, @heads {
+        my (@new, @done);
+        for @heads.kv -> $i, $u {
+            my @v = @(%edges{$u});
+            if !+@v {
+                @done.push($i);
+                if @map[||@coords[$u]] == 9 {
+                    $part2++;
+                    $part1++ unless %scored{"$start,$u"};
+                    %scored{"$start,$u"} = True;
+                }
+            } else {
+                $done = False;
+                %paths{$start}[$i] = @v.shift;
+                for @v -> $v {
+                    @new.push($v)
+                }
+            }
         }
+        my $removed = 0;
+        for @done.sort -> $i {
+            %paths{$start}.splice($i - $removed, 1);
+            $removed++;
+        }
+        %paths{$start}.append(@new);
     }
 }
-say $total-score;
-#.say for @map;
+say $part1;
+say $part2;
