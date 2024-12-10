@@ -26,6 +26,9 @@ my %edges = @vertices.map: * => [ ];
 for @map.kv -> $i, @row {
     for @row.kv -> $j, $level {
         my $u = vertex($i, $j);
+
+        # only consider right and down neighbors, but do so in both directions.
+        # that way we only consider each pair of adjacent spaces once.
         for ($i + 1, $j), ($i, $j + 1) -> ($ni, $nj) {
             if $ni < $height && $nj < $width && abs($level - @map[$ni][$nj]) == 1 {
                 my $v = vertex($ni, $nj);
