@@ -31,23 +31,25 @@ main {
         uword part1 = 0
         uword part2 = 0
 
-        do {
-            ubyte count = DataLoader.get_reports(reportList)
-            if count != 0 {
-                ubyte i
-                if ReportList.is_safe(reportList, debug) {
-                    part1 += 1
-                    part2 += 1
-                } else {
-                    for i in 0 to count - 1 {
-                        if ReportList.is_safe(ReportList.remove(reportList, i), debug) {
-                            part2 += 1
-                            break
-                        }
+        repeat {
+            void DataLoader.get_reports(reportList)
+            ;ubyte count = ReportList.get_count(reportList)
+            if count == 0 {
+                break
+            }
+            ubyte i
+            if ReportList.is_safe(reportList, debug) {
+                part1 += 1
+                part2 += 1
+            } else {
+                for i in 0 to count - 1 {
+                    if ReportList.is_safe(ReportList.remove(reportList, i), debug) {
+                        part2 += 1
+                        break
                     }
                 }
             }
-        } until count == 0
+        }
         txt.print_uw(part1)
         txt.nl()
         txt.print_uw(part2)
