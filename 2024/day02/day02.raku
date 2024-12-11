@@ -1,4 +1,6 @@
 #!/usr/bin/env raku
+unit sub MAIN($input-file, :$debug = False);
+
 sub is-safe(@reports is copy) {
     @reports .= Array;
     my @reversed = @reports.reverse.Array;
@@ -29,13 +31,17 @@ sub is-safe-enough(@reports) {
 }
 
 my ($part1, $part2) »=» 0;
-for lines() -> $line {
+for $input-file.IO.lines().kv -> $i, $line {
     my @reports = $line.words.map(+*);
     if is-safe(@reports) {
+        say "Line {$i+1} ($line) is safe." if $debug;
         $part1++;
         $part2++;
     } elsif is-safe-enough(@reports) {
+        say "Line {$i+1} ($line) is safe." if $debug;
         $part2++;
+    } elsif $debug {
+        say "Line {$i+1} ($line) is unsafe.";
     }
 }
 say $part1;
