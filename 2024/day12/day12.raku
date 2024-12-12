@@ -24,7 +24,9 @@ for @map.kv -> $i, @row {
        }
        if !defined($region) {
            $region = +@plant-type;
-           @plant-type.push($plant);
+           @plant-type.push: $plant;
+           @area.push: 0;
+           @perimeter.push: 0;
        }
        set-region($i, $j, $region);
     }
@@ -32,13 +34,13 @@ for @map.kv -> $i, @row {
 
 for @region.kv -> $i, @row {
     for @row.kv -> $j, $region {
+        @area[$region]++;
         @perimeter[$region]++ if $i == 0;
         @perimeter[$region]++ if $j == 0;
-        @area[$region]++;
         for ($i,$j+1),($i+1,$j) -> ($ni, $nj) {
             if $ni == $height || $nj == $width {
                 @perimeter[$region]++;
-            } else {
+            } elsif $ni < $height && $nj < $width {
                 my $neighbor = @region[$ni;$nj];
                 if $neighbor != $region {
                     @perimeter[$region] += 1;
