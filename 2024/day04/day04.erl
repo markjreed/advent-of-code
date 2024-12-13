@@ -102,7 +102,7 @@ count_x_mas(I, J, _, Height, Width)
 %     M M   M S   S M  S S
 %      A     A     A    A
 %     S S   M S   M S  M M
-count_x_mas(I, J, Puzzle, Height, Width) ->
+count_x_mas(I, J, Puzzle, _, _) ->
     case cell(I, J, Puzzle) of
         $A -> try_x_mas(I, J, Puzzle);
         _ -> 0
