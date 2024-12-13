@@ -41,28 +41,30 @@ for @region.kv -> $i, @row {
         @area[$region]++;
         if $i == 0 {
            #say "top cell: adding edge above";
-           add-edge($region, $i, $j, $i, $j+1);
+           add-edge($region, $i, $j, $i, $j+1, 'top');
         }
         if $j == 0 {
            #say "left cell: adding edge to left";
-           add-edge($region, $i, $j, $i+1, $j) if $j == 0;
+           add-edge($region, $i, $j, $i+1, $j, 'left') if $j == 0;
         }
         if $i+1 == $height {
            #say "bottom cell: adding edge below";
-           add-edge($region, $i+1, $j, $i+1, $j+1);
+           add-edge($region, $i+1, $j, $i+1, $j+1, 'bottom');
         }
         if $j+1 == $width {
            #say "right cell: adding to right";
-           add-edge($region, $i, $j+1, $i+1, $j+1);
+           add-edge($region, $i, $j+1, $i+1, $j+1, 'right');
         }
         
         for ($i,$j+1),($i+1,$j) -> ($ni, $nj) {
             if $ni < $height && $nj < $width {
                 my $neighbor = @region[$ni;$nj];
                 if $neighbor != $region {
-                    my ($a, $b) = $i == $ni ?? ($i,$j+1) !! ($i+1,$j);;
-                    add-edge($region, $a, $b, $i+1, $j+1);
-                    add-edge($neighbor, $a, $b, $i+1, $j+1);
+                    my ($a, $b, $us, $them) =
+                        $i == $ni ?? ($i,$j+1, 'right', 'left') 
+                                  !! ($i+1,$j, 'bottom', 'top');;
+                    add-edge($region, $a, $b, $i+1, $j+1, $us);
+                    add-edge($neighbor, $a, $b, $i+1, $j+1, $them);
                 }
             }
         }
@@ -92,7 +94,7 @@ sub set-region($i, $j, $region) {
 
 # add an edge between vertices i0, j0 and i1, j1 (where vertex i,j is
 # the upper left corner of cell i,j)
-sub add-edge($region, $i0, $j0, $i1, $j1) {
+sub add-edge($region, $i0, $j0, $i1, $j1, $dir) {
     #say "into add-edge($region); currently: {@sides[$region].raku}";
 
     # we only find each edge onces, so any edge increases the perimeter
@@ -101,17 +103,17 @@ sub add-edge($region, $i0, $j0, $i1, $j1) {
     # look for an existing side going through i0,j0 in the right direction
     my $found = False;
     for @(@sides[$region]) -> $side {
-        my ($a, $b, $c, $d) = @$side;
+        my ($a, $b, $c, $d, $edge) = @$side;
         #say "a=$a, b=$b, c=$c, d=$d";
         if $c == $i0 && $d == $j0 && sign($c - $a) == sign($i1 - $i0) &&
-           sign($d - $b) == sign($j1 - $j0) {
+           sign($d - $b) == sign($j1 - $j0) && $edge eq $dir {
             $side[2,3] = $i1, $j1;
             $found = True;
             #say "region $region: extended [$a,$b,$c,$d] to [{@$side.join(',')}]";
         }
     }
     if !$found {
-        @sides[$region].push: [$i0, $j0, $i1, $j1];
+        @sides[$region].push: [$i0, $j0, $i1, $j1, $dir];
         #say "region $region: added [$i0,$j0,$i1,$j1]";
     }
 }
