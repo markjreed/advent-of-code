@@ -12,6 +12,9 @@ for slurp() ~~  m:g/ <op> / -> $/ {
     when $<op>[0] eq "mul"   { 
         my $product = $<op>[1] * $<op>[2];
         $part1 += $product;
+        if $doing {
+            say "{$<op>[1]},{$<op>[2]}";
+        }
         $part2 += $product if $doing;
     }
 }

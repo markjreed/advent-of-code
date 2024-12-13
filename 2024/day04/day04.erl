@@ -48,7 +48,7 @@ count_xmas(I, J, Puzzle, Height, Width) ->
         $X -> lists:sum(
             lists:map(fun(D) -> says_xmas(I,J,Puzzle,Height,Width,D) end,
                       lists:seq(0,7)));
-        _ -> 0
+         _ -> 0
     end.
 
 % given coordinates and a direction, try to spell XMAS in that
