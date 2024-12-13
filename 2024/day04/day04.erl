@@ -1,9 +1,5 @@
 #!/usr/bin/env escript
-nth([],_) -> undefined;
-nth([H|_],0) -> H;
-nth([_|T],I) -> nth(T,I-1).
-
-cell(M, I, J) -> nth(nth(M, I), J).
+cell(M, I, J) -> lists:nth(J, lists:nth(I, M)).
 
 readlines(FileName) ->
     {ok, Device} = file:open(FileName, [read]),
@@ -47,10 +43,10 @@ get_direction(5) -> { 1, -1};
 get_direction(6) -> { 0, -1};
 get_direction(7) -> {-1, -1}.
 
-says_mas(_, _, _, I, _, DI, _) when I + 2 * DI < 0 -> 0;
-says_mas(_, Height, _, I, _, DI, _) when I + 2 * DI >= Height -> 0;
-says_mas(_, _, _, _, J, _, DJ) when J + 2 * DJ < 0 -> 0;
-says_mas(_, _, Width, _, J, _, DJ) when J + 2 * DJ >= Width -> 0;
+says_mas(_, _, _, I, _, DI, _) when I + 2 * DI < 1 -> 0;
+says_mas(_, Height, _, I, _, DI, _) when I + 2 * DI > Height -> 0;
+says_mas(_, _, _, _, J, _, DJ) when J + 2 * DJ < 1 -> 0;
+says_mas(_, _, Width, _, J, _, DJ) when J + 2 * DJ > Width -> 0;
 says_mas(Map, _, _, I, J, DI, DJ) ->
     case cell(Map, I, J) of
         $M -> says_as(Map, I + DI, J +DJ, DI, DJ);
@@ -74,11 +70,11 @@ main([FileName]) ->
     Map = readlines(FileName),
     print_matrix(Map),
     Height = length(Map),
-    Width = length(nth(Map,0)),
+    Width = length(lists:nth(1,Map)),
     Count = lists:sum(
         lists:map(
             fun(I) -> lists:sum(
                 lists:map(fun(J) -> count_xmas(Map,Height,Width,I,J) end, 
-                          lists:seq(0, Width - 1)))
-            end, lists:seq(0, Height-1))),
+                          lists:seq(1, Width)))
+            end, lists:seq(1, Height))),
     io:format("~p~n", [Count]).
