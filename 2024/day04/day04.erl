@@ -96,18 +96,15 @@ is_s(I, J, Puzzle) ->
 count_x_mas(I, J, _, Height, Width) 
     when (I < 2) or (I > Height - 1) or (J < 2) or (J > Width - 1) -> 0;
 
-% if the cell is not an A, return 0. otherwise, add up the
-% results of trying to find all four ways of making two intersecting
-% diagonal MAS:
-%     M M   M S   S M  S S
-%      A     A     A    A
-%     S S   M S   M S  M M
+% if the cell is not an A, return 0. otherwise, try to find
+% two intersecting diagonal MAS.
 count_x_mas(I, J, Puzzle, _, _) ->
     case cell(I, J, Puzzle) of
         $A -> try_x_mas(I, J, Puzzle);
         _ -> 0
     end.
 
+% look for two intersecting diagonal MAS.
 try_x_mas(I, J, Puzzle) ->
     UL = cell(I-1,J-1,Puzzle),
     UR = cell(I-1,J+1,Puzzle),
