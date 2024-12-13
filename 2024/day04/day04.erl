@@ -2,16 +2,22 @@
 main([]) -> throw(io:format("Usage: ~s filename~n", [escript:script_name()]));
 main([FileName]) -> 
     Puzzle = load(FileName),
-    print_puzzle(Puzzle),
     Height = length(Puzzle),
     Width = length(lists:nth(1,Puzzle)),
-    Count = lists:sum(
+    XMAS = lists:sum(
         lists:map(
             fun(I) -> lists:sum(
                 lists:map(fun(J) -> count_xmas(I,J,Puzzle,Height,Width) end, 
                           lists:seq(1, Width)))
             end, lists:seq(1, Height))),
-    io:format("~p~n", [Count]).
+    X_MAS = lists:sum(
+        lists:map(
+            fun(I) -> lists:sum(
+                lists:map(fun(J) -> count_x_mas(I,J,Puzzle,Height,Width) end, 
+                          lists:seq(1, Width)))
+            end, lists:seq(1, Height))),
+    io:format("~p~n", [XMAS]),
+    io:format("~p~n", [X_MAS]).
 
 % load file as a list of strings
 load(FileName) ->
@@ -27,10 +33,6 @@ readlines(Device) ->
         eof  -> [];
         Line -> [lists:droplast(Line) | readlines(Device)]
     end.
-
-% print the puzzle back out for debugging
-print_puzzle([]) -> io:nl();
-print_puzzle([H|T]) -> io:format("~s~n", [H]), print_puzzle(T).
 
 % shorthand for 2D indexing
 cell(I, J, Puzzle) -> lists:nth(J, lists:nth(I, Puzzle)).
@@ -88,4 +90,33 @@ is_s(I, J, Puzzle) ->
     case cell(I, J, Puzzle) of
         $S -> 1;
         _ -> 0
+    end.
+
+% part 2 - count X-MAS
+count_x_mas(I, J, _, Height, Width) 
+    when (I < 2) or (I > Height - 1) or (J < 2) or (J > Width - 1) -> 0;
+
+% if the cell is not an A, return 0. otherwise, add up the
+% results of trying to find all four ways of making two intersecting
+% diagonal MAS:
+%     M M   M S   S M  S S
+%      A     A     A    A
+%     S S   M S   M S  M M
+count_x_mas(I, J, Puzzle, Height, Width) ->
+    case cell(I, J, Puzzle) of
+        $A -> try_x_mas(I, J, Puzzle);
+        _ -> 0
+    end.
+
+try_x_mas(I, J, Puzzle) ->
+    UL = cell(I-1,J-1,Puzzle),
+    UR = cell(I-1,J+1,Puzzle),
+    LL = cell(I+1,J-1,Puzzle),
+    LR = cell(I+1,J+1,Puzzle),
+    Positive = [LL|[$A|[UR]]],
+    Negative = [UL|[$A|[LR]]],
+    case (string:equal(Positive, "MAS") or string:equal(Positive,"SAM")) and
+         (string:equal(Negative, "MAS") or string:equal(Negative,"SAM")) of
+        true -> 1;
+        false -> 0
     end.
