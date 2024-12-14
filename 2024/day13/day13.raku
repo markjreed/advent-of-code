@@ -7,49 +7,28 @@ unit sub MAIN($filename);
 
 my @mat;
 my $machine = 0;
-my $total = 0;
+my ($part1, $part2) »=» 0;
+my ($ax, $ay, $bx, $by, $px, $py);
 for $filename.IO.lines {
     if m/^'Button A: X+' (\d+) ', Y+' (\d+)/ {
         $machine++;
-        @mat = [[+$0, 0, 0],[+$1, 0, 0]];
+        ($ax, $ay) = +$0, +$1;
     } elsif m/^'Button B: X+' (\d+) ', Y+' (\d+)/ {
-        @mat[0;1] = +$0;
-        @mat[1;1] = +$1;
+        ($bx, $by) = +$0, +$1;
     } elsif m/^'Prize: X=' (\d+) ', Y=' (\d+)/ {
-        @mat[0;2] = +$0;
-        @mat[1;2] = +$1;
-        my @x = solve(@mat);
-        unless @x.grep: { $_ != Int($_) }  {
-            $total += [+] @(@x) Z* (3,1);
+        ($px, $py) = +$0, +$1;
+        my $a = ($px * $by - $py * $bx) / ($ax * $by - $ay * $bx);
+        my $b = ($ax * $py - $ay * $px) / ($ax * $by - $ay * $bx);
+        if $a == Int($a) && $b == Int($b) {
+            $part1 += 3 * $a + $b;
+        }
+        ($px, $py) »+=» 10000000000000;
+        $a = ($px * $by - $py * $bx) / ($ax * $by - $ay * $bx);
+        $b = ($ax * $py - $ay * $px) / ($ax * $by - $ay * $bx);
+        if $a == Int($a) && $b == Int($b) {
+            $part2 += 3 * $a + $b;
         }
     }
 }
-say $total;
-
-sub solve(@a is copy) {
-    my $n = 2;
-    my @x;
-    for ^($n-1) -> $k {
-        for ($k+1)..($n-1)  -> $i {
-            @a[$i;$k] /= @a[$k;$k];
-            for ($k+1)..($n-1) -> $j {
-                @a[$i;$j] -= @a[$i;$k]*@a[$k;$j];
-            }
-        }
-    }
-    for ^($n-1) -> $k {
-        for ($k+1)..($n-1) -> $i {
-            @a[$i;2] -= @a[$i;$k] * @a[$k;2];
-        }
-    }
-    for ($n-1) ... 0 -> $i {
-        my $s = @a[$i;2];
-        if $i < $n {
-            for ($i+1)..$n-1 -> $j {
-                $s -= @a[$i;$j] * @x[$j];
-            }
-        }
-        @x[$i] = $s / @a[$i;$i];
-    }
-    return @x;
-}
+say $part1;
+say $part2;
