@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-unit sub MAIN($input, $start-dir=1);
+unit sub MAIN($input, :$start-dir=1, :$progress=False);
 
 my @map = $input.IO.lines».comb».Array.Array;
 
@@ -38,6 +38,7 @@ my %visited;
 %previous{$start} = [];
 
 while my @unvisited = @vertices.grep({ !%visited{$_} }) {
+    print "{+(@unvisited)} left    \r" if $progress;
     my $u = @unvisited.min({ %distances{$_} });
     last if %distances{$u} == Inf;
     %visited{$u} = True;
@@ -51,7 +52,8 @@ while my @unvisited = @vertices.grep({ !%visited{$_} }) {
         }
     }
 }
-my $finish = ("$end-at," Z~ ^4).min( { %distances{$_} } );
+say "{+(@unvisited)} left    " if $progress;
+my $finish = ("$end-at," X~ ^4).min( { %distances{$_} } );
 say %distances{$finish};
 my $best-seats = SetHash( $finish );
 my $count;
