@@ -53,7 +53,7 @@ def main(filename, start_dir=1):
 
     start = nodes[start_at + ( start_dir, )]
     
-    best = (math.inf,[])
+    best = (math.inf, [])
     for d in range(4):
         key = end_at + (d,)
         if key in nodes:
