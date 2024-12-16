@@ -32,11 +32,12 @@ for @vertices -> $key {
 
 my $start = "$start-at,$start-dir";
 my %distances = @vertices »=>» Inf;
+my %previous;
 my %visited;
 %distances{$start} = 0;
-say +@vertices;
+%previous{$start} = [];
+
 while my @unvisited = @vertices.grep({ !%visited{$_} }) {
-    print "{+@unvisited} unvisited vertices left      \r";
     my $u = @unvisited.min({ %distances{$_} });
     last if %distances{$u} == Inf;
     %visited{$u} = True;
@@ -44,8 +45,20 @@ while my @unvisited = @vertices.grep({ !%visited{$_} }) {
         my $alt = %distances{$u} + $step;
         if $alt < %distances{$v} {
             %distances{$v} = $alt;
+            %previous{$v} = [ $u, ];
+        } elsif $alt == %distances{$v} {
+            %previous{$v}.push($u);
         }
     }
 }
-say '0 unvisited vertices left';
-say ("$end-at," Z~ ^4).map({ %distances{$_} }).min;
+my $finish = ("$end-at," Z~ ^4).min( { %distances{$_} } );
+say %distances{$finish};
+my $best-seats = SetHash( $finish );
+my $count;
+repeat {
+    $count = +$best-seats;
+    for $best-seats.keys.grep: { defined($_) } {
+        $best-seats.set(@(%previous{$_} // []));
+    }
+} while +$best-seats > $count;
+say +$best-seats.keys.map(*.split(',')[0..1].join(',')).unique;
