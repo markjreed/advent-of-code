@@ -9,9 +9,14 @@ my ($start-at, $end-at);
 my @occupiable = @map.kv.map(
     -> $i, @row {
         |@row.kv.map: -> $j, $cell { [$i,$j,$cell] } 
-    }).grep(-> ($i,$j,$sym) { $start-at = "$i,$j" if $sym eq 'S'; $end-at = "$i,$j" if $sym eq 'E'; $sym (elem) ['.','S','E'] }).map: -> ($i,$j,$_) { [$i,$j] };
+    }).grep(-> ($i,$j,$sym) {
+        $start-at = "$i,$j" if $sym eq 'S';
+        $end-at = "$i,$j" if $sym eq 'E';
+        $sym (elem) ['.','S','E']
+    }).map: -> ($i,$j,$_) { [$i,$j] };
 
-my @vertices = (@occupiable X, ^4).map: -> (($i,$j),$dir) { "$i,$j,$dir" };
+my @vertices = 
+    (@occupiable X, ^4).map: -> (($i,$j),$dir) { "$i,$j,$dir" };
 
 # map from directions to coordinate deltas
 my @dirs = ( (-1,0), (0,1), (1,0), (0,-1) );
@@ -52,7 +57,9 @@ while my @unvisited = @vertices.grep({ !%visited{$_} }) {
         }
     }
 }
+
 say "{+(@unvisited)} left    " if $progress;
+
 my $finish = ("$end-at," X~ ^4).min( { %distances{$_} } );
 say %distances{$finish};
 my $best-seats = SetHash( $finish );
@@ -63,4 +70,5 @@ repeat {
         $best-seats.set(@(%previous{$_} // []));
     }
 } while +$best-seats > $count;
+
 say +$best-seats.keys.map(*.split(',')[0..1].join(',')).unique;
