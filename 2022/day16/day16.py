@@ -6,16 +6,13 @@ Pattern = re.compile(r'Valve ([A-Z][A-Z]) has flow rate=(\d+); tunnels? leads? t
 rates = {}
 tunnels = {}
 
-def main(file):
-    start = None
+def main(file, start='AA'):
     opened = {}
 
     with open(file) as f:
         for line in f:
             if m := Pattern.match(line):
                 valve = m[1]
-                if start is None:
-                    start = valve
                 rates[valve] = int(m[2])
                 opened[valve] = False
                 if valve not in tunnels:
