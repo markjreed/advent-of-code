@@ -24,18 +24,18 @@ sub write($value) {
 }
 
 my @instructions = [
-    sub adv($operand) { say "adv({combo($operand)})"; }
-    sub bxl($operand) { say "bxl($operand)": }
-    sub bst($operand) { say "bst({combo($operand)})"; }
-    sub jnz($operand) { say "jnz($operand)"; }
-    sub bxc($operand) { say "bxc($operand)"; }
-    sub out($operand) { say "out({combo($operand)})"; }
-    sub bdv($operand) { say "bdv({combo($operand)})"; }
-    sub cdv($operand) { say "cdv({combo($operand)})"; }
+    sub adv($pc,$operand) { say "$pc: A >>= {combo($operand)}"; }
+    sub bxl($pc,$operand) { say "$pc: B ^= $operand": }
+    sub bst($pc,$operand) { say "$pc: B = {combo($operand)} & 7"; }
+    sub jnz($pc,$operand) { say "$pc: if A then $operand"; }
+    sub bxc($pc,$operand) { say "$pc: B ^= C"; }
+    sub out($pc,$operand) { say "$pc: out({combo($operand)} & 7)"; }
+    sub bdv($pc,$operand) { say "$pc: B = A >> {combo($operand)}"; }
+    sub cdv($pc,$operand) { say "$pc: C = A >> {combo($operand)}"; }
 ];
 
-for @code -> $opcode, $operand {
-    @instructions[$opcode]($operand);
+for @code.kv -> $pc, $opcode, $pc-plus1, $operand {
+    @instructions[$opcode]($pc, $operand);
 }
 exit;
 
