@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import argh, math, re, rustworkx as rx, sys
+import argh, re
 
 TimeLimit = 30
 Pattern = re.compile(r'Valve ([A-Z][A-Z]) has flow rate=(\d+); tunnels? leads? to valves? ((?:[A-Z][A-Z](?:,\s+)?)+)')
