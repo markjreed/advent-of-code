@@ -42,7 +42,7 @@ def steps_to_exit(space, size):
 
     start = nodes[(0,0)]
     finish = nodes[(size - 1, size - 1)]
-    path = rx.dijkstra_shortest_path_lengths(graph, start, lambda x: 1.0,
+    path = rx.dijkstra_shortest_path_lengths(graph, start, lambda x: StepCost,
                                              goal=finish)
     return path[finish] if finish in path else math.inf
 
