@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-unit sub MAIN($input);
+unit sub MAIN($input, $start=0);
 my %registers = «A B C» »=>» 0;
 my $pc = 0;
 my @code;
@@ -24,16 +24,14 @@ sub write($value) {
 }
 
 my @instructions = [
-    sub adv($operand) { %registers<A> div= (1 +< combo($operand)); }
-    sub bxl($operand) { %registers<B> +^=  $$operand; }
+    sub adv($operand) { %registers<A> +>= combo($operand); }
+    sub bxl($operand) { %registers<B> +^= $operand; }
     sub bst($operand) { %registers<B> = combo($operand) +& 7; }
     sub jnz($operand) { $pc = $operand unless %registers<A> == 0; }
     sub bxc($operand) { %registers<B> +^= %registers<C>; }
     sub out($operand) { write(combo($operand) +& 7); }
-    sub bdv($operand) { %registers<B> = 
-                        %registers<A> div (1 +< combo($operand)); }
-    sub cdv($operand) { %registers<C> = 
-                        %registers<A> div (1 +< combo($operand)); }
+    sub bdv($operand) { %registers<B> = %registers<A> +> combo($operand); }
+    sub cdv($operand) { %registers<C> = %registers<A> +> combo($operand); }
 ];
 
 sub run($match = False) {
@@ -44,10 +42,9 @@ sub run($match = False) {
         my ($opcode, $operand) = @code[$pc..$pc+1];
         $pc += 2;
         @instructions[$opcode]($operand);
-        if $match && 
-           @output > $output && @output[$output] != @code[$output] {
-            return;
-        }
+        #if $match && @output > $output && @output[$output] != @code[$output] {
+        #    return;
+        #}
     }
     return @output;
 }
@@ -55,12 +52,12 @@ sub run($match = False) {
 say run.join(','); # part 1
 my %copy = %registers;
 my @out = run;
-my $a = -1;
+my $a = $start - 1;
 while @out !eqv @code {
+    say "$a: {@out.join(',')}";
     $a += 1;
-    print "$a      \r";
     %registers = %copy;
     %registers<A> = $a;
     @out = run(True);
 }
-say $a;
+say "$a: {@out.join: ','}";
