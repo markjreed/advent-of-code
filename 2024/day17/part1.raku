@@ -8,7 +8,7 @@ for $input.IO.lines {
     if m/'Register' \s+ ( <[ABC]> ) \s* ':' \s+ ( \d+ )/ {
         %registers{~$0} = +$1;
     } elsif m/'Program:' \s* ( <[0..7,]> + )/ {
-        @code = $0.split(',').map(+*);
+        @code = $0.split(',')».Int;
     }
 }
 
@@ -17,23 +17,20 @@ sub combo($operand) {
     return %registers{($operand - 4 + 'A'.ord).chr};
 }
 
-my Bool $written = False;
 my @output;
 sub write($value) {
     @output.push($value);
 }
 
 my @instructions = [
-    sub adv($operand) { %registers<A> div= (1 +< combo($operand)); }
+    sub adv($operand) { %registers<A> +>= combo($operand); }
     sub bxl($operand) { %registers<B> +^=  $$operand; }
     sub bst($operand) { %registers<B> = combo($operand) +& 7; }
     sub jnz($operand) { $pc = $operand unless %registers<A> == 0; }
     sub bxc($operand) { %registers<B> +^= %registers<C>; }
     sub out($operand) { write(combo($operand) +& 7); }
-    sub bdv($operand) { %registers<B> = 
-                        %registers<A> div (1 +< combo($operand)); }
-    sub cdv($operand) { %registers<C> = 
-                        %registers<A> div (1 +< combo($operand)); }
+    sub bdv($operand) { %registers<B> = %registers<A> +> combo($operand); }
+    sub cdv($operand) { %registers<C> = %registers<A> +> combo($operand); }
 ];
 
 sub run($match = False) {
