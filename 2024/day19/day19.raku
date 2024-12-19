@@ -1,30 +1,31 @@
 #!/usr/bin/env raku
 unit sub MAIN($input);
 
-my (@available, $part1);
+my (@available, $part1, $part2);
 for $input.IO.lines {
    @available = .split(/ ',' \s* /) unless @available;
    if / . / {
-       $part1++ if can-make($_);
+       if my $count = can-make($_) {
+          $part1++;
+          $part2 += $count;
+       }
    }
 }
 say $part1;
+say $part2;
 
 my %can-make;
 sub can-make($pattern) {
     unless %can-make{$pattern}:exists {
+        my $count = 0;
         for @available -> $towel {
             if $pattern eq $towel {
-                %can-make{$pattern} = True;
-                last;
-            }
-            if $pattern.starts-with($towel) &&
-                can-make(substr($pattern, $towel.chars)) {
-                %can-make{$pattern} = True;
-                last;
+                $count++;
+            } elsif $pattern.starts-with($towel) {
+                $count += can-make(substr($pattern, $towel.chars));
             }
         }
-        %can-make{$pattern} //= False;
+        %can-make{$pattern} = $count;
     }
     return %can-make{$pattern};
 }
