@@ -1,6 +1,13 @@
 #!/usr/bin/env raku
-unit sub MAIN($input, :$threshold=100);
+unit sub MAIN($input, :$thresholds=100, :$report=False);
 
+my @thresholds;
+if $thresholds ~~ /','/ {
+    @thresholds = $thresholds.split(',')».Int;
+} else {
+    @thresholds = $thresholds xx 2;
+}
+    
 my @racetrack = $input.IO.lines».comb;
 my $height = +@racetrack;
 my $width = +@racetrack[0];
@@ -25,6 +32,7 @@ while @racetrack[$i;$j] ne 'E' {
         }
     }
 }
+say "With no cheating, the path is {+@path-1} picoseconds." if $report;
 
 sub deltas($size) {
     gather for -$size .. $size -> $di {
@@ -35,9 +43,9 @@ sub deltas($size) {
     }
 }
             
-sub count-cheats($max-time) {
+sub count-cheats($max-time, $threshold) {
     my @deltas = deltas($max-time);
-    my $count = 0;
+    my %counts;
 
     for @path.clone.kv -> $n1, $s1 {
         my ($i1, $j1) = $s1.split(',');
@@ -45,12 +53,29 @@ sub count-cheats($max-time) {
              my ($i2, $j2) = ($i1, $j1) Z+ ($di, $dj);
              if defined my $n2 = %pos{"$i2,$j2"} {
                  my $d = abs($di) + abs($dj);
-                 $count++ if $d <= $n2 - $n1 - $threshold;
+                 my $savings = $n2 - $n1 - $d;
+                 if $savings >= $threshold {
+                     %counts{$savings}++;
+                 }
              }
         }
     }
-    return $count;
+    return %counts;
 }
-
-say count-cheats(2);
-say count-cheats(20);
+my $count = 0;
+for count-cheats(2, @thresholds[0]).pairs.sort(+*.key) {
+    my ($k, $v) = .kv;
+    say "There {$v != 1 ?? 'are' !! 'is'} $v cheat{$v != 1 ?? 's' !! ''} that save{$v == 1 ?? 's' !! ''} $k picosecond{$k != 1 ?? 's' !! ''}." if $report;
+    $count += $v;
+}
+print "Part 1 total: " if $report;
+say $count;
+say '' if $report;
+$count = 0;
+for count-cheats(20, @thresholds[1]).pairs.sort(+*.key) {
+    my ($k, $v) = .kv;
+    say "There {$v != 1 ?? 'are' !! 'is'} $v cheat{$v != 1 ?? 's' !! ''} that save{$v == 1 ?? 's' !! ''} $k picosecond{$k != 1 ?? 's' !! ''}." if $report;
+    $count += $v;
+}
+print "Part 2 total: " if $report;
+say $count;
