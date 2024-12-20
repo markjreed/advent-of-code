@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-unit sub MAIN($input, $threshold=100);
+unit sub MAIN($input, :$threshold=100);
 
 my @racetrack = $input.IO.lines».comb;
 my $height = +@racetrack;
@@ -26,22 +26,31 @@ while @racetrack[$i;$j] ne 'E' {
     }
 }
 
-my @deltas = [         (-2,  0),
-             (-1, -1), (-1,  0), (-1,  1), 
-    (0, -2), ( 0, -1),           ( 0,  1), ( 0,  2), 
-             (-1,  1), ( 0,  1), ( 1,  1), 
-                       ( 2,  0) 
-];
-
-for @path.clone.kv -> $n1, $s1 {
-    my ($i1, $j1) = $s1.split(',');
-    for  @deltas -> ($di, $dj) {
-         my ($i2, $j2) = ($i1, $j1) Z+ ($di, $dj);
-         if defined my $n2 = %pos{"$i2,$j2"} {
-             my $d = abs($di) + abs($dj);
-             $part1++ if $d <= $n2 - $n1 - $threshold;
-         }
+sub deltas($size) {
+    gather for -$size .. $size -> $di {
+        my $left = $size - abs($di);
+        for -$left .. $left -> $dj {
+            take ($di, $dj) if $di || $dj;
+        }
     }
 }
+            
+sub count-cheats($max-time) {
+    my @deltas = deltas($max-time);
+    my $count = 0;
 
-say $part1;
+    for @path.clone.kv -> $n1, $s1 {
+        my ($i1, $j1) = $s1.split(',');
+        for  @deltas -> ($di, $dj) {
+             my ($i2, $j2) = ($i1, $j1) Z+ ($di, $dj);
+             if defined my $n2 = %pos{"$i2,$j2"} {
+                 my $d = abs($di) + abs($dj);
+                 $count++ if $d <= $n2 - $n1 - $threshold;
+             }
+        }
+    }
+    return $count;
+}
+
+say count-cheats(2);
+say count-cheats(20);
