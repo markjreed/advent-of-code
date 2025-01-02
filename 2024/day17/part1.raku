@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-unit sub MAIN($input);
+unit sub MAIN($input, $start=0);
 my %registers = «A B C» »=>» 0;
 my $pc = 0;
 my @code;
