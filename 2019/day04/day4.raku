@@ -9,7 +9,7 @@ my @part1 = ($low..$high).grep: {
 say +@part1;
 
 my @patterns = gather for ^10 -> $digit {
-    take "(<-[$digit]> | ^) '$digit' '$digit' (<-[$digit]> | \$)";
+    take "<!after '$digit'> '$digit' '$digit' <!before '$digit'>";
 }
     
 my @part2 = @part1.grep: /<@patterns>/;
