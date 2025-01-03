@@ -8,11 +8,9 @@ my @part1 = ($low..$high).grep: {
 };
 say +@part1;
 
-my @part2 = @part1.grep:  {
-    ?(gather for m:g/(\d) {} $0/ -> $/ is copy {
-        my $digit = $0;
-        my $pattern = "<!after '$digit'> '$digit' '$digit' <!before '$digit'>";
-        take ?m/<$pattern>/;
-    }).grep(?*);
+my @patterns = gather for ^10 -> $digit {
+    take "(<-[$digit]> | ^) '$digit' '$digit' (<-[$digit]> | \$)";
 }
+    
+my @part2 = @part1.grep: /<@patterns>/;
 say +@part2;
