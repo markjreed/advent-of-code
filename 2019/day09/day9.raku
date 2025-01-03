@@ -42,13 +42,7 @@ class Instance {
 
             given $key {
                when 'HALT'   { $!running = False; return; }
-               when 'ADD'    { 
-
-               for @params.kv -> $i, $v {
-                   say "params[$i] at $!ip" unless defined($v);
-               }
-               
-               @params[2] = @params[0] + @params[1]; }
+               when 'ADD'    { @params[2] = @params[0] + @params[1]; }
                when 'MUL'    { @params[2] = @params[0] * @params[1]; }
                when 'GET'    { @params[0] = @inputs ?? @inputs.shift !! get; }
                when 'PUT'    { return $!last-result = @params[0]; }
