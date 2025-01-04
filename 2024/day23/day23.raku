@@ -26,7 +26,7 @@ say +%clusters.keys.grep({ m/(^|',')t/ });
 my @max-cluster;
 sub BronKerbosch1($R is copy, $P is copy, $X is copy) {
     if !$P && !$X {
-        if +$R > @max-cluster {
+        if $R > @max-cluster {
             @max-cluster = $R.keys.Array;
         }
     }
