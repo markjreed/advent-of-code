@@ -1,7 +1,6 @@
 #!/usr/bin/env raku
 unit sub MAIN($input, $start=0);
 my %registers = «A B C» »=>» 0;
-my $pc = 0;
 my @code;
 
 for $input.IO.lines {
@@ -17,10 +16,7 @@ sub combo($operand) {
     return %registers{($operand - 4 + 'A'.ord).chr};
 }
 
-my @output;
-sub write($value) {
-    @output.push($value);
-}
+my ($pc, @output);
 
 my @instructions = [
     sub adv($operand) { %registers<A> +>= combo($operand); }
@@ -28,7 +24,7 @@ my @instructions = [
     sub bst($operand) { %registers<B> = combo($operand) +& 7; }
     sub jnz($operand) { $pc = $operand unless %registers<A> == 0; }
     sub bxc($operand) { %registers<B> +^= %registers<C>; }
-    sub out($operand) { write(combo($operand) +& 7); }
+    sub out($operand) { @output.push(combo($operand) +& 7); }
     sub bdv($operand) { %registers<B> = %registers<A> +> combo($operand); }
     sub cdv($operand) { %registers<C> = %registers<A> +> combo($operand); }
 ];

@@ -5,7 +5,10 @@ constant ZERO = [0, 0, 0];
 
 class Moon {
     has Int @.position;
+    has Int @.original-position;
     has Int @.velocity;
+    has Int @.original-velocity;
+
     sub vgist(@vector) {
         return "<x={@vector[0]}, y={@vector[1]}, z={@vector[2]}>";
     }
@@ -13,8 +16,8 @@ class Moon {
         return "pos={vgist($.position)}, vel={vgist($.velocity)}";
     }
     submethod BUILD(:@position, :@velocity = ZERO.clone) {
-        @!position = @position;
-        @!velocity = @velocity;
+        @!original-position = @!position = @position;
+        @!original-velocity = @!velocity = @velocity;
     }
 }
 
@@ -56,3 +59,29 @@ say [+] gather for @moons {
     say ": pot: $pot; kin: $kin; total: { $pot * $kin }" if $verbose;
     take $pot * $kin;
 }
+
+my @steps = gather for ^3 -> $coordinate {
+    for @moons -> $moon {
+        $moon.position = $moon.original-position;
+        $moon.velocity = $moon.original-velocity;
+    }
+    my $steps = 0;
+    repeat {
+        for @moons[0..*-2].kv -> $i, $this {
+            for @moons[$i+1..*] -> $that {
+                my $delta = ($that.position[$coordinate] - $this.position[$coordinate]).sign;
+                $this.velocity[$coordinate] += $delta;
+                $that.velocity[$coordinate] -= $delta;
+            }
+        }
+        for @moons -> $moon {
+            $moon.position[$coordinate] += $moon.velocity[$coordinate];
+        }
+        $steps++;
+    } until ! @moons.grep: {
+        .velocity[$coordinate] != .original-velocity[$coordinate] ||
+        .position[$coordinate] != .original-position[$coordinate]
+    }
+    take $steps;
+}
+say [lcm] @steps;
