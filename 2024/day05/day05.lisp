@@ -34,12 +34,12 @@
         ; but symbol keys are more efficient.)
         (let ((key1 (intern page1)) (key2 (intern page2)))
 
-            ; prereqs is a hash of hashes; if page1 has no entry yet, create a
+            ; prereqs is a hash of hashes; if page2 has no entry yet, create a
             ; new sub-hash there
             (if (not (gethash key2 prereqs)) 
                 (setf (gethash key2 prereqs) (make-hash-table)))
 
-            ; add an entry for prereqs{key1}{key2} - inner hashes are really
+            ; add an entry for prereqs{page2}{page1} - inner hashes are really
             ; used as sets, so we just set the value to t 
             (setf (gethash key1 (gethash key2 prereqs)) t))))
 
