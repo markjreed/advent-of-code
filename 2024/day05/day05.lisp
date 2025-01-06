@@ -24,11 +24,18 @@
 ; given a line, try to parse it as a rule and add it
 ; to the hash. Returns t if it can, nil otherwise.
 (defun add-rule (line) 
+    ; match against our regex; if it matches, bind the capture groups to
+    ; the vars and execute the code.
     (ppcre:register-groups-bind (page1 page2) (rule line)
+
+        ; intern the page number strings to symbols so the hash table will
+        ; recognize them. (Could also have specified :test #'equal to
+        ; make-hash-table so lookups would do a string comparison every time,
+        ; but symbol keys are more efficient.)
         (let ((key1 (intern page1)) (key2 (intern page2)))
 
-            ; using a hash of hashes; so if page1 has no entry, create a
-            ; new sub-hash and store it there
+            ; prereqs is a hash of hashes; if page1 has no entry yet, create a
+            ; new sub-hash there
             (if (not (gethash key2 prereqs)) 
                 (setf (gethash key2 prereqs) (make-hash-table)))
 
@@ -48,7 +55,7 @@
     (let ((h (gethash (intern page2) prereqs)))
         (and h (gethash (intern page1) h))))
 
-; OK, preliminary work all done; let's parse some input.  Open file and loop
+; OK, preliminary work all done; let's parse some input. Open the file and loop
 ; over its lines. For each line, call add-rule: if it returns t, the line was a
 ; rule and has been added to the hash, so we do nothing else. If add-rule
 ; returns nil, then the line wasn't a rule, so we collect it as part of the
@@ -59,11 +66,11 @@
           if (and line (> (length line) 0) (null (add-rule line))) collect line
           while line)))
 
-; Now loop over the page lists and process them, adding up the numbers 
-; for the two parts of the puzzle, which start at 0.
+; Make some totals for the two parts of the puzzle:
 (defvar part1 0)
 (defvar part2 0)
 
+; Now loop over the manuals and process them
 (loop for manual in manuals doing 
     (let* ((pages (split-sequence:split-sequence #\, manual))  ; pages as list
            (size (length pages))                               ; page count
