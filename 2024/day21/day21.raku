@@ -6,7 +6,7 @@ role KeyPad {
     has $.width;
     has @.buttons;
     has %.paths;
-    has $.last is rw = 'A';
+    has $.position is rw = 'A';
 }
 
 class GenericPad does KeyPad {
@@ -16,7 +16,7 @@ class GenericPad does KeyPad {
         @!buttons = @buttons;
         $!height = +@buttons;
         $!width  = @buttons.map(+*).max;
-        self.find-paths('A');
+        self.find-paths;
     }
 
     method coords($key) {
@@ -25,36 +25,49 @@ class GenericPad does KeyPad {
        };
     }
 
-    method find-paths($start-key) {
-        die "Key '$start-key' not found" unless +(self.coords($start-key));
+    # find the shortest paths between every pair of buttons
+    # %!paths{a}{b} = set of direction strings, all the same minimal length,
+    # that will take the pointer from a to b
+    method find-paths() {
         %!paths = ();
-        my $inf = 'X' x +(@!buttons.map(|*));
-        my %edges;
-        my $unvisited = SetHash.new;
+        my @keys = @!buttons.map(|*).grep: { defined($_) };
+        my $inf = 'X' x +@keys;
         for @!buttons.kv -> $i, @row {
             for @row.kv -> $j, $key {
                 next unless defined $key;
-                $unvisited.set($key);
-                %!paths{$key} = [ $inf ];
+                %!paths{$key}{$key} = SetHash.new('');
                 for %directions.kv -> $dir, ($di, $dj) {
                     my ($ni, $nj) = ($i, $j) Z+ ($di, $dj);
-                    if $ni >= 0 && $nj >= 0 && defined(my $nkey = @!buttons[$ni;$nj]) {
-                        %edges{$key}{$nkey} = $dir;
+                    if $ni >= 0 && $nj >= 0 && 
+                      defined(my $nkey = @!buttons[$ni;$nj]) {
+                        %!paths{$key}{$nkey} = SetHash.new($dir);
                     }
                 }
             }
         }
-        %!paths{$start-key} = [ '' ];
-        while +$unvisited {
-            my $node = $unvisited.keys.min({%!paths{$_}.chars});
-            $unvisited.unset($node);
-            last if %!paths{$node} eqv [ $inf ];
-            for %edges{$node}.kv -> $neighbor, $dir {
-                my @alts = %!paths{$node}.map: * ~ $dir;
-                if %!paths{$neighbor}:!exists || @alts[0].chars < %!paths{$neighbor}[0].chars {
-                    %!paths{$neighbor} = @alts;
-                } elsif @alts[0].chars == %!paths{$neighbor}[0].chars {
-                    %!paths{$neighbor}.push(|@alts)
+        for @keys -> $a {
+            for @keys -> $b {
+                if %!paths{$a}{$b}:!exists {
+                    %!paths{$a}{$b} = SetHash.new($inf);
+                }
+            }
+        }
+        for @keys -> $a {
+            for @keys -> $b {
+                for @keys -> $c {
+                    my $old = %!paths{$a}{$c}.keys[0].chars;
+                    my $ab = %!paths{$a}{$b}.keys[0];
+                    my $bc = %!paths{$b}{$c}.keys[0];
+                    my $alt = ($ab ~ $bc).chars;
+                    if $alt < $old {
+                        %!paths{$a}{$c} = SetHash.new(
+                            %!paths{$a}{$b}.keys X~ %!paths{$b}{$c}.keys
+                        );
+                    } elsif $alt == $old {
+                        %!paths{$a}{$c}.set: (
+                            %!paths{$a}{$b}.keys X~ %!paths{$b}{$c}.keys
+                        );
+                    }
                 }
             }
         }
@@ -75,23 +88,19 @@ class DirPad does KeyPad {
     }
 }
 
-my @pads = NumPad.new;
-
-#for ^3 {
-#    @pads.push: DirPad.new;
-#}
-
+# given a code to press on the first pad in the list, translate it into
+# button presses for the next one down, recursively
 sub resolve($code, @pads) {
     say "into resolve('$code', @pads={@pads})";
     unless @pads {
         return $code;
     }
     my $result;
+    my ($pad, @rest) = @pads;
+    my $pos = $pad.position;
     for $code.comb -> $key {
-        say "looking for $key in {@pads[0]}";
-        say "paths: {@pads[0].paths{$key}}";
         my $path;
-        for @(@pads[0].paths{$key}) -> $candidate {
+        for @($pad.paths{$pos}{$key}) -> $candidate {
             my $resolved  = resolve($candidate, @pads[1..*]) ~ 'A';
             if !defined($path) || $resolved.chars < $path.chars {
                 $path = $resolved;
