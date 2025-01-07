@@ -6,7 +6,6 @@ role KeyPad {
     has $.width;
     has @.buttons;
     has %.paths;
-    has $.position is rw = 'A';
 }
 
 class GenericPad does KeyPad {
@@ -90,27 +89,31 @@ class DirPad does KeyPad {
 
 # given a code to press on the first pad in the list, translate it into
 # button presses for the next one down, recursively
-sub resolve($code, @pads) {
-    say "into resolve('$code', @pads={@pads})";
+sub resolve($code, @pads, @positions) {
     unless @pads {
         return $code;
     }
     my $result;
-    my ($pad, @rest) = @pads;
-    my $pos = $pad.position;
+    my ($pad, @pads-rest) = @pads;
+    my ($pos, @pos-rest) = @positions;
     for $code.comb -> $key {
         my $path;
-        for @($pad.paths{$pos}{$key}) -> $candidate {
-            my $resolved  = resolve($candidate, @pads[1..*]) ~ 'A';
+        for @($pad.paths{$pos}{$key}.keys) -> $candidate {
+            my $resolved  = resolve($candidate ~ 'A', @pads-rest, @pos-rest);
             if !defined($path) || $resolved.chars < $path.chars {
                 $path = $resolved;
             }
         }
+        say "to press $key starting from $pos executing $path";
         $result ~= $path;
+        $pos = $key;
     }
+    say "resolve('$code', @pads={@pads}, @positions={@positions}) -> '$result'";
     return $result;
 }
 
+my @pads = NumPad.new, DirPad.new, DirPad.new;
+my @positions = 'A' xx @pads;
 my $code = '029A';
-say resolve($code, @pads);
+say resolve($code, @pads, @positions);
 
