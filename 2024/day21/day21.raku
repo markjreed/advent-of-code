@@ -74,14 +74,14 @@ class GenericPad does KeyPad {
 }
 
 class NumPad does KeyPad {
-    has GenericPad $!pad handles «paths»;
+    has GenericPad $!pad handles «paths buttons»;
     submethod BUILD {
        $!pad = GenericPad.new(buttons => [[7,8,9],[4,5,6],[1,2,3],[Any,0,'A']]);
     }
 }
 
 class DirPad does KeyPad {
-    has GenericPad $!pad handles «paths»;
+    has GenericPad $!pad handles «paths buttons»;
     submethod BUILD {
        $!pad = GenericPad.new(buttons => [[Any, '^', 'A'],['<','v','>']]);
     }
@@ -93,16 +93,17 @@ sub resolve($code, @pads, @positions) {
     unless @pads {
         return $code;
     }
-    my $result;
+    my @results;
     my ($pad, @pads-rest) = @pads;
     my ($pos, @pos-rest) = @positions;
     for $code.comb -> $key {
-        my $path;
+        my $paths = SetHash.new
         for @($pad.paths{$pos}{$key}.keys) -> $candidate {
-            my $resolved  = resolve($candidate ~ 'A', @pads-rest, @pos-rest);
-            if !defined($path) || $resolved.chars < $path.chars {
-                $path = $resolved;
-            }
+            my @resolved  = resolve($candidate ~ 'A', @pads-rest, @pos-rest);
+            if !$paths || @resolved[0].chars < @paths[0].chars {
+                @paths = @resolved;
+            } elsif @resolved[0].chars == @paths[0].chars {
+                @paths.push: 
         }
         say "to press $key starting from $pos executing $path";
         $result ~= $path;
@@ -113,7 +114,24 @@ sub resolve($code, @pads, @positions) {
 }
 
 my @pads = NumPad.new, DirPad.new, DirPad.new;
+
 my @positions = 'A' xx @pads;
+say (@pads Z @positions).raku;
+for @pads Z @positions -> ($pad, $pos) {
+    for @($pad.buttons) -> @row {
+        for @row -> $key {
+            if !defined($key) {
+                print "    ";
+            } elsif $key eq $pos {
+                print " ($key)";
+            } else {
+                print "  $key ";
+            }
+        }
+        say '';
+    }
+    say '';
+}
 my $code = '029A';
 say resolve($code, @pads, @positions);
 
