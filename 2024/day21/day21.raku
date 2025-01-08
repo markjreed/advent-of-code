@@ -99,34 +99,38 @@ class DirPad does KeyPad {
     }
 }
 
+my %memo = ();
 sub resolve($sequence, @pads is copy, @positions is copy) {
-    return $sequence unless +@pads;
+    return $sequence.chars unless +@pads;
+    my $memo-key = "$sequence,{+@pads}";
+    if %memo{$memo-key}:!exists {
+        my $pad = @pads.shift;
+        my $pos = @positions.shift;
 
-    my $pad = @pads.shift;
-    my $pos = @positions.shift;
-
-    my $result = '';
-    for $sequence.comb -> $key {
-        my @candidates = ();
-        for $pad.paths{$pos}{$key}.keys -> $start {
-            @candidates.push:  resolve($start ~ 'A', @pads, @positions);
+        my $result = 0;
+        for $sequence.comb -> $key {
+            my @candidates = ();
+            for $pad.paths{$pos}{$key}.keys -> $start {
+                @candidates.push:  resolve($start ~ 'A', @pads, @positions);
+            }
+            $result += @candidates.sort[0];
+            $pos = $key;
         }
-        $result ~= @candidates.sort(&compare-paths)[0];
-        $pos = $key;
+        %memo{$memo-key} = $result;
     }
-    return $result;
+    return %memo{$memo-key};
 }
 
-my @pads = NumPad.new, DirPad.new, DirPad.new;
-my @positions = 'A' xx @pads;
-my $part1 = 0;
-for $input.IO.lines -> $code {
-    my $num = +($code ~~ / <[1..9]><[0..9]>* /);
-    my $sequence = resolve($code, @pads, @positions);
-    my $len = $sequence.chars;
-    my $complexity = $num * $sequence.chars;
-    say "$code: $sequence (complexity: $num x $len = $complexity)" if $verbose;
-    $part1 += $complexity;
+for (2, 25) -> $count {
+    my @pads = NumPad.new, |(DirPad.new xx $count);
+    my @positions = 'A' xx @pads;
+    my $total-complexity = 0;
+    for $input.IO.lines -> $code {
+        my $num = +($code ~~ / <[1..9]><[0..9]>* /);
+        my $len = resolve($code, @pads, @positions);
+        my $complexity = $num * $len;
+        say "$code: $len (complexity: $num x $len = $complexity)" if $verbose;
+        $total-complexity += $complexity;
+    }
+    say $total-complexity;
 }
-say $part1;
-
