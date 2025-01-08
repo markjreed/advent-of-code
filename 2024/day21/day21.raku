@@ -8,15 +8,6 @@ role KeyPad {
     has %.paths;
 }
 
-sub compare-paths($path1, $path2) {
-    return Less  if $path1.chars < $path2.chars;
-    return More if $path1.chars > $path2.chars;
-    return Less  if $path1 ~~ /^ <[v^]>+ <[><]>+ $/;
-    return More if $path2 ~~ /^ <[v^]>+ <[><]>+ $/;
-    return Less if $path1 ~~ /^ <[><]>+ <[v^]>+ $/;
-    return More if $path2 ~~ /^ <[><]>+ <[v^]>+ $/;
-    return Same;
-}
 class GenericPad does KeyPad {
     our %directions = '^' => (-1,0), '>' => (0,1), 'v' => (1,0), '<' => (0,-1);
 
