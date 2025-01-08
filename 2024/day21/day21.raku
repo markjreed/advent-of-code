@@ -116,22 +116,6 @@ sub resolve($code, @pads, @positions) {
 my @pads = NumPad.new, DirPad.new, DirPad.new;
 
 my @positions = 'A' xx @pads;
-say (@pads Z @positions).raku;
-for @pads Z @positions -> ($pad, $pos) {
-    for @($pad.buttons) -> @row {
-        for @row -> $key {
-            if !defined($key) {
-                print "    ";
-            } elsif $key eq $pos {
-                print " ($key)";
-            } else {
-                print "  $key ";
-            }
-        }
-        say '';
-    }
-    say '';
-}
 my $code = '029A';
 say resolve($code, @pads, @positions);
 
