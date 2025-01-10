@@ -27,17 +27,26 @@ min_list([H|T], Min0, Min) :-
     Min1 is min(H, Min0),
     min_list(T, Min1, Min).
 
-process(Line, Total) :- 
+process(Line, Dimensions) :-
     split_string(Line, "x", "", DimensionString),
-    maplist(string_number, DimensionString, Dimensions),
-    msort(Dimensions, [A,B,C]),
+    maplist(string_number, DimensionString, Unsorted),
+    msort(Unsorted, Dimensions).
+
+part1([A,B,C], Total) :- 
     Total is 3 * A * B + 2 * A * C + 2 * B * C.
+
+part2([A,B,C], Total) :- 
+    Total is A + A + B + B + A * B * C.
 
 main :-
     current_prolog_flag(argv, [InputFile | _]),
     open(InputFile, read, F),
     read_lines(F, Lines),
-    maplist(process, Lines, Totals),
-    sum(Totals, GrandTotal),
-    writeln(GrandTotal),
+    maplist(process, Lines, Boxes),
+    maplist(part1, Boxes, Part1Totals),
+    sum(Part1Totals, Part1Total),
+    writeln(Part1Total),
+    maplist(part2, Boxes, Part2Totals),
+    sum(Part2Totals, Part2Total),
+    writeln(Part2Total),
     halt.
