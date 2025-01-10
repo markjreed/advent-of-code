@@ -7,3 +7,12 @@ beginning (like Vizzini said).
 I'm going to try solving each day in a randomly-selected programming language
 (selected from the list of languages that have solutions in my [Foxtrot
 collection](https://mjnr.us/foxtrot/)).
+
+Solutions so far:
+|Day|Language
+|---|--------|
+| [1](day01/README.md)|Postscript        |
+| [2](day02/README.md)|Prolog            |
+| [3](day03/README.md)|Bourne-Again Shell|
+| [4](day04/README.md)|Ruby              |
+| [5](day05/README.md)|APL               |
