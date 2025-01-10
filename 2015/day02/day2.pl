@@ -36,7 +36,7 @@ part2([A,B,C], Total) :-
     Total is A + A + B + B + A * B * C.
 
 main :-
-    current_prolog_flag(argv, [InputFile | _]),
+    current_prolog_flag(argv, [InputFile]),
     open(InputFile, read, F),
     read_lines(F, Lines),
     maplist(process, Lines, Boxes),
