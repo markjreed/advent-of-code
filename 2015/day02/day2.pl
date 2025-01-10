@@ -1,8 +1,5 @@
-% some convenience predicates (these are predefined in SWI-Prolog)
-writeln(Goal) :-
-    write(Goal),
-    nl.
-
+% defining a reversed form would not normally be necessary given
+% pattern-matching, but this form lets it be used with maplist.
 string_number(String, Number) :-
     number_string(Number, String).
 
