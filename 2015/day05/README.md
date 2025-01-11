@@ -6,6 +6,6 @@ Do `]cd /path/to/directory/containing/input.txt`, then paste in the code.
 
 |File|Description
 |---|--------|
-|[day5.apl](day4.apl) | Solution |
+|[day5.apl](day5.apl) | Solution |
 |[input.txt](input.txt) | My program input (encrypted) |
 
