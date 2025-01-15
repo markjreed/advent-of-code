@@ -1,0 +1,58 @@
+#!/usr/bin/env ucblogo
+if [equalp (count :command.line) 0] [ 
+    print [Usage: ucblogo day7.logo - input-file]
+    bye
+]
+
+make "input_file item 1 :command.line
+make "space "\  
+
+to foreach.line :filename :body
+    openread :filename
+    setread :filename
+    localmake "line readlist 
+    while [not [equalp :line "||]] [
+        apply :body (list :line)
+        make "line readlist 
+    ]
+end
+
+to resolve :wire
+    if [emptyp (gprop "resolved :wire)] [
+        pprop "resolved :wire (if [numberp :wire] :wire (run (runparse (gprop "wires :wire))))
+    ]
+    output (gprop "resolved :wire)
+end
+
+to make.num :number
+    output :number
+end
+
+
+to make.alias :wire 
+    output runparse (word "\(resolve :space (word "\" :wire "\)))
+end
+
+to make.not.num :number
+    output runparse (list "\(bitnot (word :number "\)))
+end
+
+to make.not.wire :wire
+    output runparse "\(bitnot "\(resolve (word "\" :wire "\)\)))
+end
+
+to make.binop :left :op :right
+    localmake "arg1 (word "\( "resolve :space  "\" :left "\) )
+    localmake "arg2 (word "\( "resolve :space  "\" :right "\) )
+    output runparse case :op [
+        [[AND]    (word "\( "bitand :space :arg1 :space :arg2 "\))]
+        [[OR]     (word "\( "bitor :space :arg1 :space :arg2 "\))]
+        [[LSHIFT] (word "\( "lshift :space :arg1 :space :arg2 "\))]
+        [[RSHIFT] (word "\( "lshift :space :arg1 :space "\( "minus :space :arg2 "\)\))]
+        [else     [Unrecognized operator in make.binop!]]
+    ]
+end
+
+foreach.line :input_file [
+    print ?
+]
