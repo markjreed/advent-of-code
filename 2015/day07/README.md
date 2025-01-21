@@ -20,7 +20,9 @@ lists to be evaluated by the `expr` command. The command-line interface is much 
 for these:
 
 To run the Clojure solution: `lein exec day7.clj input.txt a b`
+
 To run the Raku  solution:   `raku day7.raku input.txt a b`
+
 To run the Tcl solution:     `tclsh day7.tcl input.txt a b`
 
 |File|Description
