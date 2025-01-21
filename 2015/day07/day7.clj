@@ -1,4 +1,4 @@
-(if (not (>= (count *command-line-args*) 2))
+(if (not (contains? #{2 4} (count *command-line-args*)))
     (binding [*out* *err*] 
         (println (format "Usage: %s input-file [output-wire input-wire]" (first *command-line-args*)))
         (System/exit 1)))

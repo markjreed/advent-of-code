@@ -1,5 +1,5 @@
 #!/usr/bin/env tclsh
-if {[llength $argv] < 1} {
+if {[lsearch {1 3} [llength $argv]] < 0} {
     puts stderr "Usage: $argv0 input-file \[output-wire input-wire]"
     exit 1
 }
