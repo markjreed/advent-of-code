@@ -1,4 +1,4 @@
-My Advent of Code solutions
+My [Advent of Code](https://adventofcode.com/) solutions
 
 I started in 2020, but so far have only completed 2024. After 2024 I
 started to go back and do pre-2020 years.
