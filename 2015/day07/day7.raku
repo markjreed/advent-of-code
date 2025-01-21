@@ -5,7 +5,6 @@ our %wires is export;
 our %resolved;
 sub resolve($wire) is export {
     if %resolved{$wire}:!exists {
-        say "recursively resolving $wire";
         %resolved{$wire} = %wires{$wire}();
     }
     return %resolved{$wire};
@@ -56,4 +55,9 @@ for $input.IO.lines -> $line {
     %wires{$wire} = $sub;
 }
 
+my $a = resolve('a');
+say $a;
+%wires«b» = make-num($a);
+%resolved = ();
 say resolve('a');
+

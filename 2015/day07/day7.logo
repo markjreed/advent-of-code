@@ -1,11 +1,48 @@
 #!/usr/bin/env ucblogo
 if [equalp (count :command.line) 0] [ 
-    print [Usage: ucblogo day7.logo - input-file]
+    print [Usage: ucblogo day7.logo - input-file \[wire-query\]]
     bye
 ]
 
-make "input_file item 1 :command.line
+make "input.file item 1 :command.line
 make "space "\  
+make "wire.query (
+    ifelse [equalp (count :command.line) 2] [
+        item 2 :command.line
+    ] [
+        []
+    ]
+)
+
+to make.dict 
+    localmake "dict gensym
+    pprop "dict.keys :dict []
+    output :dict
+end
+
+to dict.get :dict :key 
+    output gprop :dict :key 
+end
+
+to dict.put :dict :key :value
+    pprop :dict :key :value
+    if not dict.existsp :dict :key [
+        pprop "dict.keys :dict (fput :key (gprop "dict.keys :dict))
+    ]
+end
+
+to dict.keys :dict
+    output gprop "dict.keys :dict
+end
+
+to dict.existsp :dict :key
+    output not emptyp filter [equalp ? :key] dict.keys :dict
+end
+
+to dict.clear :dict 
+    erase pllist :dict
+    pprop "dict.keys :dict []
+end
 
 to foreach.line :filename :body
     openread :filename
@@ -17,11 +54,16 @@ to foreach.line :filename :body
     ]
 end
 
+make "wires    make.dict
+make "resolved make.dict
+
 to resolve :wire
-    if [emptyp (gprop "resolved :wire)] [
-        pprop "resolved :wire (if [numberp :wire] :wire (run (runparse (gprop "wires :wire))))
+    if [emptyp :wire] [print [Tried to resolve empty wire!] output []]
+    if [not dict.existsp :resolved :wire] [
+        localmake "result (bitand (if [numberp :wire] [:wire] [run (runparse (dict.get :wires :wire))]) 65535)
+        dict.put :resolved :wire :result
     ]
-    output (gprop "resolved :wire)
+    output dict.get :resolved :wire
 end
 
 to make.num :number
@@ -30,15 +72,15 @@ end
 
 
 to make.alias :wire 
-    output runparse (word "\(resolve :space (word "\" :wire "\)))
+    output runparse (word "\(resolve :space "\" :wire "\))
 end
 
 to make.not.num :number
-    output runparse (list "\(bitnot (word :number "\)))
+    output runparse (word "\(bitnot :space (word :number "\)))
 end
 
 to make.not.wire :wire
-    output runparse "\(bitnot "\(resolve (word "\" :wire "\)\)))
+    output runparse (word "\(bitnot :space "\(resolve :space "\" :wire "\)\))
 end
 
 to make.binop :left :op :right
@@ -49,10 +91,51 @@ to make.binop :left :op :right
         [[OR]     (word "\( "bitor :space :arg1 :space :arg2 "\))]
         [[LSHIFT] (word "\( "lshift :space :arg1 :space :arg2 "\))]
         [[RSHIFT] (word "\( "lshift :space :arg1 :space "\( "minus :space :arg2 "\)\))]
-        [else     [Unrecognized operator in make.binop!]]
+        [else     (list "Unrecognized "operator :op "in "make.binop!)]
     ]
 end
 
-foreach.line :input_file [
-    print ?
+to parse.line :line
+;   print (list "parsing :line)
+    localmake "wire last :line
+    localmake "expr butlast butlast :line
+    if [not [equalp (count :expr) 1]] [localmake "notarg.or.op first butfirst :expr]
+    localmake "left first :expr
+    localmake "right last :expr
+    ifelse [equalp (count :expr) 1] [
+;       print [single-term expresssion]
+        localmake "value (ifelse [numberp :left] [make.num :left] [make.alias :left])
+;       (print [constructed value:] :value)
+    ] [
+        ifelse [equalp :left "NOT] [
+;           print [NOT expression]
+            localmake "value (ifelse [numberp :notarg.or.op] [make.not.num :notarg.or.op]
+                                                        [make.not.wire :notarg.or.op])
+;           (print [constructed value:] :value)
+        ] [
+;           print [Binary expression]
+            localmake "value (make.binop :left :notarg.or.op :right)
+;           (print [constructed value:] :value)
+        ]
+    ]
+    dict.put :wires :wire :value
+end
+
+foreach.line :input.file [
+    make "line ?
+    parse.line :line
 ]
+
+ifelse [not emptyp :wire.query] [
+    make "a (resolve :wire.query)
+    (print :a)
+    dict.put :wires "b (make.num :a)
+    dict.clear :resolved
+    print (resolve :wire.query)
+] [
+    foreach dict.keys :wires [
+        make "wire ?
+        print (list :wire (resolve :wire))
+    ]
+]
+bye

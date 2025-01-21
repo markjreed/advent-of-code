@@ -54,4 +54,8 @@ while {[gets $f line] >= 0} {
         dict set wires $wire [make-binop $arg1 $op $arg2]
     }
 }
+set a [resolve a]
+puts $a
+set resolved [dict create]
+dict set wires b $a
 puts [resolve a]
