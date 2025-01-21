@@ -16,3 +16,5 @@ Solutions so far:
 | [3](day03/README.md)|Bourne-Again Shell|
 | [4](day04/README.md)|Ruby              |
 | [5](day05/README.md)|APL               |
+| [6](day06/README.md)|Python            |
+| [7](day07/README.md)|Logo              |
