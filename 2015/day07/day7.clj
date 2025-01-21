@@ -50,5 +50,8 @@
                         op          (make-binop arg1 op arg2)
                         :else       (doall (printf "Unrecognized expression '%s'!" expr) (System/exit 1)))))))))))
 
-(doseq [wire (sort (keys (deref wires)))] 
-    (printf "%s = %d%n" wire (resolve-wire wire)))
+(let [a (resolve-wire "a")]
+    (println a)
+    (reset! resolved {})
+    (reset! wires (conj (deref wires) (vec (list "b" (make-num a)))))
+    (println (resolve-wire "a")))
