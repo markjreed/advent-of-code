@@ -22,6 +22,7 @@ to foreach.line :filename :body
         apply :body (list :line)
         make "line readlist 
     ]
+    setread []
 end
 
 ; dictionary implemtnation using property lists
