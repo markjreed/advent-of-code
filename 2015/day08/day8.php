@@ -5,11 +5,14 @@ if ($argc != 2) {
    exit(1);
 }
 
-$total = 0;
+$part1 = $part2 = 0;
 foreach (file($argv[1]) as $line) {
-   $code_length = strlen($line) - 1;
+   $line = rtrim($line);
+   $code_length = strlen($line);
    eval('$mem_length = strlen(' . $line . ');');
-   $total += $code_length - $mem_length;
+   $part1 += $code_length - $mem_length;
+   $encoded_length = strlen(addslashes($line)) + 2;
+   $part2 += $encoded_length - $code_length;
 }
-print("$total\n");
+print("$part1\n$part2\n");
 ?>
