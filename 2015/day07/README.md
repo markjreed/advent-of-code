@@ -1,4 +1,4 @@
-# 2015 Day 6 Solution
+# 2015 Day 7 Solution
 The randomly-chosen language for today, carried forward from yesterday, was
 Logo. 
 
