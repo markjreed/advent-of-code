@@ -1,19 +1,35 @@
 #!/usr/bin/env ucblogo
+
+; check usage
 if [equalp (count :command.line) 0] [ 
     print [Usage: ucblogo day7.logo - input-file \[output-wire input-wire\]]
     bye
 ]
 
-make "input.file item 1 :command.line
-make "space "\  
-make "wire.query (
-    ifelse [equalp (count :command.line) 2] [
-        item 2 :command.line
+; grab filename
+make "input.file first :command.line
+
+; and wire args, if given
+make "wire.args (
+    ifelse [greaterp (count :command.line) 1] [
+        butfirst :command.line
     ] [
         []
     ]
 )
 
+; utility routine for iterating over the lines of a text file
+to foreach.line :filename :body
+    openread :filename
+    setread :filename
+    localmake "line readlist 
+    while [not [equalp :line "||]] [
+        apply :body (list :line)
+        make "line readlist 
+    ]
+end
+
+; dictionary implemtnation using property lists
 to make.dict 
     localmake "dict gensym
     pprop "dict.keys :dict []
@@ -44,21 +60,17 @@ to dict.clear :dict
     pprop "dict.keys :dict []
 end
 
-to foreach.line :filename :body
-    openread :filename
-    setread :filename
-    localmake "line readlist 
-    while [not [equalp :line "||]] [
-        apply :body (list :line)
-        make "line readlist 
-    ]
-end
-
+; a dict to hold our wire expressions
 make "wires    make.dict
+
+; and one to memoize the resolved values
 make "resolved make.dict
 
+; this will make for slightly more legible expression-construction expressions 
+make "space "\  
+
+; resolve (and cache) the final value of a named wire
 to resolve :wire
-    if [emptyp :wire] [print [Tried to resolve empty wire!] output []]
     if [not dict.existsp :resolved :wire] [
         localmake "result (bitand (if [numberp :wire] [:wire] [run (runparse (dict.get :wires :wire))]) 65535)
         dict.put :resolved :wire :result
@@ -66,23 +78,28 @@ to resolve :wire
     output dict.get :resolved :wire
 end
 
+; make an expression that will resolve to a constant number
 to make.num :number
     output :number
 end
 
-
+; make an expression that will resolve to the value of another wire
 to make.alias :wire 
     output runparse (word "\(resolve :space "\" :wire "\))
 end
 
+; make an expression that will resolve to the inverted value of a constant
 to make.not.num :number
     output runparse (word "\(bitnot :space (word :number "\)))
 end
 
+; make an expression that will resolve to the inverted value of another wire
 to make.not.wire :wire
     output runparse (word "\(bitnot :space "\(resolve :space "\" :wire "\)\))
 end
 
+; make a binary expression of two input wires (or a wire and a constant in the
+; case of the SHIFT ops)
 to make.binop :left :op :right
     localmake "arg1 (word "\( "resolve :space  "\" :left "\) )
     localmake "arg2 (word "\( "resolve :space  "\" :right "\) )
@@ -95,44 +112,49 @@ to make.binop :left :op :right
     ]
 end
 
+; parse a line - reified as a named subroutine for ease of use during debugging
 to parse.line :line
-;   print (list "parsing :line)
     localmake "wire last :line
     localmake "expr butlast butlast :line
-    if [not [equalp (count :expr) 1]] [localmake "notarg.or.op first butfirst :expr]
     localmake "left first :expr
     localmake "right last :expr
+
+    if [not [equalp (count :expr) 1]] [localmake "notarg.or.op first butfirst :expr]
+
     ifelse [equalp (count :expr) 1] [
-;       print [single-term expresssion]
         localmake "value (ifelse [numberp :left] [make.num :left] [make.alias :left])
-;       (print [constructed value:] :value)
     ] [
         ifelse [equalp :left "NOT] [
-;           print [NOT expression]
             localmake "value (ifelse [numberp :notarg.or.op] [make.not.num :notarg.or.op]
-                                                        [make.not.wire :notarg.or.op])
-;           (print [constructed value:] :value)
+                                                             [make.not.wire :notarg.or.op])
         ] [
-;           print [Binary expression]
             localmake "value (make.binop :left :notarg.or.op :right)
-;           (print [constructed value:] :value)
         ]
     ]
     dict.put :wires :wire :value
 end
 
+; parse the file
 foreach.line :input.file [
-    make "line ?
-    parse.line :line
+    parse.line ?
 ]
 
-ifelse [not emptyp :wire.query] [
-    make "a (resolve :wire.query)
-    (print :a)
-    dict.put :wires "b (make.num :a)
+ifelse [not emptyp :wire.args] [
+
+    ; if wire names were specified, do the task: find the value of the first wire
+    ; (a) and print it out for part 1, then set that as the input value for the second 
+    ; wire (b) and print out the new value of (a) that results.
+
+    make "a (first :wire.args)
+    make "b (last :wire.args)
+    make "result (resolve :a)
+    print :result
+    dict.put :wires :b (make.num :result)
     dict.clear :resolved
-    print (resolve :wire.query)
+    print (resolve :a)
 ] [
+    ; if no wire names were specified, just print out all the wires and their values
+
     foreach dict.keys :wires [
         make "wire ?
         print (list :wire (resolve :wire))
