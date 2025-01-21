@@ -13,7 +13,9 @@ lists to be evaluated by the `expr` command.
 
 |File|Description
 |---|--------|
-|[day7.logo](day7.logo) | Solution |
+|[day7.logo](day7.logo)   | Solution |
 |[sample.txt](sample.txt) | Sample input from the problem description |
-|[input.txt](input.txt) | My program input (encrypted) |
-
+|[input.txt](input.txt)   | My program input (encrypted) |
+|[day7.clj](day7.clj)     | Clojure solution |
+|[day7.raku](day7.raku)   | Raku solution |
+|[day7.tcl](day7.tcl)     | Tcl solution |
