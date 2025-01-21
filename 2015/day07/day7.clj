@@ -1,6 +1,6 @@
-(if (not (= 2 (count *command-line-args*)))
+(if (not (>= (count *command-line-args*) 2))
     (binding [*out* *err*] 
-        (println (format "Usage: %s input-file" (first *command-line-args*)))
+        (println (format "Usage: %s input-file [output-wire input-wire]" (first *command-line-args*)))
         (System/exit 1)))
 
 (def wires (atom {}))
@@ -50,8 +50,13 @@
                         op          (make-binop arg1 op arg2)
                         :else       (doall (printf "Unrecognized expression '%s'!" expr) (System/exit 1)))))))))))
 
-(let [a (resolve-wire "a")]
-    (println a)
-    (reset! resolved {})
-    (reset! wires (conj (deref wires) (vec (list "b" (make-num a)))))
-    (println (resolve-wire "a")))
+(let [query (rest (rest *command-line-args*))] 
+    (if (not (empty? query))  
+        (let [[a b] query 
+              result (resolve-wire a)]
+            (println result)
+            (reset! resolved {})
+            (reset! wires (conj (deref wires) (vec (list b (make-num result)))))
+            (println (resolve-wire a)))
+         (doseq [wire (keys (deref wires))] 
+            (println (list wire (resolve-wire wire))))))

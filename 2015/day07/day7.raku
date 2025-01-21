@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-unit sub MAIN($input);
+unit sub MAIN($input, $output-wire=(Any), $input-wire=(Any));
 our %wires is export;
 
 our %resolved;
@@ -55,9 +55,14 @@ for $input.IO.lines -> $line {
     %wires{$wire} = $sub;
 }
 
-my $a = resolve('a');
-say $a;
-%wires«b» = make-num($a);
-%resolved = ();
-say resolve('a');
-
+if ($output-wire) {
+    my $result = resolve($output-wire);
+    say $result;
+    %wires{$input-wire} = make-num($result);
+    %resolved = ();
+    say resolve($output-wire);
+} else {
+    for %wires.keys -> $wire {
+        say "$wire: {resolve $wire}";
+    }
+}

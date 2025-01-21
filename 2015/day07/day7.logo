@@ -1,6 +1,6 @@
 #!/usr/bin/env ucblogo
 if [equalp (count :command.line) 0] [ 
-    print [Usage: ucblogo day7.logo - input-file \[wire-query\]]
+    print [Usage: ucblogo day7.logo - input-file \[output-wire input-wire\]]
     bye
 ]
 

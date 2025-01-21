@@ -1,6 +1,6 @@
 #!/usr/bin/env tclsh
-if {[llength $argv] != 1} {
-    puts stderr "Usage: $argv0 input-file"
+if {[llength $argv] < 1} {
+    puts stderr "Usage: $argv0 input-file \[output-wire input-wire]"
     exit 1
 }
 
@@ -54,8 +54,16 @@ while {[gets $f line] >= 0} {
         dict set wires $wire [make-binop $arg1 $op $arg2]
     }
 }
-set a [resolve a]
-puts $a
-set resolved [dict create]
-dict set wires b $a
-puts [resolve a]
+
+if {[llength $argv] > 1} {
+    lassign [lrange $argv 1 end] a b
+    set result [resolve $a]
+    puts $result
+    set resolved [dict create]
+    dict set wires $b [make-num $result]
+    puts [resolve $a]
+} else {
+    foreach wire [dict keys $wires] {
+        puts "$wire = [resolve $wire]"
+    }
+}
