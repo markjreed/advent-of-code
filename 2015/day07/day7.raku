@@ -1,5 +1,8 @@
 #!/usr/bin/env raku
-unit sub MAIN($input, $output-wire=(Any), $input-wire=(Any));
+unit sub MAIN($input, $output-wire=Nil, $input-wire=Nil);
+
+die "Need both output and input wires\n" if $output-wire && !$input-wire;
+
 our %wires is export;
 
 our %resolved;
