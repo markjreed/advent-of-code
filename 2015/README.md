@@ -18,3 +18,5 @@ Solutions so far:
 | [5](day05/README.md)|APL               |
 | [6](day06/README.md)|Python            |
 | [7](day07/README.md)|Logo              |
+| [8](day07/README.md)|PHP               |
+| [9](day07/README.md)|SNOBOL            |
