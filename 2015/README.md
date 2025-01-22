@@ -11,12 +11,13 @@ collection](https://mjnr.us/foxtrot/)).
 Solutions so far:
 |Day|Language
 |---|--------|
-| [1](day01/README.md)|Postscript        |
-| [2](day02/README.md)|Prolog            |
-| [3](day03/README.md)|Bourne-Again Shell|
-| [4](day04/README.md)|Ruby              |
-| [5](day05/README.md)|APL               |
-| [6](day06/README.md)|Python            |
-| [7](day07/README.md)|Logo              |
-| [8](day07/README.md)|PHP               |
-| [9](day07/README.md)|SNOBOL            |
+| [1](day01/README.md)  |Postscript        |
+| [2](day02/README.md)  |Prolog            |
+| [3](day03/README.md)  |Bourne-Again Shell|
+| [4](day04/README.md)  |Ruby              |
+| [5](day05/README.md)  |APL               |
+| [6](day06/README.md)  |Python            |
+| [7](day07/README.md)  |Logo              |
+| [8](day08/README.md)  |PHP               |
+| [9](day09/README.md)  |SNOBOL            |
+| [10](day10/README.md) |Pascal            |
