@@ -1,5 +1,7 @@
 # 2015 Day 11 Solution
-The randomly-chosen language for today is Perl 5.
+The randomly-chosen language for today is Perl 5, which is almost cheating
+since it has built-in support for exactly the sort of alphabetic increment 
+required by the puzzle.
 
 To run: `perl day11.pl input.txt`.
 
