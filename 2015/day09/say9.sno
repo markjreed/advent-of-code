@@ -1,0 +1,112 @@
+* NEXT() REARRANGES THE PATH() ARRAY TO THE NEXT PERMUTATION OF ITS ELEMENTS
+        DEFINE('NEXT()I,J,TEMP,A,B') :(END_NEXT)
+NEXT    I = CITYCOUNT - 1
+        
+PIVOT   GE(I, 1) :F(FIND)
+        J = I + 1
+        GE(ITEM(PATH, I), ITEM(PATH, J))  :F(FIND)
+        I = I - 1 :(PIVOT)
+
+FIND    EQ(I, 0) :S(FRETURN) 
+        J = CITYCOUNT
+SUCC    LE(ITEM(PATH, J), ITEM(PATH, I)) :F(SWAP)
+        J = J - 1 :(SUCC)
+
+SWAP    TEMP = ITEM(PATH, I)
+        PATH<I> = ITEM(PATH, J)
+        PATH<J> = TEMP
+        NEXT = 1
+
+        A = I + 1
+        B = CITYCOUNT
+REVERSE TEMP = ITEM(PATH, A)
+        PATH<A> = ITEM(PATH, B)
+        PATH<B> = TEMP
+        A = A + 1
+        B = B - 1
+        LE(A, B) :S(REVERSE)
+        :(RETURN)
+END_NEXT
+        
+* CHECK USAGE
+        FILENAME = HOST(2, 2)     :S(MAIN)
+        TERMINAL = "Usage: " HOST(2, 0) " " HOST(2, 1) " input-file" :(END)
+
+* BEGIN MAIN ROUTINE 
+MAIN    INPUT('READLINE', 1, , FILENAME)   :S(OK)
+        TERMINAL = "Could not open file."  :(END)
+
+OK      CITIES = TABLE()
+        DISTANCES = TABLE()
+        CITYCOUNT  = 0
+        MAX_DISTANCE = 0
+
+LOOP    LINE = READLINE :F(EOF)
+        LINE ARB . FROM ' to ' ARB . TO  ' = ' ARB . DIST RPOS(0)
+        FROMNUM =  ITEM(CITIES, FROM)
+        GT(FROMNUM, 0) :S(DIDFROM)
+        CITYCOUNT = CITYCOUNT + 1
+        FROMNUM = CITYCOUNT 
+        CITIES<FROM> = FROMNUM
+DIDFROM 
+        TONUM =  ITEM(CITIES, TO)  
+        GT(TONUM, 0) :S(DIDTO)
+        CITYCOUNT = CITYCOUNT + 1
+        TONUM = CITYCOUNT 
+        CITIES<TO> = TONUM
+DIDTO   
+        KEY = FROMNUM ',' TONUM
+        DISTANCES<KEY>  = DIST
+        KEY = TONUM ',' FROMNUM
+        DISTANCES<KEY>  = DIST
+        MAX_DISTANCE = MAX_DISTANCE + DIST :(LOOP)
+EOF
+        PATH = ARRAY(CITYCOUNT)
+        I = 1
+
+* We try the permutations of the cities in order, starting with sorted.
+PERM0   PERM = 0 
+        MINPERM = 0
+        MINIMUM = MAX_DISTANCE
+        MAXIMUM = 0
+        MAXPERM = 0
+
+
+        PATH<I> = I
+        I = I + 1
+        LE(I, CITYCOUNT) :S(PERM0)
+
+        I = 1
+        TOTAL = 0
+ADD     J = I + 1
+        DELTA = ITEM(DISTANCES, ITEM(PATH, I) ',' ITEM(PATH, J)) :F(PLOOP)
+        TOTAL = TOTAL + DELTA
+        I = I + 1
+        LE(I, CITYCOUNT) :S(ADD)
+        GE(TOTAL, MINIMUM) :S(CHECKMAX)
+        MINIMUM = TOTAL
+
+CHECKMAX LE(TOTAL, MAXIMUM) :S(PLOOP)
+         MAXIMUM = TOTAL
+
+PLOOP   NEXT() :F(DONE)
+        PERM = PERM + 1
+
+        I = 1
+        TOTAL = 0
+ADD2    J = I + 1
+        DELTA = ITEM(DISTANCES, ITEM(PATH, I) ',' ITEM(PATH, J)) :F(PLOOP)
+        TOTAL = TOTAL + DELTA
+        I = I + 1
+        LT(I, CITYCOUNT) :S(ADD2)
+
+        LE(MINIMUM, TOTAL) :S(RELOOP)
+        MINIMUM = TOTAL
+        MINPERM = PERM 
+RELOOP  GE(MAXIMUM, TOTAL) :S(PLOOP)
+        MAXIMUM = TOTAL
+        MAXPERM = PERM :S(PLOOP)
+
+DONE    OUTPUT = 'The shortest path is permutation #' MINPERM ' with length ' MINIMUM
+        OUTPUT = 'The longest path is permutation #' MAXPERM ' with length ' MAXIMUM
+END
