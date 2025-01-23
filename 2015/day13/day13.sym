@@ -1,0 +1,17 @@
+BASLOAD 0.1.1 SYMBOL FILE
+
+
+
+LABELS
+------
+
+
+
+VARIABLES
+---------
+
+FILE: DAY13.BSL
+
+ 000003 CRSRLEFT                                            =A;
+ 000004 DEFAULTFILE                                         =A0;
+ 000007 FILE                                                =A1;
