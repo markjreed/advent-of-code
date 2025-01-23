@@ -22,4 +22,5 @@ Solutions so far:
 | [8](day08/README.md)  |PHP               |
 | [9](day09/README.md)  |SNOBOL            |
 | [10](day10/README.md) |Pascal            |
-| [10](day11/README.md) |Perl 5            |
+| [11](day11/README.md) |Perl 5            |
+| [12](day12/README.md) |Scheme            |
