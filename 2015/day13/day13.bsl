@@ -9,7 +9,7 @@ LineFeed = 10
 Infinity = VAL("1.70141183E38")
 Lose$    = "lose"
 
-DefaultFile$ = "INPUT.TXT"
+DefaultFile$ = "SAMPLE.TXT"
 
 CLS
 
