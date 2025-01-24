@@ -5,30 +5,72 @@ if Enum.count(System.argv) != 1 do
 end
 [filename|_] = System.argv
     
-mfcsam = Map.new(Enum.map(Enum.filter(String.split(File.read!("mfcsam.txt"),"\n"), fn s -> String.length(s) > 0 end), fn s -> String.split(s, ": ") end), fn [k, v] -> {String.to_atom(k), String.to_integer(v)} end)
+mfcsam = Map.new(
+    Enum.map(
+        Enum.filter(
+            String.split(File.read!("mfcsam.txt"),"\n"),
+            fn s -> String.length(s) > 0 end
+        ), 
+        fn s -> String.split(s, ": ") end
+    ), fn [k, v] -> {String.to_atom(k), String.to_integer(v)} end
+)
 
 
-sues =  Enum.map(Enum.filter(String.split(File.read!(filename),"\n"), fn s -> String.length(s) > 0 end), fn s -> [_|[num|fields]] = String.split(s," "); Map.new(Enum.to_list(Stream.chunk_every(Enum.map(["number"|[num|fields]], fn s -> [s|_] = String.split(s,":"); [s|_] = String.split(s, ","); s end), 2)), fn [k, v] -> {String.to_atom(k), String.to_integer(v)} end); end)
+sues =  Enum.map(
+    Enum.filter(
+        String.split(File.read!(filename),"\n"), 
+        fn s -> String.length(s) > 0 end
+    ), 
+    fn s -> 
+        [_|[num|fields]] = String.split(s," ");
+        Map.new(
+            Enum.to_list(
+                Stream.chunk_every(
+                    Enum.map(["number"|[num|fields]], 
+                              fn s -> 
+                                  [s|_] = String.split(s,":");
+                                  [s|_] = String.split(s, ",");
+                                  s
+                               end
+                    ),
+                    2
+                )
+            ),
+            fn [k, v] -> { String.to_atom(k), String.to_integer(v) } end
+        )
+     end
+)
 
 
-# IO.puts("Initial population: #{Enum.count(sues)}")
-[found|_] = Enum.reduce(mfcsam, sues, fn {k, v}, sues -> 
-    sues = Enum.filter(sues, fn sue -> 
-        !Map.has_key?(sue, k) or sue[k] == v
-      end)
-#    IO.puts("After filtering for #{k} unknown or >= #{mfcsam[k]}, #{Enum.count(sues)}")
-    sues
-end)
+[ found | _ ] = Enum.reduce(
+    mfcsam, 
+    sues, 
+    fn {k, v}, sues -> 
+        Enum.filter(
+            sues, 
+            fn sue -> !Map.has_key?(sue, k) or sue[k] == v end
+        )
+    end
+)
 IO.puts(found.number)
 
-[found|_] = Enum.reduce(mfcsam, sues, fn {k, v}, sues -> 
-    sues = Enum.filter(sues, fn sue -> 
-        !Map.has_key?(sue, k) or 
-        ((k == :cats or k == :trees) and sue[k] > v) or
-        ((k == :pomeranians or k == :goldfish) and sue[k] < v) or
-        ((k != :cats and k != :trees and k != :pomeranians and k != :goldfish) and sue[k] == v)
-      end)
-#    IO.puts("After filtering for #{k} unknown or >= #{mfcsam[k]}, #{Enum.count(sues)}")
-    sues
-end)
+more = MapSet.new([:cats, :trees])
+less = MapSet.new([:pomeranians, :goldfish])
+special = MapSet.union(more, less)
+
+[ found| _ ] = Enum.reduce(
+    mfcsam,
+    sues,
+    fn {k, v}, sues -> 
+        Enum.filter(
+            sues,
+            fn sue ->
+                !Map.has_key?(sue, k) or 
+                (MapSet.member?(more, k) and sue[k] > v) or
+                (MapSet.member?(less, k) and sue[k] < v) or
+                (!MapSet.member?(special, k) and sue[k] == v)
+            end
+        )
+    end
+)
 IO.puts(found.number)
