@@ -3,7 +3,9 @@
 
 REM Useful constants
 
-Debugging = 0
+True     = -1
+False    = 0
+Verbose  = True: REM enable verbose output; set to False to just print the answers
 CrsrLeft = ASC("{LEFT}")
 CrsrUp$  = "{UP}"
 Space    = ASC(" ")
@@ -54,7 +56,7 @@ FirstDone:
 
 SecondPass:
     LINPUT#1, Guest1$, Space
-    IF Debugging THEN Ascii$ = Guest1$: GOSUB MakePetscii: Guest1$ = Petscii$
+    IF Verbose THEN Ascii$ = Guest1$: GOSUB MakePetscii: Guest1$ = Petscii$
     IF ST AND 64 THEN Done
     IF GuestCount = 0 THEN AddGuest
     FOR I = 0 TO GuestCount - 1
@@ -72,7 +74,7 @@ GotGuest1:
     LINPUT#1, Points$, Space
     FOR I = 1 TO 6: LINPUT#1, X$, Space: NEXT I: REM skip to second guest name
     LINPUT#1, Guest2$, Period
-    IF Debugging THEN Ascii$ = Guest2$: GOSUB MakePetscii: Guest2$ = Petscii$
+    IF Verbose THEN Ascii$ = Guest2$: GOSUB MakePetscii: Guest2$ = Petscii$
     GET#1, X$: REM Skip linefeed
 
     FOR I = 0 TO GuestCount - 1
@@ -86,6 +88,10 @@ GotGuest1:
 GotGuest2:
     Points = VAL(Points$)
     IF Dir$ = Lose$ THEN Points = -Points
+    IF NOT DEBUGGING THEN SkipPrint1
+    PRINT Points "TO " GuestName$(Guest1) " IF THEY SIT NEXT TO " GuestName$(Guest2)
+
+SkipPrint1:
     Score%(Guest1, Guest2) = Points
 
     GOTO SecondPass
@@ -95,22 +101,26 @@ Done:
 
 DIM Arrangement%(GuestCount)
 Part = 1
+
 NextPart:
     PRINT
     PRINT "PART" Part "-";
-    GuestCount = GuestCount + Part - 1
+    IF Part = 2 THEN GuestName$(GuestCount) = "YOU": GuestCount = GuestCount + 1
     PermCount = 1
     FOR I = 1 TO GuestCount - 1:
         PermCount = PermCount * I
     NEXT I
+    IF NOT Verbose THEN SkipPrint2
     PRINT GuestCount "GUESTS, MAKING" PermCount "POSSIBLE SEATING ARRANGEMENTS."
 
+SkipPrint2:
     FOR I = 0 TO GuestCount - 1
         Arrangement%(I) = I
     NEXT I
 
 PermsLoop:
     BestScore = -Infinity
+    BestPerm = -1
     FOR PermNum = 0 TO PermCount - 1
         REM PRINT PermNum; CrsrUp$
         TotalScore = 0
@@ -123,15 +133,30 @@ PermsLoop:
         TotalScore = TotalScore + Score%(Guest2, Arrangement%(0))
         TotalScore = TotalScore + Score%(Arrangement%(0), Guest2)
 
-        IF TotalScore > BestScore THEN BestScore = TotalScore
+        IF TotalScore > BestScore THEN BestScore = TotalScore: BestPerm = PermNum
         GOSUB NextPerm
     NEXT PermNum
-    PRINT "BEST SCORE:" BestScore
+    IF NOT Verbose THEN SkipPrint3
+    PRINT "BEST ARRANGEMENT: ";
+    FOR I = 0 To GuestCount - 1
+        Arrangement%(I) = I
+    NEXT I
+    IF BestPerm = 0 THEN PrintIt
+    FOR I = 1 TO BestPerm 
+        GOSUB NextPerm
+    NEXT I
+
+PrintIt: 
+    GOSUB PrintPerm
+    PRINT "SCORE:" ;
+
+SkipPrint3: 
+    PRINT BestScore
     PART = PART + 1
     IF PART < 3 THEN NextPart
 
 PRINT
-PRINT "COMPUTED IN" (TI - StartTime) "JIFFIES."
+IF Verbose THEN PRINT "COMPUTED IN" (TI - StartTime) "JIFFIES."
 END
 
 
