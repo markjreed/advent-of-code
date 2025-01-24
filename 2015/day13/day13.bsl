@@ -1,5 +1,8 @@
 #CONTROLCODES 1
 #SYMFILE "@2:day13.sym"
+
+REM Useful constants
+
 Debugging = 0
 CrsrLeft = ASC("{LEFT}")
 CrsrUp$  = "{UP}"
@@ -9,9 +12,10 @@ LineFeed = 10
 Infinity = VAL("1.70141183E38")
 Lose$    = "lose"
 
-DefaultFile$ = "SAMPLE.TXT"
-
 CLS
+
+REM Set up input from file
+DefaultFile$ = "SAMPLE.TXT"
 
 GetFile:
     PRINT "INPUT FILENAME: " DefaultFile$ RPT$(CrsrLeft, LEN(DefaultFile$));
@@ -24,18 +28,26 @@ GetFile:
     IF DiskStatus THEN CLOSE 1:PRINT Message$: PRINT: GOTO GetFile
 
     StartTime = TI
-    MaxGuests = 0
+    Lines = 0
+
+REM We don't know ahead of time how many guests there are; read the
+REM file once to figure that out. Note that we're reading the unmodified ASCII
+REM file as it comes from the website, with no preprocessing to turn it into
+REM PETSCII, so we're using explicit delimeters with LINPUT.
+
 FirstPass:
     LINPUT#1, Rule$, LineFeed
     IF ST AND 64 THEN FirstDone
-    MaxGuests = MaxGuests + 2
+    Lines = Lines + 1
     Goto FirstPass
 
 FirstDone:
     CLOSE 1
 
-    DIM GuestName$(MaxGuests - 1)
-    DIM Score%(MaxGuests - 1, MaxGuests - 1)
+    MaxGuests = INT(SQR(Lines)) + 1
+
+    DIM GuestName$(MaxGuests)
+    DIM Score%(MaxGuests, MaxGuests)
     GuestCount = 0
 
     OPEN 1, 8, 2, File$
@@ -84,7 +96,8 @@ Done:
 DIM Arrangement%(GuestCount)
 Part = 1
 NextPart:
-    PRINT "PART" Part " -";
+    PRINT
+    PRINT "PART" Part "-";
     GuestCount = GuestCount + Part - 1
     PermCount = 1
     FOR I = 1 TO GuestCount - 1:
@@ -99,12 +112,12 @@ NextPart:
 PermsLoop:
     BestScore = -Infinity
     FOR PermNum = 0 TO PermCount - 1
-        PRINT PermNum; CrsrUp$
+        REM PRINT PermNum; CrsrUp$
         TotalScore = 0
         FOR I = 0 TO GuestCount - 2
             Guest1 = Arrangement%(I)
             Guest2 = Arrangement%(I + 1)
-            TotalScore = TotalScore + Score%(Guest1, Guest2) 
+            TotalScore = TotalScore + Score%(Guest1, Guest2)
             TotalScore = TotalScore + Score%(Guest2, Guest1)
         NEXT I
         TotalScore = TotalScore + Score%(Guest2, Arrangement%(0))
@@ -117,6 +130,7 @@ PermsLoop:
     PART = PART + 1
     IF PART < 3 THEN NextPart
 
+PRINT
 PRINT "COMPUTED IN" (TI - StartTime) "JIFFIES."
 END
 
@@ -132,10 +146,10 @@ MakePetscii:
         Petscii$ = Petscii$ + CHR$(CharCode AND 127)
     NEXT MakePetscii.I
     RETURN
-        
-NextPerm:   
+
+NextPerm:
     REM Advance to the next circularly-unique permutation of guests
-    REM (which we do by keeping the first position unchanged and 
+    REM (which we do by keeping the first position unchanged and
     REM  advancing to the lexically next permutation of the rest of the list)
 
     REM First, find the pivot point: highest index I such that
@@ -152,7 +166,7 @@ FoundPivot:
     Right = GuestCount - 1
 
     REM Now find the location to the right of the pivot whose value should
-    REM replace it: 
+    REM replace it:
     REM the higest index J such that Arrangement%(J) > Arrangement%(I)
 FindRight:
     IF Arrangement%(Right) > Arrangement%(Pivot) THEN FoundRight
