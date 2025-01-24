@@ -12,7 +12,7 @@ mfcsam = Map.new(
             fn s -> String.length(s) > 0 end
         ), 
         fn s -> String.split(s, ": ") end
-    ), fn [k, v] -> {String.to_atom(k), String.to_integer(v)} end
+    ), fn [k, v] -> { String.to_atom(k), String.to_integer(v) } end
 )
 
 
