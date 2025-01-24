@@ -28,3 +28,4 @@ Solutions so far:
 | [14](day13/README.md) |F#                |
 | [15](day13/README.md) |Lua               |
 | [16](day13/README.md) |Elixir            |
+| [17](day13/README.md) |Raku              |
