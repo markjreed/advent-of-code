@@ -28,11 +28,10 @@ for line in readLines(args[2]) do
     reindeer.Add(new Reindeer(name, speed, flyTime, restTime));;
 
 
-let winner duration : int * int = 
-    let mutable windex = -1
+let winner duration : ResizeArray<int> * int = 
+    let mutable windices = ResizeArray<int>(Array.empty)
     let mutable maxDist = -1
-    let mutable position = ResizeArray<int>(Array.create reindeer.Count 0)
-    //printf "%d" <| duration
+    let mutable position = Array.create reindeer.Count 0
 
     for i in 0 .. reindeer.Count - 1  do
         let deer = reindeer[i]
@@ -42,32 +41,25 @@ let winner duration : int * int =
         let partial  = duration % period
         let extra = if partial > deer.FlyTime then deer.FlyTime else partial
         position[i] <- complete * distance + extra * deer.Speed
-        //printf ", %d" <| position[i]
         if position[i] = maxDist then
-            windex <- -1;
-        if position[i] > maxDist then 
+            windices.Add(i);
+        else if position[i] > maxDist then
             maxDist <- position[i]
-            windex <- i;
-    (windex, maxDist);;
+            windices <- ResizeArray<int>(Array.create 1 i);
+    (windices, maxDist);;
     
 let duration = args[3] |> int;;
 
 // part 1
-let (deerNum, dist) = winner(duration);;
+let (winners, dist) = winner(duration);;
 printfn "%d" <| dist;;
 
 // part 2
 let mutable score = ResizeArray<int>(Array.create reindeer.Count 0)
 for time in 1 .. duration do
-    let (won, dist) = winner(time)
-    if won >= 0 then
-        score[won] <- score[won] + 1
-    else
-        for i in 0 .. reindeer.Count - 1  do
-            score[i] <- score[i] + 1
-//    for i in 0 .. reindeer.Count - 1 do 
-//        printf ", %d" score[i]
-//    printfn ""
+    let (winners, dist) = winner(time)
+    for i in winners do
+        score[i] <- score[i] + 1
 
 let mutable windex = -1
 let mutable maxScore = 0
