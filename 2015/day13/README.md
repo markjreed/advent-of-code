@@ -10,15 +10,19 @@ use labels instead of line numbers, and variable names with more than two
 distinct characters. But it just transpiles into good old-fashioned
 line-numberful BASIC with two-char variable names.
 
-I've posted the program to the [Commander X16 Forums](), which allows me to
-include this [Try It Now]() link to run it in the online emulator. 
+I've posted the program to the [Commander X16
+Forums](https://cx16forum.com/forum/viewtopic.php?t=8243), which allows me to
+include this [Try It
+Now](https://cx16forum.com/webemu/x16emu.html?manifest=/forum/download/file.php?id=4112)
+link to run it in the online emulator. 
 
-It defaults to running on the sample input. If you run it on the full input
-file instead, be prepared to wait a while; the X16 is about 8x faster than the
-C64, but that's still not fast. On my input the program takes most of an hour
-to run at native speed. If you have a local install of the emulator you can use
-the `-warp` option to run it as fast as your hardware can manage the emulation,
-but even on my M3 MacBook Pro that's only about 2x.
+It defaults to running on the sample input from the problem description. If you
+run it on the full input file (FULL.TXT) instead, be prepared to wait a while;
+the X16 is about 8x faster than the C64, but that's still not fast. On my input
+the program takes most of an hour to run at native speed. If you have a local
+install of the emulator you can use the `-warp` option to run it as fast as
+your hardware can manage the emulation, but even on my M3 MacBook Pro that's
+only about 2x.
 
 |File|Description
 |---|--------|
@@ -26,3 +30,4 @@ but even on my M3 MacBook Pro that's only about 2x.
 |[day13.bas](day13.bas)     | Plain BASIC loader 
 |[sample.txt](sample.txt)   | Sample input from the problem description |
 |[input.txt](input.txt)     | My program input (encrypted)              |
+|[full.txt](full.txt)       | Random program input with the same number of guests as input.txt |
