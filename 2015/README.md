@@ -24,3 +24,7 @@ Solutions so far:
 | [10](day10/README.md) |Pascal            |
 | [11](day11/README.md) |Perl 5            |
 | [12](day12/README.md) |Scheme            |
+| [13](day13/README.md) |BASIC             |
+| [14](day13/README.md) |F#                |
+| [15](day13/README.md) |Lua               |
+| [16](day13/README.md) |Elixir            |
