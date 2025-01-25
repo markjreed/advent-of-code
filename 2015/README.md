@@ -31,3 +31,4 @@ Solutions so far:
 | [17](day17/README.md) |Raku              |
 | [18](day18/README.md) |Forth             |
 | [19](day19/README.md) |AWK               |
+| [20](day19/README.md) |R                 |
