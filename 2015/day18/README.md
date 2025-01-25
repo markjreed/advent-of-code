@@ -1,7 +1,8 @@
 # 2015 Day 18 Solution
 The randomly-chosen language for today is Forth.
 
-To run: `gforth day18.4th input.txt`.
+To run: `gforth day18.4th filename generation-count`. Use `sample.txt 5` for
+the sample in the description, `input.txt 100` for the full problem.
 
 |File|Description
 |---|--------|
