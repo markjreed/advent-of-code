@@ -30,3 +30,4 @@ Solutions so far:
 | [16](day16/README.md) |Elixir            |
 | [17](day17/README.md) |Raku              |
 | [18](day18/README.md) |Forth             |
+| [19](day19/README.md) |AWK               |
