@@ -1,5 +1,6 @@
 # 2015 Day 19 Solution
-The randomly-chosen language for today is AWK.
+The randomly-chosen language for today is AWK. My solution for part 2 uses the
+GNU AWK function `patsplit()`, so you'll need the GNU version to run it.
 
 To run: `awk -f day19.awk input.txt`.
 
