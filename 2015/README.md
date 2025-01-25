@@ -25,7 +25,8 @@ Solutions so far:
 | [11](day11/README.md) |Perl 5            |
 | [12](day12/README.md) |Scheme            |
 | [13](day13/README.md) |BASIC             |
-| [14](day13/README.md) |F#                |
-| [15](day13/README.md) |Lua               |
-| [16](day13/README.md) |Elixir            |
-| [17](day13/README.md) |Raku              |
+| [14](day14/README.md) |F#                |
+| [15](day15/README.md) |Lua               |
+| [16](day16/README.md) |Elixir            |
+| [17](day17/README.md) |Raku              |
+| [18](day18/README.md) |Forth             |
