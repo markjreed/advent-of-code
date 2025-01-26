@@ -86,7 +86,8 @@ def main(args: Array[String]) = {
 
     val ringSets = (HashSet() ++ rings).subsets.toList.filter(_.size <= 2)
 
-    var minCost = Double.PositiveInfinity
+    var cheapestWin = Double.PositiveInfinity
+    var dearestLoss = Double.NegativeInfinity
 
     for (weapon <- weapons) {
         for (armor <- armors) {
@@ -115,12 +116,15 @@ def main(args: Array[String]) = {
                 val defense = weapon.defense + armor.defense + ringDefense
                 val player = new Opponent("Player", attack, defense)
                 val boss   =  Opponent("Boss", bossTemplate.attack, bossTemplate.defense, bossTemplate.hitPoints)
-                if (playerWins(player, boss) && cost < minCost)
-                    minCost = cost
+                if (playerWins(player, boss) && cost < cheapestWin)
+                    cheapestWin = cost
+                else if (!playerWins(player, boss) & cost > dearestLoss)
+                    dearestLoss = cost
                 // println(s", cost: ${cost}, attack: ${attack}, defense: ${defense}")
                 // println(s"Result: ${playerWins(player, boss)}")
             }
         }
     }
-    println(s"minimum cost to win: ${minCost}")
+    println(s"minimum cost to win: ${cheapestWin}")
+    println(s"maximum cost to lose: ${dearestLoss}")
 }
