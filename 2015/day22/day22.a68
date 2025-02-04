@@ -10,11 +10,13 @@ BEGIN
     OPPONENT player = ("Player", 0, 0, 50, 500); #
 
     IF argc /= 4 THEN
+        STRING program name;
         IF argc = 3 THEN
-            put(stand error, ("Usage: ", argv(1), " --script ", argv(3), " input-file", newline))
+            program name := argv(3)
         ELSE
-            put(stand error, ("Usage: ", argv(1), " --script ", argv(2), " input-file", newline))
+            program name := argv(2)
         FI;
+        put(stand error, ("Usage: ", argv(1), " --script ", program name, " input-file", newline));
         GOTO stop
     FI;
     FILE input;
