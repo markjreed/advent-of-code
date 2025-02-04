@@ -1,15 +1,33 @@
 BEGIN
-    MODE OPPONENT = STRUCT (STRING name, INT attack, INT defense, INT hit points, INT mana);
-    MODE SPELL = STRUCT (STRING name, INT cost, INT damage, INT healing, INT armor, INT mana, INT duration);
+#    MODE SPELL = STRUCT (STRING name, INT cost, INT damage, INT healing, INT armor, INT mana, INT duration);
     []SPELL all spells = ( ( "Magic Missile", 53, 4, 0, 0,   0, 1 ),
                            ( "Drain",         73, 2, 2, 0,   0, 1 ),
                            ( "Shield",       113, 0, 0, 7,   0, 6 ),
                            ( "Poison",       173, 3, 0, 0,   0, 6 ),
                            ( "Recharge",     229, 0, 0, 0, 101, 5 ) );
-    INT lowest cost = max int;
-    MODE PARTNO = INT;
-    PARTNO part = 1;
-    OPPONENT player = ("Player", 0, 0, 50, 500);
+
+    MODE OPPONENT = STRUCT (STRING name, INT attack, INT defense, INT hit points, INT mana);
+    OPPONENT player = ("Player", 0, 0, 50, 500); #
+
+    IF argc /= 4 THEN
+        put(stand error, ("Usage: ", argv(1), " --script ", argv(3), " input-file", newline));
+        GOTO stop
+    FI;
+    FILE input;
+    STRING line;
+    IF open(input, argv(4), stand in channel) /= 0 THEN
+        put(stand error,(argv(3), ": Unable to open file '", argv(4), "'", newline));
+        GOTO stop
+    FI;
+    on logical file end(input, (REF FILE skip)BOOL: done);
+    FOR count DO
+        getf(input, ($gl$, line));
+        print((count, ":", line, newline))
+    OD;
+    done: SKIP
+
+#    INT lowest cost = max int;
+    PROC play(OPPONENT player, OPPONENT boss, 
 
     print(part);
     print(name OF all spells(1));
@@ -18,7 +36,6 @@ BEGIN
     print(" of your ");
     print(mana OF player);
     print(" mana ");
-    print(lowest cost)
-
+    print(lowest cost) #
 
 END
