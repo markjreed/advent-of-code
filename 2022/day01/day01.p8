@@ -13,7 +13,7 @@ lines {
   bool eof = false
   ubyte length, status
 
-  sub readline() -> uword {
+  sub readline() -> ^^ubyte {
     if eof {
       eof = false
       return nil
@@ -26,7 +26,7 @@ lines {
       ; wll have to call READST to find out what
       return nil
     }
-    return &buffer;
+    return &buffer
   }
 }
 
@@ -38,9 +38,9 @@ main {
     uword line
     ubyte line_len
     ubyte i
-    float cur_snack;
-    float cur_total;
-    float top_total;
+    float cur_snack
+    float cur_total
+    float top_total
     float[3] maxima = [0, 0, 0]
     uword line_count = 0
 
@@ -56,8 +56,9 @@ main {
         }
         ok = diskio.f_open(filename)
       }
+      txt.chrout(0)
 
-      cur_total = 0
+      cur_total = 0.0
       for i in 0 to 2 {
         maxima[i] = 0
       }
@@ -65,12 +66,16 @@ main {
       line_count = 0
 
       while not done {
+        txt.chrout(0)
         line = lines.readline()
         i = 0
         if line == lines.nil {
           done = true
         } else {
           line_count += 1
+          ; txt.print("read line #")
+          ; txt.print_uw(line_count)
+          txt.nl()
           cur_snack = 0
           while line[i] != 0 {
             if line[i] >= '0' and line[i] <= '9' {

@@ -1,3 +1,4 @@
+#!/usr/bin/env a68g --script #
 BEGIN
 #    MODE SPELL = STRUCT (STRING name, INT cost, INT damage, INT healing, INT armor, INT mana, INT duration);
     []SPELL all spells = ( ( "Magic Missile", 53, 4, 0, 0,   0, 1 ),
