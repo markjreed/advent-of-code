@@ -1,2 +1,16 @@
 **/.precomp/**
 **/.*.swp
+**/.swp
+**/*.out
+**/*.o
+**/.bsp/**
+**/*.class
+**/.scala-build
+**/.Random.seed
+**/*.tasty
+**/.DS_Store
+**/*.prg
+**/*.vice-mon-list
+**/foo.*
+**/bar.*
+**/baz.*

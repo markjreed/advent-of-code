@@ -43,7 +43,7 @@ typedef struct opponent {
     int mana;
 } opponent;
 
-int play(opponent *player, opponent *boss, active_spell *active_list, int min_mana, int mana_spent) {
+int play(opponent *player, opponent *boss, active_spell *active_list, int min_mana, int mana_spent, int turn) {
 
     if (player->hit_points <= 0 || player->mana <= 0) {
         return INT_MAX; // player loses, so pretend we spent infinite mana
@@ -51,12 +51,12 @@ int play(opponent *player, opponent *boss, active_spell *active_list, int min_ma
     if (boss->hit_points <= 0) {
         return mana_spent < min_mana ? mana_spent : min_mana;
     }
-    for (int i=0; i<SPELL_COUNT; ++i) {
-        if (all_spells[i].mana <= player->mana) {
-            active_spell *old_active = active_list;
-            player->mana -= all_spells[i].mana;
-
-            active_list = 
+    if (turn == 0) { /* player's turn */
+        for (int i=0; i<SPELL_COUNT; ++i) {
+            if (all_spells[i].mana <= player->mana) {
+                player->mana -= all_spells[i].mana;
+                active_spell *old_active = active_list;
+                active_list = cast(active_list, &all_spells[i]);
             int mana = play(
         }
     }
