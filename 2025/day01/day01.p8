@@ -61,9 +61,6 @@ main {
                 txt.nl()
             }
         }
-        txt.print_uw(part1)
-        txt.nl()
-        txt.print_uw(part2)
-        txt.nl()
+        aoc.report_uw(part1, part2)
     }
 }
