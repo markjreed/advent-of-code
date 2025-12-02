@@ -19,8 +19,7 @@ aoc  {
         txt.lowercase()
         txt.print("AOC Day ")
         txt.print_ub(day)
-        txt.nl()
-        txt.print("Data source: [S]ample, [U]ser, or [C]ustom: ")
+        txt.print("\n\nData source - [S]ample, [U]ser, or [C]ustom: ")
         bool ok = false
         while not ok {
             when txt.waitkey() {
@@ -56,9 +55,12 @@ aoc  {
         if diskio.f_open(puzzle.filename) {
             puzzle.eof = false
             return puzzle
-        } else {
-            return NIL
-        }
+        } 
+        txt.print("No data. Exiting.")
+        txt.nl()
+        sys.exit(1)
+        ; compiler doesn't know that exit() precludes returning, so...
+        return NIL
     }
 
     sub readLine(^^Puzzle p) -> ^^ubyte {
@@ -70,5 +72,20 @@ aoc  {
         if status & 64 != 0
             p.eof = true
         return &buffer
-     }
+    }
+
+    sub report(str part1, str part2) {
+        txt.print("Part 1: ") txt.print(part1) txt.nl()
+        txt.print("Part 2: ") txt.print(part2) txt.nl()
+    }
+
+    sub report_ub(ubyte part1, ubyte part2) {
+        txt.print("Part 1: ") txt.print_ub(part1) txt.nl()
+        txt.print("Part 2: ") txt.print_ub(part2) txt.nl()
+    }
+
+    sub report_uw(uword part1, uword part2) {
+        txt.print("Part 1: ") txt.print_uw(part1) txt.nl()
+        txt.print("Part 2: ") txt.print_uw(part2) txt.nl()
+    }
 }
