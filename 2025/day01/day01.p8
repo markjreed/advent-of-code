@@ -9,11 +9,6 @@ main {
     const bool DEBUG = false
     sub start() {
         ^^aoc.Puzzle puzzle = aoc.initPuzzle(DAY)
-        if puzzle == aoc.NIL {
-            txt.print("No data. Exiting.")
-            txt.nl()
-            sys.exit(1)
-        }
 
         if DEBUG {
             txt.print("no,line,new,part1,part2\n")
