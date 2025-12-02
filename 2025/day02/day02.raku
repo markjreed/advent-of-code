@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-my @parts = (^2).map: { SetHash.new };
+my @parts = 0 xx 2;
 
 for lines()[0].split(',')».split('-') -> ($low, $high) {
     if $low.chars == $high.chars {
@@ -9,7 +9,14 @@ for lines()[0].split(',')».split('-') -> ($low, $high) {
         scan(1 ~ 0 x $high.chars - 1, $high);
     }
 }
-.say for @parts».keys».sum;
+.say for @parts;
+
+sub μ($n) {
+    return 1 if $n==1;
+    my @factors = (1 .. $n).grep($n %% *);
+    return 0 if @factors.grep: { $_ > 1 && sqrt($_) == sqrt($_).Int };
+    return (-1)**@factors.grep: { is-prime($_) } 
+}
 
 sub scan($low, $high) {
     my $length = $low.chars;
@@ -22,8 +29,8 @@ sub scan($low, $high) {
         for $lo .. $hi -> $piece {
             my $try = $piece x $count;
             if $low <= $try <= $high {
-                @parts[1].set($try);
-                @parts[0].set($try) if $count == 2;
+                @parts[0] += $try if $count == 2;
+                @parts[1] += $try * -μ($count);
             }
         }
     }
