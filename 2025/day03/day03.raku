@@ -7,9 +7,9 @@ for lines()».comb -> @bank {
         my $joltage = '';
         my $last = -1;
         for ^@digits[$part] -> $i {
-            my ($j, $a) = @bank[$last+1..*-@digits[$part]+$i].pairs.max(->(:$key,:$value) { $value }).kv;
-            $joltage ~= $a;
-            $last += 1 + $j;
+            my ($index, $digit) = @bank[$last+1..*-@digits[$part]+$i].pairs.max(->(:$key,:$value) { $value }).kv;
+            $joltage ~= $digit;
+            $last += 1 + $index;
         }
         say "{@bank.join('')}: $joltage" if DEBUG;
         @parts[$part] += $joltage;
