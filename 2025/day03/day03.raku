@@ -1,5 +1,5 @@
 #!/usr/bin/env raku
-our constant \DEBUG = False;
+our \DEBUG = False;
 my @digits = [2, 12];
 my @parts = [0, 0];
 for lines()».comb -> @bank {
