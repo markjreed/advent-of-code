@@ -7,7 +7,7 @@ while @removable {
         @grid[$i][$j] = '.';
     }
     @removable = find-removable(@grid);
-    $part2 += +@removable;
+    $part2 += @removable;
 }
 say $part1;
 say $part2;
