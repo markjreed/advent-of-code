@@ -14,8 +14,8 @@ say $part2;
 
 sub find-removable(@grid) {
     my @result = [];
-	for @grid.kv -> $i,@row {
-	    for @row.kv -> $j,$cell {
+	for @grid.kv -> $i, @row {
+	    for @row.kv -> $j, $cell {
 	        if $cell eq '@' {
 	            my $neighbors = 0;
 	            for -1..1 -> $di {
