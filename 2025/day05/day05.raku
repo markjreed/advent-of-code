@@ -13,8 +13,7 @@ class RangeList {
             if $next.min <= $last.max {
                 @result.push: $last.min .. max($next.max, $last.max) ;
             } else {
-                @result.push: $last;
-                @result.push: $next;
+                @result.push: $last, $next;
             }
         }
         @!ranges = @result;
