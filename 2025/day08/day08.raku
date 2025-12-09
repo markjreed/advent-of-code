@@ -1,19 +1,21 @@
 #!/usr/bin/env raku
+unit sub MAIN($filename, :d(:$depth)=10);
+
 enum Axis <X Y Z>;
 
 class Point {
-    has int $.x; 
-    has int $.y;
-    has int $.z;
-    has Int $.circuit = Nil;
+    our $next-circuit = 0;
+    has $.coords;
+    has Int $.circuit is rw = $next-circuit++;;
 
-    multi method coordinate(Int $axis where 0 <= $axis < Axis.enums) {
-        return [$.x,$.y,$.z][$axis];
-    }
+    method x returns Int { $.coords[X] }
+    method y returns Int { $.coords[Y] }
+    method z returns Int { $.coords[Z] }
 
-    multi method coordinate(Axis $axis) {
-        return [$.x,$.y,$.z][+$axis];
-    }
+    our sub MAX-COORD() { 100_000; }
+    our sub INFINITY() { INIT { 
+        Point.new( coords => MAX-COORD() xx 3 )
+    } }
 
     method distance($other) {
         my $dx = abs($other.x - self.x);
@@ -21,30 +23,40 @@ class Point {
         my $dz = abs($other.z - self.z);
         return sqrt($dx*$dx + $dy*$dy + $dz*$dz);
     }
+
+    method Str() { "({$.x},{$.y},{$.z})[$.circuit]"; }
+    method gist() { self.Str() }
 }
 
-class PointTree {
-    has Point $.point;
-    has Axis $.axis;
-    has PointTree $.left = Nil;
-    has PointTree $.right = Nil;
-
-    method from-list(::?CLASS:U $class: Array[Point] $points, Int $depth = 0) {
-        return Nil unless $points;
-        my Axis $axis = Axis($depth % +Axis.enums);
-        my @sorted of Point = $points.sort(*.coordinate($axis));
-        my Int $mid = @sorted div 2;
-        my Point $median = @sorted[$mid];
-        my PointTree $left = $class.from-list(Array[Point].new(@sorted[0..$mid-1]), $depth+1);
-        my PointTree $right = $class.from-list(Array[Point].new(@sorted[$mid+1..*]), $depth+1);
-        $class.new(:point($median), :axis($axis), :left($left), :right($right));
+my @points of Point = $filename.IO.lines».&{.split(",")».Int}.map: { Point.new: coords => |$_ };
+my @pairs = (@points X @points).grep(-> ($p, $q) { $p.coords lt $q.coords }).sort: -> ($p, $q) {
+    $p.distance($q)
+};
+my @circuits = @points.map(*.circuit).unique;
+for ^$depth {
+    my ($p, $q) = @pairs.shift;
+    next if $p.circuit == $q.circuit; # same circuit, nothing to do
+    my $circuit = [$p.circuit, $q.circuit].min;
+    my @members = @points.grep(*.circuit == $p.circuit|$q.circuit);
+    for @members {
+        .circuit = $circuit;
     }
+    @circuits = @points.map(*.circuit).unique;
 }
+    
+my @sizes = @circuits.map(-> $c { +@points.grep(*.circuit == $c) });
+@sizes .= sort(-*);
+say [*] @sizes[0..2];
 
-my $circuit = 0;
-my @points of Point;
-for lines».&{.split(',')».Int} -> ($x, $y, $z) {
-    @points.push(Point.new: :$x, :$y, :$z);
+my ($p, $q);
+while @circuits > 1 {
+    ($p, $q) = @pairs.shift;
+    next if $p.circuit == $q.circuit; # same circuit, nothing to do
+    my $circuit = [$p.circuit, $q.circuit].min;
+    my @members = @points.grep(*.circuit == $p.circuit|$q.circuit);
+    for @members {
+        .circuit = $circuit;
+    }
+    @circuits = @points.map(*.circuit).unique;
 }
-my $tree = PointTree.from-list(@points);
-say $tree.raku;
+say $p.x * $q.x;
